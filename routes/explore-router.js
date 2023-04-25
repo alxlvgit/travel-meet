@@ -21,7 +21,7 @@ router.get('/feeds', async (req, res) => {
 }
 );
 
-// Feeds add post page
+// Feeds post page
 router.get('/feeds/:id', async (req, res) => {
     res.render('./explore-views/feeds-post');
 }

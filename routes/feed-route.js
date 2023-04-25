@@ -1,3 +1,0 @@
-//  /feed
-// Brett
-// Use fetch

@@ -1,0 +1,29 @@
+{
+  "name": "travelmeet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "testDB.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alxlvgit/TravelMeet.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alxlvgit/TravelMeet/issues"
+  },
+  "homepage": "https://github.com/alxlvgit/TravelMeet#readme",
+  "dependencies": {
+    "@prisma/client": "^4.13.0",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "node": "^19.8.1"
+  },
+  "devDependencies": {
+    "prisma": "^4.13.0"
+  }
+}
