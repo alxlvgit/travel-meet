@@ -1,3 +1,0 @@
-//  /event
-// Alex
-// Use fetch
