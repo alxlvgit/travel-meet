@@ -6,31 +6,30 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=\, initial-scale=1.0">
   <title>Explore</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/TravelMeet/static/header-functions.js">
+  <script src="https://kit.fontawesome.com/4f07117f88.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
   <header>
-    <a class="inline-block rounded-l-lg {{ active ? 'bg-white text-green-500' : 'bg-green-500 text-white' }} text-center px-4 py-2"
-      href="/feeds">Feeds</a>
-    <a class="inline-block rounded-r-lg {{ active ? 'bg-white text-green-500' : 'bg-green-500 text-white' }} text-center px-4 py-2"
-      href="/events">Events</a>
+    <div class="fixed top-0 w-full z-50 bg-white">
+      <div class="flex justify-center mt-2 mb-2 text-lime-700">
+        <a class="inline-block mr-1 border-solid border-2 border-r-1 border-lime-700 rounded-l-xl {{ active ? 'bg-white text-lime-700' : 'bg-lime-700 text-white' }} text-center px-4 py-1"
+          href="/feeds">Feeds</a>
+        <a class="inline-block ml-1 border-solid border-2 border-l-1 border-lime-700 rounded-r-xl {{ active ? 'bg-white text-lime-700' : 'bg-lime-700 text-white' }} text-center px-4 py-1"
+          href="/events">Events</a>
+      </div>
+      <div class="flex mt-2 mb-2 justify-evenly items-center ">
+        <a href="/art-events"><i class="fa-solid fa-palette text-3xl mx-2" style="color: #000000;"></i></a>
+        <a href="/film-events"><i class="fa-solid fa-film text-3xl mx-2" style="color: #000000;"></i></a>
+        <a href="/music-events"><i class="fa-solid fa-music text-3xl mx-2" style="color: #000000;"></i></a>
+        <a href="/sporting-events"><i class="fa-solid fa-baseball-bat-ball text-3xl mx-2" style="color: #000000;"></i></a>
+        <a href="/hiking-events"><i class="fa-solid fa-person-hiking text-3xl mx-2" style="color: #000000;"></i></a>
+      </div>
+    </div>
 
   </header>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      let links = document.querySelectorAll('a');
-      for (let i = 0; i < links.length; i++) {
-        links[i].addEventListener('click', function () {
-          var activeLink = document.querySelector('a.active');
-          if (activeLink) {
-            activeLink.classList.remove('active');
-          }
-          this.classList.add('active');
-        });
-      }
-    });
-  </script>
 
 </body>
 
