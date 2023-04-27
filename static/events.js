@@ -36,7 +36,7 @@ const getEvents = async () => {
 }
 
 // Filter events to get 10 events with unique names
-const filterEvents = async () => {
+const filterEvents = async (maxNumber) => {
   const allFoundEvents = await getEvents();
   const uniqueNames = [];
   const uniqueEvents = [];
@@ -45,7 +45,7 @@ const filterEvents = async () => {
       uniqueNames.push(event.name);
       uniqueEvents.push(event);
     }
-    return uniqueEvents.length >= 10;
+    return uniqueEvents.length >= maxNumber;
   });
   console.log(uniqueEvents);
   return uniqueEvents;
@@ -54,12 +54,11 @@ const filterEvents = async () => {
 // Get groups for event
 const getGroups = async (eventId) => {
   try {
-    const response = await fetch(`/events/${eventId}`, {
+    const response = await fetch(`/api-routes/groups/${eventId}`, {
       method: 'GET'
     })
     const data = await response.json();
     if (data) {
-      console.log(data.groups);
       return data.groups;
     } else {
       console.log("Something went wrong");
@@ -72,16 +71,19 @@ const getGroups = async (eventId) => {
 
 // Render events to DOM
 const renderEvents = async () => {
-  const events = await filterEvents();
+  const events = await filterEvents(10);
   events.forEach(async (event) => {
-    const eventImage = event.images.filter(image => image.ratio === '3_2' && image.width === 305);
+    const eventLink = document.createElement('a');
+    eventLink.href = `/events/${event.id}`;
+    eventLink.classList.add('w-full', 'h-full');
+    const eventImage = event.images.filter(image => image.ratio === '3_2' && image.width === 1024);
     const eventGroups = await getGroups(event.id);
-    const eventCard = document.createElement('div');
+    const eventCard = document.createElement('a');
     const eventPriceRange = event.priceRanges ? `${event.priceRanges[0].min}-${event.priceRanges[0].max} ${event.priceRanges[0].currency}` : "N/A";
-    eventCard.classList.add('event-card', 'flex', 'flex-row', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-3', 'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden');
+    eventCard.classList.add('event-card', 'flex', 'flex-row', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-3', 'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden', 'hover:shadow-lg', 'cursor-pointer');
     eventCard.innerHTML = `
-          <div class="event-image sm:h-full w-1/2">
-            <img src="${eventImage[0].url}" class="rounded-xl sm:h-full object-cover" alt="${event.name}">
+          <div class="event-image h-full justify-center items-center flex w-1/2">
+            <img src="${eventImage[0].url}" class="rounded-xl h-4/5 object-cover sm:h-full" alt="${event.name}">
           </div>
           <div class='flex flex-col justify-between items-start ml-4 w-1/2 box-border overflow-hidden'>
               <h3 class='text-md font-semibold line-clamp-2 sm:text-xl'>${event.name}</h3>
@@ -100,13 +102,12 @@ const renderEvents = async () => {
             <p class='text-xs mb-1 text-gray-500 align-middle sm:text-sm'>
               <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${eventGroups.length}
             </p>
-              <a href="${event.url}" class="bg-button hover:bg-button-hover text-white font-bold py-1 px-1 rounded text-xs sm:py-2 px-2 text-sm">Get Tickets</a>
+              <!-- <a href="${event.url}" class="bg-button hover:bg-button-hover text-white font-bold py-1 px-1 rounded text-xs sm:py-2 px-2 text-sm">Get Tickets</a> -->
           </div>
         `;
-    container.appendChild(eventCard);
+    eventLink.appendChild(eventCard);
+    container.appendChild(eventLink);
   });
 }
-
-
 
 renderEvents();

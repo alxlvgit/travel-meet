@@ -2,12 +2,14 @@ const express = require('express');
 require('dotenv').config()
 const port = process.env.PORT || 3000;
 const exploreRouter = require('./routes/explore-router');
+const apiEventsRouter = require('./api-routes/api-events-routes');
 
 const app = express();
 app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended: true }));
 app.use('/', exploreRouter);
+app.use('/api-routes', apiEventsRouter);
 app.use(express.static(__dirname + "/static"));
 
 app.get("/secretKeys", (req, res) => {
@@ -16,7 +18,6 @@ app.get("/secretKeys", (req, res) => {
     }
     res.status(200).json(JSON.stringify(secrets));
 });
-
 
 app.listen(port, () => {
     console.log("Node application listening on port " + port);

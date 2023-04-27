@@ -16,18 +16,6 @@ router.get('/events', async (req, res) => {
 }
 );
 
-// Get groups for event
-router.get('/events/:id', async (req, res) => {
-    // get groups from database
-    const groups = await prisma.group.findMany({
-        where: {
-            eventId: req.params.id
-        }
-    });
-    res.json({ groups: groups });
-}
-);
-
 // Feeds page
 router.get('/feeds', async (req, res) => {
     res.render('./explore-views/explore-feeds');
@@ -37,6 +25,12 @@ router.get('/feeds', async (req, res) => {
 // Feeds post page
 router.get('/feeds/:id', async (req, res) => {
     res.render('./explore-views/feeds-post');
+}
+);
+
+// Event page
+router.get('/events/:id', async (req, res) => {
+    res.render('./explore-views/explore-event');
 }
 );
 
