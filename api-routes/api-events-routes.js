@@ -1,3 +1,5 @@
+// This folder contains AJAX routes for the events page
+  
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -23,10 +25,6 @@ router.get('/events/:eventId', async (req, res) => {
     res.json({ event: event });
 }
 );
-
-
-
-
 
 
 module.exports = router;

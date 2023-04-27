@@ -1,6 +1,6 @@
 
 const container = document.querySelector('.container');
-const eventsButton = document.querySelector('.render-events');
+const eventsButton = document.getElementById("event-link");
 
 // Get api keys from server
 const getSecretKeys = async () => {
@@ -121,6 +121,7 @@ const renderEvents = async () => {
 
 // Show events on click
 eventsButton.addEventListener('click', () => {
+  console.log("test events btn");
   renderEvents();
 });
 

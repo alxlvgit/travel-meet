@@ -1,46 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
-      crossorigin="anonymous"
-    />
-    <script defer src="../events.js"></script>
-    <script defer src="../feeds.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- use cdn for development only -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- use cdn for development only-->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
+  <script defer src="../events.js"></script>
+  <script defer src="../feeds.js"></script>
 
-    <link href="/output.css" rel="stylesheet" />
-    <title>Events</title>
-  </head>
+  <!-- use cdn for development only -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- use cdn for development only-->
 
-  <body>
-    <button
-      class="render-events bg-button hover:bg-button-hover text-white font-bold py-1 px-1 rounded text-xs sm:py-2 px-2 text-sm"
-    >
-      Render Events
-    </button>
-    <button
-      class="render-feeds bg-button hover:bg-button-hover text-white font-bold py-1 px-1 rounded text-xs sm:py-2 px-2 text-sm"
-    >
-      Render Feeds
-    </button>
-    <div class="flex flex-col container m-auto max-w-max">
-      <h1 class="text-3xl text-center">Events and Feeds here</h1>
-    </div>
-  </body>
+  <link href="/output.css" rel="stylesheet" />
+  <title>Events</title>
+</head>
+
+<body>
+  <header>
+    <%- include("../partials/header.ejs"); %>
+  </header>
+
+  <div class="flex flex-col container mt-24" max-w-max">
+    <h1 class="text-3xl text-center">Events and Feeds here</h1>
+  </div>
+
+  <footer>
+    <%- include("../partials/footer.ejs"); %>
+  </footer>
+</body>
+
 </html>

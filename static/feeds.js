@@ -1,4 +1,4 @@
-const feedsButton = document.querySelector('.render-feeds');
+const feedsButton = document.getElementById("feed-link");
 
 feedsButton.addEventListener('click', () => {
     container.innerHTML = "";

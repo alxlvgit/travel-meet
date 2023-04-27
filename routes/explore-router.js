@@ -9,25 +9,26 @@ router.get('/', async (req, res) => {
 }
 );
 
-// Events page 
-router.get('/events', async (req, res) => {
-    // get groups from database
-    res.render('./explore-views/explore-events');
-}
-);
 
 // Feeds page
-router.get('/feeds', async (req, res) => {
-  const users = await prisma.user.findMany();
-  res.render('./explore-views/explore-feeds', { users: users });
-}
-);
+// router.get('/feeds', async (req, res) => {
+//   const users = await prisma.user.findMany();
+//   res.render('./explore-views/explore-feeds', { users: users });
+// }
+// );
 
 // Feeds post page
 router.get('/feeds/:id', async (req, res) => {
   res.render('./explore-views/feeds-post');
 }
 );
+
+// // Events page 
+// router.get('/events', async (req, res) => {
+//     // get groups from database
+//     res.render('./explore-views/explore-events');
+// }
+// );
 
 // Event page
 router.get('/events/:id', async (req, res) => {
