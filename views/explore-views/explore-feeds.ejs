@@ -2,17 +2,50 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Explore Feed</title>
 </head>
 
 <body>
-    <div class="flex flex-col">
-        <h1 class="text-3xl text-center sm:text-right">Explore Feeds</h1>
-    </div>
+  <header>
+    <%- include("../partials/header.ejs"); %>
+  </header>
+
+  <div class="flex flex-col">
+    <h1 class="text-3xl text-center mt-30">
+      <%= users[0].name %>'s Feed
+    </h1>
+  </div>
+
+  <div>
+    <!-- The Post -->
+    <h3>
+        <%= post.title %>
+    </h3>
+
+    <!-- Posted By -->
+    <p class="post-info">
+      <%= post.uname %>
+    </p>
+
+    <!-- Post Location -->
+    <p>
+      <%= post.location %>
+    </p>
+
+    <!-- Posted On -->
+    <p>
+      <%= new Date(post.timestamp) %>
+    </p>
+
+  </div>
+
+  <footer>
+    <%- include("../partials/footer.ejs"); %>
+  </footer>
 </body>
 
 </html>
