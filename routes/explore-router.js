@@ -11,7 +11,20 @@ router.get('/', async (req, res) => {
 
 // Events page 
 router.get('/events', async (req, res) => {
+    // get groups from database
     res.render('./explore-views/explore-events');
+}
+);
+
+// Get groups for event
+router.get('/events/:id', async (req, res) => {
+    // get groups from database
+    const groups = await prisma.group.findMany({
+        where: {
+            eventId: req.params.id
+        }
+    });
+    res.json({ groups: groups });
 }
 );
 

@@ -27,7 +27,6 @@ const getEvents = async () => {
   try {
     const response = await fetch(API_URL);
     const data = await response.json();
-    console.log(data._embedded.events);
     const events = data._embedded;
     return events;
   }
@@ -48,14 +47,35 @@ const filterEvents = async () => {
     }
     return uniqueEvents.length >= 10;
   });
+  console.log(uniqueEvents);
   return uniqueEvents;
 };
+
+// Get groups for event
+const getGroups = async (eventId) => {
+  try {
+    const response = await fetch(`/events/${eventId}`, {
+      method: 'GET'
+    })
+    const data = await response.json();
+    if (data) {
+      console.log(data.groups);
+      return data.groups;
+    } else {
+      console.log("Something went wrong");
+    }
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
 
 // Render events to DOM
 const renderEvents = async () => {
   const events = await filterEvents();
-  events.forEach(event => {
+  events.forEach(async (event) => {
     const eventImage = event.images.filter(image => image.ratio === '3_2' && image.width === 305);
+    const eventGroups = await getGroups(event.id);
     const eventCard = document.createElement('div');
     const eventPriceRange = event.priceRanges ? `${event.priceRanges[0].min}-${event.priceRanges[0].max} ${event.priceRanges[0].currency}` : "N/A";
     eventCard.classList.add('event-card', 'flex', 'flex-row', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-3', 'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden');
@@ -77,11 +97,16 @@ const renderEvents = async () => {
             <p class='text-xs mb-1 text-gray-500 align-middle sm:text-sm'>
               <i class="fas fa-dollar-sign text-center w-4 h-4 mr-1 text-black"></i>${eventPriceRange}
             </p>
+            <p class='text-xs mb-1 text-gray-500 align-middle sm:text-sm'>
+              <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${eventGroups.length}
+            </p>
               <a href="${event.url}" class="bg-button hover:bg-button-hover text-white font-bold py-1 px-1 rounded text-xs sm:py-2 px-2 text-sm">Get Tickets</a>
           </div>
         `;
     container.appendChild(eventCard);
   });
 }
+
+
 
 renderEvents();
