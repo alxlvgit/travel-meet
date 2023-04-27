@@ -1,5 +1,6 @@
 
 const container = document.querySelector('.container');
+const eventsButton = document.querySelector('.render-events');
 
 // Get api keys from server
 const getSecretKeys = async () => {
@@ -23,7 +24,7 @@ const getSecretKeys = async () => {
 const getEvents = async () => {
   const API_KEYS = await getSecretKeys();
   let { TICKETMASTER_API_KEY } = API_KEYS;
-  const API_URL = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${TICKETMASTER_API_KEY}&latlong=49.2827,-123.1207&unit=km&radius=50&sort=relevance,desc`;
+  const API_URL = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${TICKETMASTER_API_KEY}&latlong=49.2827,-123.1207&unit=km&radius=50&sort=date,asc`;
   try {
     const response = await fetch(API_URL);
     const data = await response.json();
@@ -60,6 +61,7 @@ const getGroups = async (eventId) => {
     const data = await response.json();
     if (data) {
       return data.groups;
+
     } else {
       console.log("Something went wrong");
     }
@@ -69,18 +71,25 @@ const getGroups = async (eventId) => {
   }
 }
 
+// Create event card
+const createEventCard = async (event) => {
+  const eventLink = document.createElement('a');
+  eventLink.href = `/events/${event.id}`;
+  eventLink.classList.add('w-full', 'h-full');
+  const eventImage = event.images.filter(image => image.ratio === '3_2' && image.width === 1024);
+  const eventGroups = await getGroups(event.id);
+  const eventCard = document.createElement('a');
+  const eventPriceRange = event.priceRanges ? `${event.priceRanges[0].min}-${event.priceRanges[0].max} ${event.priceRanges[0].currency}` : "N/A";
+  eventCard.classList.add('event-card', 'flex', 'flex-row', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-3', 'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden', 'hover:shadow-lg', 'cursor-pointer');
+  return { eventCard, eventLink, eventImage, eventGroups, eventPriceRange };
+}
+
 // Render events to DOM
 const renderEvents = async () => {
+  container.innerHTML = '';
   const events = await filterEvents(10);
   events.forEach(async (event) => {
-    const eventLink = document.createElement('a');
-    eventLink.href = `/events/${event.id}`;
-    eventLink.classList.add('w-full', 'h-full');
-    const eventImage = event.images.filter(image => image.ratio === '3_2' && image.width === 1024);
-    const eventGroups = await getGroups(event.id);
-    const eventCard = document.createElement('a');
-    const eventPriceRange = event.priceRanges ? `${event.priceRanges[0].min}-${event.priceRanges[0].max} ${event.priceRanges[0].currency}` : "N/A";
-    eventCard.classList.add('event-card', 'flex', 'flex-row', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-3', 'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden', 'hover:shadow-lg', 'cursor-pointer');
+    const { eventCard, eventLink, eventImage, eventGroups, eventPriceRange } = await createEventCard(event);
     eventCard.innerHTML = `
           <div class="event-image h-full justify-center items-center flex w-1/2">
             <img src="${eventImage[0].url}" class="rounded-xl h-4/5 object-cover sm:h-full" alt="${event.name}">
@@ -110,4 +119,10 @@ const renderEvents = async () => {
   });
 }
 
-renderEvents();
+// Show events on click
+eventsButton.addEventListener('click', () => {
+  renderEvents();
+});
+
+window.onload = renderEvents();
+
