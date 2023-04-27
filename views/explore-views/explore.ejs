@@ -10,10 +10,17 @@
 </head>
 
 <body>
-    <h1>TODO: Landing page. Currently: test DB</h1>
-    <p>
-        <%= users[0].name %>
-    </p>
+  <header>
+    <%- include("../partials/header.ejs"); %>
+  </header>
+
+  <div class="flex flex-col container mt-24 max-w-max">
+    <h1 class="text-3xl text-center">Events and Feeds here</h1>
+  </div>
+
+  <footer>
+    <%- include("../partials/footer.ejs"); %>
+  </footer>
 </body>
 
 </html>
