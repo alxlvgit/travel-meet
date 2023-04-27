@@ -15,4 +15,41 @@ model User {
   name     String
   email    String   @unique
   password String
+  posts    Post[]
+  following User[] @relation("UserToUser")
+  followers User[] @relation("UserToUser")
+  groups    Group[]  @relation("GroupToUser")
+  createdGroups Group[] @relation("GroupCreator")
 }
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  imageName String
+  caption   String
+  imageURI  String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+}
+
+model Event {
+  id         String  @id
+  name       String
+  date       DateTime
+  venue      String
+  latitude   Float
+  longitude  Float
+  groups     Group[] @relation("GroupToEvent")
+}
+
+model Group {
+  id         String  @id @default(uuid()) 
+  name       String
+  creator    User    @relation(name: "GroupCreator",fields: [creatorId], references: [id])
+  creatorId  Int
+  event      Event @relation("GroupToEvent", fields: [eventId], references: [id])
+  eventId    String
+  members    User[]  @relation("GroupToUser")
+}
+

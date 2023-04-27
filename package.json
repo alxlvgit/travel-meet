@@ -4,7 +4,8 @@
   "description": "",
   "main": "testDB.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon server.js",
+    "build-css": "npx tailwindcss -i ./input.css -o ./static/output.css"
   },
   "repository": {
     "type": "git",
@@ -18,11 +19,13 @@
   "homepage": "https://github.com/alxlvgit/TravelMeet#readme",
   "dependencies": {
     "@prisma/client": "^4.13.0",
+    "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "node": "^19.8.1"
   },
   "devDependencies": {
-    "prisma": "^4.13.0"
+    "prisma": "^4.13.0",
+    "tailwindcss": "^3.3.2"
   }
 }

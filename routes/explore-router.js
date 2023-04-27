@@ -11,6 +11,7 @@ router.get('/', async (req, res) => {
 
 // Events page 
 router.get('/events', async (req, res) => {
+    // get groups from database
     res.render('./explore-views/explore-events');
 }
 );
@@ -24,6 +25,12 @@ router.get('/feeds', async (req, res) => {
 // Feeds post page
 router.get('/feeds/:id', async (req, res) => {
     res.render('./explore-views/feeds-post');
+}
+);
+
+// Event page
+router.get('/events/:id', async (req, res) => {
+    res.render('./explore-views/explore-event');
 }
 );
 
