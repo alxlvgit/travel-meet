@@ -3,6 +3,7 @@ require('dotenv').config()
 const port = process.env.PORT || 3000;
 const exploreRouter = require('./routes/explore-router');
 const apiEventsRouter = require('./api-routes/api-events-routes');
+const apiPostsRouter = require('./api-routes/api-feed-routes');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -10,6 +11,7 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use('/', exploreRouter);
 app.use('/api-routes', apiEventsRouter);
+app.use('/api-posts', apiPostsRouter);
 app.use(express.static(__dirname + "/static"));
 
 app.get("/secretKeys", (req, res) => {
