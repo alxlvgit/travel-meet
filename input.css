@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .sort-events-btn.active i {
+        @apply text-[#878d26]
+    }
+
+    .switch-btn.active {
+        @apply bg-[#878d26] text-[#f5f5f5]
+    }
+}
