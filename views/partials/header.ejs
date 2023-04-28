@@ -1,35 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=\, initial-scale=1.0" />
+    <title>Explore</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://kit.fontawesome.com/4f07117f88.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=\, initial-scale=1.0">
-  <title>Explore</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://kit.fontawesome.com/4f07117f88.js" crossorigin="anonymous"></script>
-</head>
-
-<body>
-  <header>
-    <div class="fixed top-0 w-full z-50 bg-white">
-      <div class="flex justify-center mt-1 mb-1 text-[#878d26]">
-        <button id="event-link" class="inline-block mr-1 border-solid border-2 border-r-1 border-[#878d26] rounded-l-xl {{ active ? 'bg-white text-lime-700' : 'bg-lime-700 text-white' }} text-center px-4 py-1"
-        >Events</button>
-        <button id="feed-link" class="inline-block ml-1 border-solid border-2 border-l-1 border-[#878d26] rounded-r-xl {{ active ? 'bg-white text-[#878d26]' : 'bg-lime-700 text-white' }} text-center px-4 py-1"
-        >Feeds</button>
+  <body>
+    <header>
+      <div class="fixed top-0 w-full z-50 bg-white drop-shadow-sm">
+        <div class="flex justify-center mt-2 mb-2 text-[#878d26]">
+          <button
+            id="event-link"
+            class="inline-block mr-0 rounded-l-xl shadow-md text-center text-md px-7 py-2 switch-btn"
+          >
+            Events
+          </button>
+          <button
+            id="feed-link"
+            class="inline-block ml-0 rounded-r-xl shadow-md text-md text-center px-7 py-2 switch-btn"
+          >
+            Feeds
+          </button>
+        </div>
+        <div class="flex mt-2 p-4 border-b justify-evenly">
+          <button class="sort-events-btn" id="default-btn" data-api-query="art">
+            <i class="fa-solid fa-palette text-3xl mx-2"></i>
+          </button>
+          <button class="sort-events-btn text-white" data-api-query="music">
+            <i class="fa-solid fa-music text-3xl mx-2 text-black"></i>
+          </button>
+          <button class="sort-events-btn" data-api-query="sport">
+            <i
+              class="fa-solid fa-baseball-bat-ball text-3xl mx-2 text-black"
+            ></i>
+          </button>
+          <button class="sort-events-btn" data-api-query="seminar">
+            <i class="fa-solid fa-person-chalkboard text-3xl mx-2"></i>
+          </button>
+        </div>
       </div>
-      <div class="flex mt-2 p-1 border-2 border-[#878d26] bg-gray-300 justify-evenly">
-        <a href="/art-events"><i class="fa-solid fa-palette text-3xl mx-2" style="color: #878d26;"></i></a>
-        <a href="/film-events"><i class="fa-solid fa-film text-3xl mx-2" style="color: #987e15;"></i></a>
-        <a href="/music-events"><i class="fa-solid fa-music text-3xl mx-2" style="color: #594b09;"></i></a>
-        <a href="/sporting-events"><i class="fa-solid fa-baseball-bat-ball text-3xl mx-2" style="color: #ca3c25;"></i></a>
-        <a href="/hiking-events"><i class="fa-solid fa-person-hiking text-3xl mx-2" style="color: #878d26;"></i></a>
-      </div>
-    </div>
-
-  </header>
-
-</body>
-
+    </header>
+  </body>
 </html>

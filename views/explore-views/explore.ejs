@@ -1,40 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
+    <script defer src="../secret-keys.js"></script>
+    <script defer src="../events.js"></script>
+    <script defer src="../feeds.js"></script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-    integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
-  <script defer src="../secret-keys.js"></script>
-  <script defer src="../events.js"></script>
-  <script defer src="../feeds.js"></script>
+    <!-- use cdn for development only -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- use cdn for development only-->
 
-  <!-- use cdn for development only -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- use cdn for development only-->
+    <link href="/output.css" rel="stylesheet" />
+    <title>Events</title>
+  </head>
+  <body>
+    <header><%- include("../partials/header.ejs"); %></header>
 
-  <link href="/output.css" rel="stylesheet" />
-  <title>Events</title>
-</head>
+    <div class="flex flex-col container mt-36 m-auto mb-16">
+      <h1 class="text-3xl text-center">Events and Feeds here</h1>
+    </div>
 
-<body>
-  <header>
-    <%- include("../partials/header.ejs"); %>
-  </header>
-
-  <div class="flex flex-col container mt-24 max-w-max">
-    <h1 class="text-3xl text-center">Events and Feeds here</h1>
-  </div>
-
-  <footer>
-    <%- include("../partials/footer.ejs"); %>
-  </footer>
-</body>
-
+    <footer><%- include("../partials/footer.ejs"); %></footer>
+  </body>
 </html>
