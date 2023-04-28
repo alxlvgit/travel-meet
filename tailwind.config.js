@@ -12,7 +12,8 @@ module.exports = {
         hover: '#878D26',
         active: '#8C9A28'
       },
-      extend: {},
+      extend: {
+      }
     },
     plugins: [],
   }
