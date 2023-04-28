@@ -1,6 +1,6 @@
 const container = document.querySelector('.container');
 const eventsButton = document.getElementById("event-link");
-const sortEventsButtons = document.querySelectorAll(".sort-events-btn");
+const sortingButtons = document.querySelectorAll(".sort-events-btn");
 const defaultEventSortBtn = document.getElementById("default-btn");
 let apiKeySearchQueryParam = "";
 
@@ -114,22 +114,30 @@ eventsButton.addEventListener('click', () => {
   eventsButton.classList.add('active');
 });
 
+// Sort events
+const sortEvents = async (button) => {
+  const apiQueryParam = button.dataset.apiQuery;
+  apiKeySearchQueryParam = apiQueryParam;
+  renderEvents();
+}
+
+
+
 // Sort events by category on click
-sortEventsButtons.forEach(button => {
+sortingButtons.forEach(button => {
   button.addEventListener('click', () => {
-    const apiQueryParam = button.dataset.apiQuery;
-    apiKeySearchQueryParam = apiQueryParam;
+    eventsButton.classList.contains('active') ? sortEvents(button) : sortFeeds(button);
     // Remove active class from all buttons
-    sortEventsButtons.forEach(btn => {
+    sortingButtons.forEach(btn => {
       btn.classList.remove('active');
     });
     // Add active class to clicked button
     button.classList.add('active');
     // Render events
-    renderEvents();
+
   });
 });
 
 // Render events, set default sort button to active, set events button to active
-window.onload = renderEvents(), defaultEventSortBtn.click(), eventsButton.classList.add('active');
+window.onload = eventsButton.classList.add('active'), defaultEventSortBtn.click();
 
