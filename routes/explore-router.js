@@ -3,9 +3,9 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
-  const users = await prisma.user.findMany();
-  console.log(users, "test DB");
-  res.render('./explore-views/explore', { users: users });
+    const users = await prisma.user.findMany();
+    console.log(users, "test DB");
+    res.render('./explore-views/explore', { users: users });
 }
 );
 
@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 
 // Feeds post page
 router.get('/feeds/:id', async (req, res) => {
-  res.render('./explore-views/feeds-post');
+    res.render('./explore-views/feeds-post');
 }
 );
 

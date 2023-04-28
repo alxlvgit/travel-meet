@@ -1,12 +1,16 @@
-
 const container = document.querySelector('.container');
 const eventsButton = document.getElementById("event-link");
+const sortingButtons = document.querySelectorAll(".sort-events-btn");
+const defaultEventSortBtn = document.getElementById("default-btn");
+let apiKeySearchQueryParam = "";
 
-// Get events from Ticketmaster API
+
+// Get events by using Ticketmaster API
 const getEvents = async () => {
   const API_KEYS = await getSecretKeys();
   let { TICKETMASTER_API_KEY } = API_KEYS;
-  const API_URL = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${TICKETMASTER_API_KEY}&latlong=49.2827,-123.1207&unit=km&radius=50&sort=date,asc`;
+  const querySearchParam = apiKeySearchQueryParam ? `&classificationName=${apiKeySearchQueryParam}` : "&classificationName=art";
+  const API_URL = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${TICKETMASTER_API_KEY}&latlong=49.2827,-123.1207&unit=km&radius=50&sort=date,asc${querySearchParam}}`;
   try {
     const response = await fetch(API_URL);
     const data = await response.json();
@@ -18,7 +22,7 @@ const getEvents = async () => {
   }
 }
 
-// Filter events to get 10 events with unique names
+// Filter events to try get at least 10 events with unique names
 const filterEvents = async (maxNumber) => {
   const allFoundEvents = await getEvents();
   const uniqueNames = [];
@@ -57,12 +61,13 @@ const getGroups = async (eventId) => {
 const createEventCard = async (event) => {
   const eventLink = document.createElement('a');
   eventLink.href = `/events/${event.id}`;
-  eventLink.classList.add('w-full', 'h-full');
+  eventLink.classList.add('w-full', 'h-full', "absolute", "top-0", "left-0", "z-10");
   const eventImage = event.images.filter(image => image.ratio === '3_2' && image.width === 1024);
   const eventGroups = await getGroups(event.id);
-  const eventCard = document.createElement('a');
+  const eventCard = document.createElement('div');
   const eventPriceRange = event.priceRanges ? `${event.priceRanges[0].min}-${event.priceRanges[0].max} ${event.priceRanges[0].currency}` : "N/A";
-  eventCard.classList.add('event-card', 'flex', 'flex-row', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-3', 'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden', 'hover:shadow-lg', 'cursor-pointer');
+  eventCard.classList.add('event-card', 'flex', "relative", 'flex-row', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-3',
+    'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden', 'hover:shadow-lg', 'cursor-pointer', "sm:h-64", "sm:mb-5", "sm:w-9/12", "sm:m-auto");
   return { eventCard, eventLink, eventImage, eventGroups, eventPriceRange };
 }
 
@@ -73,8 +78,8 @@ const renderEvents = async () => {
   events.forEach(async (event) => {
     const { eventCard, eventLink, eventImage, eventGroups, eventPriceRange } = await createEventCard(event);
     eventCard.innerHTML = `
-          <div class="event-image h-full justify-center items-center flex w-1/2">
-            <img src="${eventImage[0].url}" class="rounded-xl h-4/5 object-cover sm:h-full" alt="${event.name}">
+          <div class="event-image h-full justify-center items-center flex w-1/2 sm:justify-start">
+            <img src="${eventImage[0].url}" class="rounded-xl h-4/5 object-cover sm:h-full w-11/12" alt="${event.name}">
           </div>
           <div class='flex flex-col justify-between items-start ml-4 w-1/2 box-border overflow-hidden'>
               <h3 class='text-md font-semibold line-clamp-2 sm:text-xl'>${event.name}</h3>
@@ -93,19 +98,46 @@ const renderEvents = async () => {
             <p class='text-xs mb-1 text-gray-500 align-middle sm:text-sm'>
               <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${eventGroups.length}
             </p>
-              <!-- <a href="${event.url}" class="bg-button hover:bg-button-hover text-white font-bold py-1 px-1 rounded text-xs sm:py-2 px-2 text-sm">Get Tickets</a> -->
-          </div>
         `;
-    eventLink.appendChild(eventCard);
-    container.appendChild(eventLink);
+    eventCard.appendChild(eventLink);
+    container.appendChild(eventCard);
   });
 }
 
+// --------------------- Event listeners ---------------------------------
+
 // Show events on click
 eventsButton.addEventListener('click', () => {
-  console.log("test events btn");
+  defaultEventSortBtn.click();
   renderEvents();
+  feedsButton.classList.remove('active');
+  eventsButton.classList.add('active');
 });
 
-window.onload = renderEvents();
+// Sort events
+const sortEvents = async (button) => {
+  const apiQueryParam = button.dataset.apiQuery;
+  apiKeySearchQueryParam = apiQueryParam;
+  renderEvents();
+}
+
+
+
+// Sort events by category on click
+sortingButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    eventsButton.classList.contains('active') ? sortEvents(button) : sortFeeds(button);
+    // Remove active class from all buttons
+    sortingButtons.forEach(btn => {
+      btn.classList.remove('active');
+    });
+    // Add active class to clicked button
+    button.classList.add('active');
+    // Render events
+
+  });
+});
+
+// Render events, set default sort button to active, set events button to active
+window.onload = eventsButton.classList.add('active'), defaultEventSortBtn.click();
 
