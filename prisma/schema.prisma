@@ -10,6 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+datasource cloud_db {
+  provider = "mysql"
+  url      = env("CLOUD_DATABASE_URL")
+  if       = env("IS_QUODDI") == "1"
+}
+
 model User {
   id       Int      @id @default(autoincrement())
   name     String
