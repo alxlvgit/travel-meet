@@ -1,5 +1,2 @@
-// Get secret keys from server
-
-
-const secretKeys = await getSecretKeys();
+// Front End Code for Individual Event Page will go here
 

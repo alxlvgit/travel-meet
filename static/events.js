@@ -41,7 +41,7 @@ const filterEvents = async (maxNumber) => {
 // Get groups for event
 const getGroups = async (eventId) => {
   try {
-    const response = await fetch(`/api-routes/groups/${eventId}`, {
+    const response = await fetch(`/api-events/groups/${eventId}`, {
       method: 'GET'
     })
     const data = await response.json();
@@ -106,7 +106,7 @@ const renderEvents = async () => {
 
 // --------------------- Event listeners ---------------------------------
 
-// Show events on click
+// Show events button listener
 eventsButton.addEventListener('click', () => {
   defaultEventSortBtn.click();
   renderEvents();
@@ -114,16 +114,14 @@ eventsButton.addEventListener('click', () => {
   eventsButton.classList.add('active');
 });
 
-// Sort events
+// Sort events handler
 const sortEvents = async (button) => {
   const apiQueryParam = button.dataset.apiQuery;
   apiKeySearchQueryParam = apiQueryParam;
   renderEvents();
 }
 
-
-
-// Sort events by category on click
+// Sorting buttons listener
 sortingButtons.forEach(button => {
   button.addEventListener('click', () => {
     eventsButton.classList.contains('active') ? sortEvents(button) : sortFeeds(button);
@@ -133,8 +131,6 @@ sortingButtons.forEach(button => {
     });
     // Add active class to clicked button
     button.classList.add('active');
-    // Render events
-
   });
 });
 
