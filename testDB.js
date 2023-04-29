@@ -6,8 +6,8 @@ const prisma = new PrismaClient()
 async function addUser() {
     const user = await prisma.user.create({
         data: {
-            name: 'Bob',
-            email: 'bob@example.com',
+            name: 'John Doe',
+            email: 'john@mail.com',
             password: 'secret'
         }
     })
@@ -62,10 +62,10 @@ async function createGroup() {
 //     console.error(e);
 // }
 
-// try {
-//     createGroup();
-// }
-// catch (e) {
-//     console.error(e);
-// }
+try {
+    createGroup();
+}
+catch (e) {
+    console.error(e);
+}
 
