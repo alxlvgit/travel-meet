@@ -15,4 +15,8 @@
     .active {
         @apply bg-[#878d26] text-[#f5f5f5]
     }
+
+    .bottom-nav a {
+        @apply flex flex-col justify-center
+    }
 }

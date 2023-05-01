@@ -11,8 +11,10 @@ const fetchSingleEvent = async (id) => {
     }
 }
 
-const filterEventImages = (images) => {
+const filterEventImages = async (images) => {
     // This function will filter the images array and return the image with the proper ratio and size
+    const filteredImages = await images.filter(image => image.ratio === '16_9' && image.width === 2048);
+    return filteredImages;
 }
 
-module.exports = fetchSingleEvent, filterEventImages;
+module.exports = { fetchSingleEvent, filterEventImages };

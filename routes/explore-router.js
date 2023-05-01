@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
-const fetchSingleEvent = require('../services/single-event-services');
+const { fetchSingleEvent, filterEventImages } = require('../services/single-event-services');
 const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
@@ -19,7 +19,9 @@ router.get('/feeds/:id', async (req, res) => {
 // Event page
 router.get('/events/:id', async (req, res) => {
     const eventData = await fetchSingleEvent(req.params.id);
-    res.render('./explore-views/event', { event: eventData });
+    const eventImage = await filterEventImages(eventData.images);
+    const eventImageURL = eventImage[0].url;
+    res.render('./explore-views/event', { event: eventData, eventImageURL: eventImageURL });
 }
 );
 

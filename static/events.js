@@ -62,7 +62,7 @@ const createEventCard = async (event) => {
   const eventLink = document.createElement('a');
   eventLink.href = `/events/${event.id}`;
   eventLink.classList.add('w-full', 'h-full', "absolute", "top-0", "left-0", "z-10");
-  const eventImage = event.images.filter(image => image.ratio === '3_2' && image.width === 1024);
+  const eventImage = event.images.filter(image => image.ratio === '16_9' && image.width === 2048);
   const eventGroups = await getGroups(event.id);
   const eventCard = document.createElement('div');
   const eventPriceRange = event.priceRanges ? `${event.priceRanges[0].min}-${event.priceRanges[0].max} ${event.priceRanges[0].currency}` : "N/A";
