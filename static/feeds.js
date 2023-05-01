@@ -1,4 +1,3 @@
-const feedsButton = document.getElementById("feed-link");
 
 // Create function to pull posts from database
 // Max 10 posts
@@ -82,8 +81,8 @@ feedsButton.addEventListener('click', () => {
     const testText = document.createElement('p');
     testText.textContent = "This is a test";
     container.appendChild(testText);
+    renderPosts();
 });
-
 
 
 

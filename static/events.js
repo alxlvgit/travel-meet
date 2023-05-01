@@ -1,5 +1,6 @@
 const container = document.querySelector('.container');
 const eventsButton = document.getElementById("event-link");
+const feedsButton = document.getElementById("feed-link");
 const sortEventsButtons = document.querySelectorAll(".sort-events-btn");
 const defaultEventSortBtn = document.getElementById("default-btn");
 let apiKeySearchQueryParam = "";
