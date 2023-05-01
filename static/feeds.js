@@ -73,16 +73,18 @@ const renderPosts = async () => {
 
 feedsButton.addEventListener('click', () => {
     container.innerHTML = "";
-    sortEventsButtons.forEach(btn => {
-        btn.classList.remove('active');
+    sortingButtons.forEach(btn => {
+        btn.classList.remove('active-icon');
     });
     feedsButton.classList.add('active');
     eventsButton.classList.remove('active');
     const testText = document.createElement('p');
     testText.textContent = "This is a test";
     container.appendChild(testText);
-    renderPosts();
+
+    //todo: append one more icon to the header for hiking when feeds open
 });
+
 
 
 

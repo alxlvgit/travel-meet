@@ -4,14 +4,14 @@ const prisma = new PrismaClient()
 
 // Add a new user
 async function addUser() {
-  const user = await prisma.user.create({
-    data: {
-      name: 'Bob',
-      email: 'bob@example.com',
-      password: 'secret'
-    }
-  })
-  console.log(user)
+    const user = await prisma.user.create({
+        data: {
+            name: 'John Doe',
+            email: 'john@mail.com',
+            password: 'secret'
+        }
+    })
+    console.log(user)
 }
 
 async function addPosts() {
@@ -76,15 +76,10 @@ async function createGroup() {
 //     console.error(e);
 // }
 
-// try {
-//     createGroup();
-// }
-// catch (e) {
-//     console.error(e);
-// }
-// try {
-//     addPosts();
-// } catch (error) {
-//     console.log(error);
-// }
+try {
+    createGroup();
+}
+catch (e) {
+    console.error(e);
+}
 

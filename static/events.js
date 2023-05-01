@@ -1,7 +1,6 @@
 const container = document.querySelector('.container');
 const eventsButton = document.getElementById("event-link");
-const feedsButton = document.getElementById("feed-link");
-const sortEventsButtons = document.querySelectorAll(".sort-events-btn");
+const sortingButtons = document.querySelectorAll(".sort-events-btn");
 const defaultEventSortBtn = document.getElementById("default-btn");
 let apiKeySearchQueryParam = "";
 
@@ -42,7 +41,7 @@ const filterEvents = async (maxNumber) => {
 // Get groups for event
 const getGroups = async (eventId) => {
   try {
-    const response = await fetch(`/api-routes/groups/${eventId}`, {
+    const response = await fetch(`/api-events/groups/${eventId}`, {
       method: 'GET'
     })
     const data = await response.json();
@@ -63,7 +62,7 @@ const createEventCard = async (event) => {
   const eventLink = document.createElement('a');
   eventLink.href = `/events/${event.id}`;
   eventLink.classList.add('w-full', 'h-full', "absolute", "top-0", "left-0", "z-10");
-  const eventImage = event.images.filter(image => image.ratio === '3_2' && image.width === 1024);
+  const eventImage = event.images.filter(image => image.ratio === '16_9' && image.width === 2048);
   const eventGroups = await getGroups(event.id);
   const eventCard = document.createElement('div');
   const eventPriceRange = event.priceRanges ? `${event.priceRanges[0].min}-${event.priceRanges[0].max} ${event.priceRanges[0].currency}` : "N/A";
@@ -107,7 +106,7 @@ const renderEvents = async () => {
 
 // --------------------- Event listeners ---------------------------------
 
-// Show events on click
+// Show events button listener
 eventsButton.addEventListener('click', () => {
   defaultEventSortBtn.click();
   renderEvents();
@@ -115,22 +114,26 @@ eventsButton.addEventListener('click', () => {
   eventsButton.classList.add('active');
 });
 
-// Sort events by category on click
-sortEventsButtons.forEach(button => {
+// Sort events handler
+const sortEvents = async (button) => {
+  const apiQueryParam = button.dataset.apiQuery;
+  apiKeySearchQueryParam = apiQueryParam;
+  renderEvents();
+}
+
+// Sorting buttons listener
+sortingButtons.forEach(button => {
   button.addEventListener('click', () => {
-    const apiQueryParam = button.dataset.apiQuery;
-    apiKeySearchQueryParam = apiQueryParam;
+    eventsButton.classList.contains('active') ? sortEvents(button) : sortFeeds(button);
     // Remove active class from all buttons
-    sortEventsButtons.forEach(btn => {
-      btn.classList.remove('active');
+    sortingButtons.forEach(btn => {
+      btn.classList.remove('active-icon');
     });
     // Add active class to clicked button
-    button.classList.add('active');
-    // Render events
-    renderEvents();
+    button.classList.add('active-icon');
   });
 });
 
 // Render events, set default sort button to active, set events button to active
-window.onload = renderEvents(), defaultEventSortBtn.click(), eventsButton.classList.add('active');
+window.onload = eventsButton.classList.add('active'), defaultEventSortBtn.click();
 
