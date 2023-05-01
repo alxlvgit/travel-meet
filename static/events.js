@@ -127,10 +127,10 @@ sortingButtons.forEach(button => {
     eventsButton.classList.contains('active') ? sortEvents(button) : sortFeeds(button);
     // Remove active class from all buttons
     sortingButtons.forEach(btn => {
-      btn.classList.remove('active');
+      btn.classList.remove('active-icon');
     });
     // Add active class to clicked button
-    button.classList.add('active');
+    button.classList.add('active-icon');
   });
 });
 

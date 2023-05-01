@@ -3,7 +3,7 @@ const feedsButton = document.getElementById("feed-link");
 feedsButton.addEventListener('click', () => {
     container.innerHTML = "";
     sortingButtons.forEach(btn => {
-        btn.classList.remove('active');
+        btn.classList.remove('active-icon');
     });
     feedsButton.classList.add('active');
     eventsButton.classList.remove('active');
