@@ -5,16 +5,19 @@ feedsButton.addEventListener('click', () => {
   sortingButtons.forEach(btn => {
     btn.classList.remove('active-icon');
   });
+  defaultSortBtn.classList.add('active-icon');
   feedsButton.classList.add('active');
   eventsButton.classList.remove('active');
-  // renderFeeds();
+  const outdoorsIcon = document.querySelector('.outdoors')
+  outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
+  sortFeeds(defaultSortBtn);
 });
 
 // Sorting buttons handler for feeds
 // Logic needed to sort feeds based on category 
 const sortFeeds = async (button) => {
   console.log("sort feeds here based on category click");
-
+  renderPosts();
 }
 
 // Create function to pull posts from database
@@ -82,14 +85,3 @@ const renderPosts = async () => {
   });
 }
 
-feedsButton.addEventListener('click', () => {
-  container.innerHTML = "";
-  sortingButtons.forEach(btn => {
-    btn.classList.remove('active');
-  });
-  feedsButton.classList.add('active');
-  eventsButton.classList.remove('active');
-  const outdoorsIcon = document.querySelector('.outdoors')
-  outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
-  renderPosts();
-});
