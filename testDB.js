@@ -4,29 +4,43 @@ const prisma = new PrismaClient()
 
 // Add a new user
 async function addUser() {
-    const user = await prisma.user.create({
-        data: {
-            name: 'John Doe',
-            email: 'john@mail.com',
-            password: 'secret'
-        }
-    })
-    console.log(user)
+  const user = await prisma.user.create({
+    data: {
+      name: 'John Doe',
+      email: 'john@mail.com',
+      password: 'secret'
+    }
+  })
+  console.log(user)
+}
+
+async function addPosts() {
+  const post = await prisma.post.create({
+    data: {
+      title: 'Stephanie Is A Girls Name',
+      content: 'TravelMeet is a great app!',
+      imageName: 'prisma-day-2020.png',
+      caption: 'TravelMeet is a great app!',
+      imageURI: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
+      authorId: 1
+    }
+  })
+  console.log(post)
 }
 
 // Add a new event
 async function addEvent() {
-    const newEvent = await prisma.event.create({
-        data: {
-            id: "G5v7Z94lcIfq4", // the Ticketmaster id of the event
-            name: "Event name",
-            date: new Date(),
-            venue: "The location of the event",
-            latitude: 12.3456, // the latitude of the event location
-            longitude: -98.7654, // the longitude of the event location
-        },
-    });
-    console.log(`New event created with id: ${newEvent.id}`);
+  const newEvent = await prisma.event.create({
+    data: {
+      id: "G5v7Z94lcIfq4", // the Ticketmaster id of the event
+      name: "Event name",
+      date: new Date(),
+      venue: "The location of the event",
+      latitude: 12.3456, // the latitude of the event location
+      longitude: -98.7654, // the longitude of the event location
+    },
+  });
+  console.log(`New event created with id: ${newEvent.id}`);
 }
 
 
@@ -69,3 +83,9 @@ async function createGroup() {
 //     console.error(e);
 // }
 
+// try {
+//   addPosts();
+// }
+// catch (e) {
+//   console.error(e);
+// }
