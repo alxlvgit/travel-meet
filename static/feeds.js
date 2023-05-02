@@ -1,17 +1,16 @@
 const feedsButton = document.getElementById("feed-link");
 
 feedsButton.addEventListener('click', () => {
-  container.innerHTML = "";
-  sortingButtons.forEach(btn => {
-    btn.classList.remove('active-icon');
-  });
-  feedsButton.classList.add('active');
-  eventsButton.classList.remove('active');
-  const testText = document.createElement('p');
-  testText.textContent = "This is a test";
-  container.appendChild(testText);
-
-  //todo: append one more icon to the header for hiking when feeds open
+    container.innerHTML = "";
+    sortingButtons.forEach(btn => {
+        btn.classList.remove('active-icon');
+    });
+    eventsButton.classList.remove('active');
+    feedsButton.classList.add('active');
+    const testText = document.createElement('p');
+    testText.textContent = "This is a test";
+    container.appendChild(testText);
+    //todo: append one more icon to the header for hiking when feeds open
 });
 
 // Sorting buttons handler for feeds
@@ -20,8 +19,6 @@ const sortFeeds = async (button) => {
 
 }
 
-// Create function to pull posts from database
-// Max 10 posts
 
 // Fetch from backend
 

@@ -72,7 +72,7 @@ const createEventCard = async (event) => {
 
 // Render events to DOM
 const renderEvents = async () => {
-  container.innerHTML = '';
+  container.innerHTML = "";
   const events = await filterEvents(10);
   events.forEach(async (event) => {
     const { eventCard, eventLink, eventImage, eventPriceRange, totalNumberOfPeople } = await createEventCard(event);
