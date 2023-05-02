@@ -1,7 +1,7 @@
 const container = document.querySelector('.container');
 const eventsButton = document.getElementById("event-link");
 let sortingButtons = document.querySelectorAll(".sort-events-btn");
-const defaultEventSortBtn = document.getElementById("default-btn");
+const defaultSortBtn = document.getElementById("default-btn");
 let apiKeySearchQueryParam = "";
 
 
@@ -9,7 +9,7 @@ let apiKeySearchQueryParam = "";
 const getEvents = async () => {
   const API_KEYS = await getSecretKeys();
   let { TICKETMASTER_API_KEY } = API_KEYS;
-  const querySearchParam = apiKeySearchQueryParam ? `&classificationName=${apiKeySearchQueryParam}` : "&classificationName=art";
+  const querySearchParam = apiKeySearchQueryParam ? `&classificationName=${apiKeySearchQueryParam}` : "&classificationName=art, music, sport, seminar";
   const API_URL = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${TICKETMASTER_API_KEY}&latlong=49.2827,-123.1207&unit=km&radius=50&sort=date,asc${querySearchParam}}`;
   try {
     const response = await fetch(API_URL);
@@ -109,7 +109,11 @@ const renderEvents = async () => {
 // Show events button listener
 eventsButton.addEventListener('click', async () => {
   container.innerHTML = '';
-  await renderEvents();
+  await sortEvents(defaultSortBtn);
+  sortingButtons.forEach(btn => {
+    btn.classList.remove('active-icon');
+  });
+  defaultSortBtn.classList.add('active-icon');
   const outdoorsIcon = document.querySelector('.outdoors')
   outdoorsIcon ? outdoorsIcon.classList.add('hidden') : null;
   feedsButton.classList.remove('active');
@@ -137,4 +141,4 @@ sortingButtons.forEach(button => {
 });
 
 // Render events, set default sort button to active, set events button to active
-window.onload = eventsButton.classList.add('active'), renderEvents();
+window.onload = eventsButton.classList.add('active'), defaultSortBtn.classList.add('active-icon'), sortEvents(defaultSortBtn);
