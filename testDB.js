@@ -39,7 +39,7 @@ async function createGroup() {
                 connect: { id: 1 }
             },
             event: {
-                connect: { id: "G5v7Z94lcIfq4" }
+                connect: { id: "rZ7HnEZ1A30vAP" }
             },
             members: {
                 connect: { id: 2 }
@@ -62,10 +62,10 @@ async function createGroup() {
 //     console.error(e);
 // }
 
-try {
-    createGroup();
-}
-catch (e) {
-    console.error(e);
-}
+// try {
+//     createGroup();
+// }
+// catch (e) {
+//     console.error(e);
+// }
 

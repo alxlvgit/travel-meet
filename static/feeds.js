@@ -10,7 +10,6 @@ feedsButton.addEventListener('click', () => {
     const testText = document.createElement('p');
     testText.textContent = "This is a test";
     container.appendChild(testText);
-
     //todo: append one more icon to the header for hiking when feeds open
 });
 
