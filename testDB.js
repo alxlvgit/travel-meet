@@ -46,21 +46,21 @@ async function addEvent() {
 
 // Create a new group with a creator, event, and members
 async function createGroup() {
-  const newGroup = await prisma.group.create({
-    data: {
-      name: 'My new group',
-      creator: {
-        connect: { id: 1 }
-      },
-      event: {
-        connect: { id: "G5v7Z94lcIfq4" }
-      },
-      members: {
-        connect: { id: 2 }
-      }
-    }
-  })
-  console.log(`New group created with id: ${newGroup.id}`)
+    const newGroup = await prisma.group.create({
+        data: {
+            name: 'My new group',
+            creator: {
+                connect: { id: 1 }
+            },
+            event: {
+                connect: { id: "G5v7Z94lcIfq4" }
+            },
+            members: {
+                connect: { id: 2 }
+            }
+        }
+    })
+    console.log(`New group created with id: ${newGroup.id}`)
 }
 
 // try {
@@ -76,15 +76,10 @@ async function createGroup() {
 //     console.error(e);
 // }
 
-// try {
-//     createGroup();
-// }
-// catch (e) {
-//     console.error(e);
-// }
 try {
-    addPosts();
-} catch (error) {
-    console.log(error);
+    createGroup();
+}
+catch (e) {
+    console.error(e);
 }
 

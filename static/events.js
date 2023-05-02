@@ -4,7 +4,6 @@ let sortingButtons = document.querySelectorAll(".sort-events-btn");
 const defaultSortBtn = document.getElementById("default-btn");
 let apiKeySearchQueryParam = "";
 
-
 // Get events by using Ticketmaster API
 const getEvents = async () => {
   const API_KEYS = await getSecretKeys();
@@ -46,7 +45,7 @@ const getGroups = async (eventId) => {
     })
     const data = await response.json();
     if (data) {
-      return data.groups;
+      return data;
 
     } else {
       console.log("Something went wrong");
@@ -63,12 +62,12 @@ const createEventCard = async (event) => {
   eventLink.href = `/events/${event.id}`;
   eventLink.classList.add('w-full', 'h-full', "absolute", "top-0", "left-0", "z-10");
   const eventImage = event.images.filter(image => image.ratio === '16_9' && image.width === 2048);
-  const eventGroups = await getGroups(event.id);
+  const { groups, totalNumberOfPeople } = await getGroups(event.id);
   const eventCard = document.createElement('div');
   const eventPriceRange = event.priceRanges ? `${event.priceRanges[0].min}-${event.priceRanges[0].max} ${event.priceRanges[0].currency}` : "N/A";
   eventCard.classList.add('event-card', 'flex', "relative", 'flex-row', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-3',
     'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden', 'hover:shadow-lg', 'cursor-pointer', "sm:h-64", "sm:mb-5", "sm:w-9/12", "sm:m-auto");
-  return { eventCard, eventLink, eventImage, eventGroups, eventPriceRange };
+  return { eventCard, eventLink, eventImage, eventGroups: groups, eventPriceRange, totalNumberOfPeople };
 }
 
 // Render events to DOM
@@ -76,7 +75,7 @@ const renderEvents = async () => {
   container.innerHTML = '';
   const events = await filterEvents(10);
   events.forEach(async (event) => {
-    const { eventCard, eventLink, eventImage, eventGroups, eventPriceRange } = await createEventCard(event);
+    const { eventCard, eventLink, eventImage, eventPriceRange, totalNumberOfPeople } = await createEventCard(event);
     eventCard.innerHTML = `
           <div class="event-image h-full justify-center items-center flex w-1/2 sm:justify-start">
             <img src="${eventImage[0].url}" class="rounded-xl h-4/5 object-cover sm:h-full w-11/12" alt="${event.name}">
@@ -96,7 +95,7 @@ const renderEvents = async () => {
               <i class="fas fa-dollar-sign text-center w-4 h-4 mr-1 text-black"></i>${eventPriceRange}
             </p>
             <p class='text-xs mb-1 text-gray-500 align-middle sm:text-sm'>
-              <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${eventGroups.length}
+              <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${totalNumberOfPeople}
             </p>
         `;
     eventCard.appendChild(eventLink);
