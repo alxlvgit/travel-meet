@@ -12,9 +12,9 @@ router.get('/', async (req, res) => {
 
 // Feeds post page
 router.get('/feeds/:id', async (req, res) => {
-    res.render('./explore-views/feeds-post');
-}
-);
+  const postId = req.params.id;
+  res.render('./explore-views/feeds-post', { postId: postId });
+});
 
 // Event page
 router.get('/events/:id', async (req, res) => {
