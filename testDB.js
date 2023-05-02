@@ -63,28 +63,28 @@ async function createGroup() {
   console.log(`New group created with id: ${newGroup.id}`)
 }
 
-// try {
-//     addUser();
-// } catch (error) {
-//     console.log(error);
-// }
+try {
+    addUser();
+} catch (error) {
+    console.log(error);
+}
 
-// try {
-//     addEvent();
-// }
-// catch (e) {
-//     console.error(e);
-// }
+try {
+    addEvent();
+}
+catch (e) {
+    console.error(e);
+}
 
-// try {
-//     createGroup();
-// }
-// catch (e) {
-//     console.error(e);
-// }
-// try {
-//     addPosts();
-// } catch (error) {
-//     console.log(error);
-// }
+try {
+    createGroup();
+}
+catch (e) {
+    console.error(e);
+}
+try {
+    addPosts();
+} catch (error) {
+    console.log(error);
+}
 

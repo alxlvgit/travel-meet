@@ -36,4 +36,10 @@ router.get('/events/:id', async (req, res) => {
 }
 );
 
+router.get('/individual/', async (req, res) => {
+  res.render('./explore-views/individual-post');
+}
+);
+
+
 module.exports = router;
