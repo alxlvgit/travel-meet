@@ -51,6 +51,10 @@ const createPostCard = async (post) => {
   postLink.classList.add('w-full', 'h-full', 'absolute', 'top-0', 'left-0', 'z-10');
   const card = document.createElement('div');
   card.classList.add('post-card', 'flex', 'flex-col', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-3', 'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden', 'hover:shadow-lg', 'cursor-pointer');
+  postLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.location.href = '/individual/';
+  });
   return {
     card,
     postLink,

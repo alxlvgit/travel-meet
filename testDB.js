@@ -17,10 +17,10 @@ async function addUser() {
 async function addPosts() {
   const post = await prisma.post.create({
     data: {
-      title: 'Stephanie Is A Girls Name',
-      content: 'TravelMeet is a great app!',
+      title: 'Billing day',
+      content: 'take care of the bills',
       imageName: 'prisma-day-2020.png',
-      caption: 'TravelMeet is a great app!',
+      caption: 'Billing day',
       imageURI: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
       authorId: 1
     }
@@ -63,18 +63,18 @@ async function createGroup() {
   console.log(`New group created with id: ${newGroup.id}`)
 }
 
-try {
-    addUser();
-} catch (error) {
-    console.log(error);
-}
+// try {
+//     addUser();
+// } catch (error) {
+//     console.log(error);
+// }
 
-try {
-    addEvent();
-}
-catch (e) {
-    console.error(e);
-}
+// try {
+//     addEvent();
+// }
+// catch (e) {
+//     console.error(e);
+// }
 
 // try {
 //     createGroup();
@@ -82,9 +82,9 @@ catch (e) {
 // catch (e) {
 //     console.error(e);
 // }
-// try {
-//     addPosts();
-// } catch (error) {
-//     console.log(error);
-// }
+try {
+    addPosts();
+} catch (error) {
+    console.log(error);
+}
 
