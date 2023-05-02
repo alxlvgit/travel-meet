@@ -1,73 +1,63 @@
 <!DOCTYPE html>
 <html lang="en" class="w-full h-full">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://kit.fontawesome.com/4f07117f88.js"
-      crossorigin="anonymous"
-    ></script>
-    <link href="/output.css" rel="stylesheet" />
 
-    <!-- use cdn for development only -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- use cdn for development only-->
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/4f07117f88.js" crossorigin="anonymous"></script>
+  <link href="/output.css" rel="stylesheet" />
+  <!-- use cdn for development only -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- use cdn for development only-->
 
-    <script defer src="../secret-keys.js"></script>
-    <script defer src="../events.js"></script>
-    <script defer src="../feeds.js"></script>
+  <script defer src="../secret-keys.js"></script>
+  <script defer src="../events.js"></script>
+  <script defer src="../feeds.js"></script>
 
-    <title>Events</title>
-  </head>
-  <body class="font-sans">
-    <header>
-      <div class="fixed top-0 w-full z-50 bg-white drop-shadow-sm">
-        <div class="flex justify-center mt-2 mb-2 text-[#878d26]">
-          <button
-            id="event-link"
-            class="inline-block mr-0 rounded-l-xl shadow-md text-center text-md px-7 py-2 switch-btn"
-          >
-            Events
-          </button>
-          <button
-            id="feed-link"
-            class="inline-block ml-0 rounded-r-xl shadow-md text-md text-center px-7 py-2 switch-btn"
-          >
-            Feeds
-          </button>
-        </div>
-        <div class="flex mt-2 p-4 border-b justify-evenly header-div">
-          <button class="sort-events-btn" id="default-btn" data-api-query="art">
-            <i class="fa-solid fa-palette text-3xl mx-2"></i>
-          </button>
-          <button class="sort-events-btn text-white" data-api-query="music">
-            <i class="fa-solid fa-music text-3xl mx-2 text-black"></i>
-          </button>
-          <button class="sort-events-btn" data-api-query="sport">
-            <i
-              class="fa-solid fa-baseball-bat-ball text-3xl mx-2 text-black"
-            ></i>
-          </button>
-          <button class="sort-events-btn" data-api-query="seminar">
-            <i class="fa-solid fa-person-chalkboard text-3xl mx-2"></i>
-          </button>
-          <button class="sort-events-btn hidden outdoors" data-api-query="outdoors">
-            <i class="fa-solid fa-person-hiking text-3xl mx-2"></i>
-          </button>
-        </div>
+  <title>Events</title>
+</head>
+
+<body class="font-sans">
+  <header>
+    <div class="fixed top-0 w-full z-50 bg-white drop-shadow-sm">
+      <div class="flex justify-center mt-2 mb-2 text-[#878d26]">
+        <button id="event-link"
+          class="inline-block mr-0 rounded-l-xl shadow-md text-center text-md px-7 py-2 switch-btn">
+          Events
+        </button>
+        <button id="feed-link"
+          class="inline-block ml-0 rounded-r-xl shadow-md text-md text-center px-7 py-2 switch-btn">
+          Feeds
+        </button>
       </div>
-    </header>
-
-    <div class="flex flex-col container m-auto mt-36 pb-20">
-      <h1 class="text-3xl text-center">Events and Feeds here</h1>
+      <div class="flex mt-2 p-4 border-b justify-evenly header-div">
+        <button class="sort-events-btn active-icon" id="default-btn" data-api-query="">
+          <i class="fa-sharp fa-solid fa-earth-americas text-3xl mx-2"></i>
+        </button>
+        <button class="sort-events-btn" data-api-query="art">
+          <i class="fa-solid fa-palette text-3xl mx-2"></i>
+        </button>
+        <button class="sort-events-btn" data-api-query="music">
+          <i class="fa-solid fa-music text-3xl mx-2 text-black"></i>
+        </button>
+        <button class="sort-events-btn" data-api-query="sport">
+          <i class="fa-solid fa-baseball-bat-ball text-3xl mx-2 text-black"></i>
+        </button>
+        <button class="sort-events-btn" data-api-query="seminar">
+          <i class="fa-solid fa-person-chalkboard text-3xl mx-2"></i>
+        </button>
+        <button class="sort-events-btn hidden outdoors" data-api-query="outdoors">
+          <i class="fa-solid fa-person-hiking text-3xl mx-2"></i>
+        </button>
+      </div>
     </div>
-    <%- include("../partials/footer.ejs"); %>
-  </body>
+  </header>
+
+  <div class="flex flex-col container m-auto mt-36 pb-20">
+    <h1 class="text-3xl text-center">Events and Feeds here</h1>
+  </div>
+  <%- include("../partials/footer.ejs"); %>
+</body>
+
 </html>
