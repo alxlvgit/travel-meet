@@ -4,24 +4,24 @@ const prisma = new PrismaClient()
 
 // Add a new user
 async function addUser() {
-    const user = await prisma.user.create({
-        data: {
-            name: 'John Doe',
-            email: 'john@mail.com',
-            password: 'secret'
-        }
-    })
-    console.log(user)
+  const user = await prisma.user.create({
+    data: {
+      name: 'John Doe',
+      email: 'john@mail.com',
+      password: 'secret'
+    }
+  })
+  console.log(user)
 }
 
 async function addPosts() {
   const post = await prisma.post.create({
     data: {
-      title: 'Peter Parker',
+      title: 'Stephanie Is A Girls Name',
       content: 'TravelMeet is a great app!',
       imageName: 'prisma-day-2020.png',
       caption: 'TravelMeet is a great app!',
-      imageURI: 'https://www.prisma.io/day/',
+      imageURI: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
       authorId: 1
     }
   })
@@ -76,10 +76,16 @@ async function createGroup() {
 //     console.error(e);
 // }
 
-try {
-    createGroup();
-}
-catch (e) {
-    console.error(e);
-}
+// try {
+//     createGroup();
+// }
+// catch (e) {
+//     console.error(e);
+// }
 
+// try {
+//   addPosts();
+// }
+// catch (e) {
+//   console.error(e);
+// }

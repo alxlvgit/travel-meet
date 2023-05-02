@@ -1,6 +1,6 @@
 const container = document.querySelector('.container');
 const eventsButton = document.getElementById("event-link");
-const sortingButtons = document.querySelectorAll(".sort-events-btn");
+let sortingButtons = document.querySelectorAll(".sort-events-btn");
 const defaultEventSortBtn = document.getElementById("default-btn");
 let apiKeySearchQueryParam = "";
 
@@ -107,9 +107,11 @@ const renderEvents = async () => {
 // --------------------- Event listeners ---------------------------------
 
 // Show events button listener
-eventsButton.addEventListener('click', () => {
-  defaultEventSortBtn.click();
-  renderEvents();
+eventsButton.addEventListener('click', async () => {
+  container.innerHTML = '';
+  await renderEvents();
+  const outdoorsIcon = document.querySelector('.outdoors')
+  outdoorsIcon ? outdoorsIcon.classList.add('hidden') : null;
   feedsButton.classList.remove('active');
   eventsButton.classList.add('active');
 });
@@ -118,7 +120,7 @@ eventsButton.addEventListener('click', () => {
 const sortEvents = async (button) => {
   const apiQueryParam = button.dataset.apiQuery;
   apiKeySearchQueryParam = apiQueryParam;
-  renderEvents();
+  await renderEvents();
 }
 
 // Sorting buttons listener
@@ -135,5 +137,4 @@ sortingButtons.forEach(button => {
 });
 
 // Render events, set default sort button to active, set events button to active
-window.onload = eventsButton.classList.add('active'), defaultEventSortBtn.click();
-
+window.onload = eventsButton.classList.add('active'), renderEvents();
