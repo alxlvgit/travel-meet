@@ -13,12 +13,11 @@ router.get('/groups/:eventId', async (req, res) => {
             eventId: req.params.eventId,
         },
         include: {
-            creator: true,
             members: true,
         },
     });
     const totalNumberOfPeople = await totalNumberOfPeopleForEvent(groups);
-    res.json({ groups: groups, totalNumberOfPeople: totalNumberOfPeople });
+    res.json({ totalNumberOfPeople: totalNumberOfPeople });
 }
 );
 

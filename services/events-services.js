@@ -23,7 +23,6 @@ const filterEventImages = async (images) => {
 const getGroups = async (eventId) => {
     try {
         const groups = await prisma.group.findMany({
-
             where: {
                 eventId: eventId
             },
@@ -31,7 +30,6 @@ const getGroups = async (eventId) => {
                 creator: true,
                 members: true
             }
-
         });
         return groups;
     }
