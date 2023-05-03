@@ -26,7 +26,11 @@ const getEvents = async (signal) => {
     return events;
   }
   catch (error) {
-    console.log(error);
+    if (error.name === 'AbortError') {
+      console.log('Aborted all pending events requests. Events fetch aborted.');
+    } else {
+      console.log(error);
+    }
   }
 }
 
@@ -58,7 +62,7 @@ const getPeopleFromAllGroups = async (eventId, signal) => {
   }
   catch (error) {
     if (error.name === 'AbortError') {
-      throw new Error("Aborted pending events request.");
+      throw new Error("Aborted all pending events requests. Groups fetch aborted.");
     } else {
       console.log(error);
     }

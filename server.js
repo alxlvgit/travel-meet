@@ -7,12 +7,12 @@ const apiPostsRouter = require('./backend-api-routes/api-feed-routes');
 
 const app = express();
 app.set('view engine', 'ejs');
-
+app.use(express.static(__dirname + "/static"));
 app.use(express.urlencoded({ extended: true }));
 app.use('/', exploreRouter);
 app.use('/api-events', apiEventsRouter);
 app.use('/api-posts', apiPostsRouter);
-app.use(express.static(__dirname + "/static"));
+
 
 app.get("/secretKeys", (req, res) => {
     const secrets = {

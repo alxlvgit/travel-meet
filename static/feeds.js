@@ -12,9 +12,7 @@ const sortFeeds = async (button) => {
 // Fetch from backend
 const getPosts = async () => {
     try {
-        const response = await fetch('/api-posts/posts', {
-            method: 'GET'
-        })
+        const response = await fetch('/api-posts/posts', { signal: abortController.signal });
         const data = await response.json();
         if (data) {
             console.log(data);
@@ -24,7 +22,11 @@ const getPosts = async () => {
         }
     }
     catch (error) {
-        console.log(error);
+        if (error.name === 'AbortError') {
+            throw new Error("Get posts fetch aborted. Aborted all pending feeds request.");
+        } else {
+            console.log(error);
+        }
     }
 }
 
@@ -61,11 +63,14 @@ const createPostCard = async (post) => {
 
 // Render posts to DOM
 const renderPosts = async () => {
+    // Cancel all pending requests
+    cancelRequests();
     container.innerHTML = '';
-    const posts = await getPosts();
-    posts.forEach(async (post) => {
-        const { postLink, card } = await createPostCard(post);
-        card.innerHTML = `
+    try {
+        const posts = await getPosts();
+        posts.forEach(async (post) => {
+            const { postLink, card } = await createPostCard(post);
+            card.innerHTML = `
     <div class="w-full h-40 flex justify-center items-center">
     <img src="${post.imageURI}" class="object-cover rounded-xl h-5/6 w-1/2 max-w-full max-h-full" alt="${post.title}">
   </div>
@@ -83,13 +88,15 @@ const renderPosts = async () => {
       </p>
     </div>
   </div>
-  
-  
     `
-        card.appendChild(postLink);
-        container.appendChild(card);
-    });
+            card.appendChild(postLink);
+            container.appendChild(card);
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
+
 
 // Handler for feeds button
 const feedsButtonHandler = async () => {
@@ -112,3 +119,4 @@ const feedsButtonHandler = async () => {
 feedsButton.addEventListener('click', () => {
     feedsButtonHandler();
 });
+
