@@ -75,7 +75,7 @@ const renderPosts = async () => {
         console.log(error);
     }
 }
-<<<<<<<<< Temporary merge branch 1
+
 
 // Handler for feeds button
 const feedsButtonHandler = async () => {
