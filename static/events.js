@@ -26,7 +26,11 @@ const getEvents = async (signal) => {
     return events;
   }
   catch (error) {
-    console.log(error);
+    if (error.name === 'AbortError') {
+      console.log('Aborted all pending events requests. Events fetch aborted.');
+    } else {
+      console.log(error);
+    }
   }
 }
 
@@ -58,10 +62,27 @@ const getPeopleFromAllGroups = async (eventId, signal) => {
   }
   catch (error) {
     if (error.name === 'AbortError') {
-      throw new Error("Aborted events request. Switching to feeds.");
+      throw new Error("Aborted all pending events requests. Groups fetch aborted.");
     } else {
       console.log(error);
     }
+  }
+}
+
+const eventPricing = (event) => {
+  if (event.priceRanges) {
+    const min = event.priceRanges[0].min;
+    const max = event.priceRanges[0].max;
+    const currency = event.priceRanges[0].currency;
+    if (min == 0 && max == 0) {
+      return `N/A`;
+    } else if (min == max) {
+      return `${min} ${currency}`;
+    } else {
+      return `${min}-${max} ${currency}`;
+    }
+  } else {
+    return "N/A";
   }
 }
 
@@ -72,7 +93,7 @@ const createEventCard = async (event) => {
   eventLink.classList.add('w-full', 'h-full', "absolute", "top-0", "left-0", "z-10");
   const eventImage = event.images.filter(image => image.ratio === '16_9' && image.width === 2048);
   const eventCard = document.createElement('div');
-  const eventPriceRange = event.priceRanges ? `${event.priceRanges[0].min}-${event.priceRanges[0].max} ${event.priceRanges[0].currency}` : "N/A";
+  const eventPriceRange = eventPricing(event);
   eventCard.classList.add('event-card', 'flex', "relative", 'flex-row', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-3',
     'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden', 'hover:shadow-lg', 'cursor-pointer', "sm:h-64", "sm:mb-5", "sm:w-9/12", "sm:m-auto");
   return { eventCard, eventLink, eventImage, eventPriceRange };

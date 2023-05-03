@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" class="w-full h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/4238f643fe.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <link href="/output.css" rel="stylesheet" />
+
+    <!-- use tailwind cdn for development only -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- use tailwind cdn for development only-->
+
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"
+    />
+
+    <script defer src="/event-group.js"></script>
+    <title>Event</title>
+  </head>
+
+  <body class="w-full h-full">
+    <div class="flex flex-col m-auto w-full h-full box-border relative">
+      <!-- top section start-->
+      <%- include("../partials/event-top.ejs"); %>
+      <!-- top section end-->
+
+      <!-- bottom section start-->
+        <div
+            class="flex flex-col group-details w-full overflow-y-auto overflow-x-hidden box-border h-3/4 relative mb-20 m-auto px-5"
+        >
+        </div>
+      
+    <footer
+      class="fixed bottom-0 w-full text-md border-t shadow m-auto z-50 bg-white px-4 py-3"
+    >
+    <div class="flex justify-between sm:justify-evenly">
+        <a
+        class="flex justify-center items-center text-md text-[#878d26] font-bold"
+        href="/events/<%- event.id %>/groups/create"
+      >
+        <i class="fa-solid fa-plus fa-2x mx-2"></i> Create Group</a
+      >
+        <button class="text-[#878d26] font-bold text-md flex items-center justify-center"> 
+            <i class="fa-solid fa-users fa-2x mx-2"></i> Join
+        </button>
+    </div>
+    </div>
+    </footer>
+  </body>
+</html>

@@ -24,62 +24,14 @@
       href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"
     />
 
-    <script defer src="../secret-keys.js"></script>
-    <script defer src="../event.js"></script>
+    <script defer src="/secret-keys.js"></script>
+    <script defer src="/event-group.js"></script>
     <title>Event</title>
   </head>
   <body class="w-full h-full">
     <div class="flex flex-col m-auto w-full h-full box-border relative">
       <!-- top section start-->
-      <div class="flex-col event-details w-full relative h-1/4 bg-gray-700">
-        <a
-          href="/"
-          class="absolute top-5 left-2 text-white font-bold text-sm sm:text-base z-10"
-        >
-          <i class="fa-solid fa-angle-left fa-2xl"></i>
-        </a>
-        <h1
-          class="absolute text-lg line-clamp-2 text-center event-title z-10 text-white font-bold top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/2 sm:top-7 sm:text-lg"
-        >
-          <%- event.name %>
-        </h1>
-        <img
-          src="<%- eventImageURL %>"
-          alt=""
-          class="w-full h-full object-cover absolute top-0 left-0 z-0 brightness-50 opacity-40"
-        />
-        <a
-          href="<%- event.url %>"
-          target="_blank"
-          class="bg-[#878d26] sm:hover:bg-white sm:hover:text-[#878d26] text-white font-bold py-1 px-1 rounded text-xs sm:py-2 sm:px-2 absolute sm:text-sm z-10 top-2 right-2"
-        >
-          Get Tickets
-        </a>
-        <div
-          class="flex-row flex absolute justify-between sm:justify-evenly items-center align-middle w-full bottom-0 left-0 z-10 px-3 sm:px-10 py-2"
-        >
-          <p
-            class="text-xs text-left event-location text-white line-clamp-2 mr-4 sm:text-sm"
-          >
-            <i class="fa-solid fa-map-marker-alt mr-1"></i>
-            <%- event._embedded.venues[0].name %>
-          </p>
-          <p
-            class="text-xs text-center event-date text-white line-clamp-2 mr-4 sm:text-sm"
-          >
-            <i class="fa-solid fa-calendar mr-1"></i>
-            <%- event.dates.start.localDate %> <%-
-            event.dates.start.localTime.split(':')[0] %>:<%-
-            event.dates.start.localTime.split(':')[1] %>
-          </p>
-          <p
-            class="text-xs text-center people-number text-white bg-[#878d26] rounded-full p-1 sm:p-2 sm:text-sm flex justify-center items-center max-w-2/6"
-          >
-            <i class="mr-1 fa-solid fa-user-friends"></i>
-            <%- totalNumberOfPeople %>
-          </p>
-        </div>
-      </div>
+      <%- include("../partials/event-top.ejs"); %>
       <!-- top section end-->
 
       <!-- bottom section start-->
@@ -97,16 +49,22 @@
           </p>
         </div>
         <% eventGroups.forEach(group => { %>
+
         <div
-          class="group-card col-span-1 flex-col flex h-fit rounded-xl p-5 border-gray-100 shadow-md mb-3"
+          class="group-card col-span-1 flex-col flex h-fit rounded-xl p-5 border-gray-100 shadow-md mb-3 relative"
         >
+          <a
+            href="/event/<%- event.id %>/group/<%- group.id %>"
+            class="w-full h-full absolute top-0 left-0 z-10"
+          >
+          </a>
           <h1 class="text-lg font-bold mt-2 w-3/4 line-clamp-3">
             <%- group.name %>
           </h1>
           <p class="text-xs mb-4 text-gray-500 mt-1">
             Creator: <%- group.creator.name %>
           </p>
-          <div class="swiper w-full">
+          <div class="swiper w-full z-20">
             <div class="swiper-wrapper w-full">
               <% group.members.forEach(member => { %>
               <div class="swiper-slide w-auto mr-1">
@@ -131,7 +89,7 @@
       class="fixed bottom-0 w-full text-md border-t shadow m-auto z-50 bg-white px-4 py-3"
     >
       <a
-        class="flex justify-center items-center text-[#878d26] font-bold"
+        class="flex justify-center items-center text-md text-[#878d26] font-bold"
         href="/events/<%- event.id %>/groups/create"
       >
         <i class="fa-solid fa-plus fa-2x mx-2"></i> Create Group</a
