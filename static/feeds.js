@@ -84,13 +84,13 @@ const renderPosts = async () => {
     const { postLink, card } = await createPostCard(post);
     card.innerHTML = `
     <div class="w-full h-40 flex justify-center items-center">
-    <img src="${post.imageURI}" class="object-cover rounded-xl h-5/6 w-1/2 max-w-full max-h-full" alt="${post.title}">
+    <img src="${post.imageURI}" class="object-cover rounded-xl h-5/6 w-1/2 max-w-full max-h-full" alt="${post.altText}">
   </div>
   <div class='flex flex-col justify-center items-center w-full'>
     <h3 class='text-md font-semibold line-clamp-2 sm:text-xl text-center mt-3'>${post.title}</h3>
     <div class="flex items-center justify-center w-full mt-2">
       <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
-        <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${post.authorId}
+        <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${post.author}
       </p>
       <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
         <i class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i>${post.location}
@@ -100,8 +100,6 @@ const renderPosts = async () => {
       </p>
     </div>
   </div>
-  
-  
     `
     card.appendChild(postLink);
     container.appendChild(card);
