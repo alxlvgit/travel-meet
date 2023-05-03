@@ -17,11 +17,11 @@ async function addUser() {
 async function addPosts() {
   const post = await prisma.post.create({
     data: {
-      title: 'Billing day',
-      content: 'take care of the bills',
-      imageName: 'prisma-day-2020.png',
-      caption: 'Billing day',
-      imageURI: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
+      title: 'Lost in space',
+      content: 'How to survive in space',
+      imageName: 'Rocket ship',
+      caption: 'Spave ship',
+      imageURI: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTPsDUnsQDDRNuMIluwFqXKpOfYj-PEHgXPw&usqp=CAU',
       authorId: 1
     }
   })
@@ -76,10 +76,18 @@ async function createGroup() {
 //     console.error(e);
 // }
 
-try {
-    createGroup();
+// try {
+//     createGroup();
+// }
+// catch (e) {
+//     console.error(e);
+// }
+
+try 
+{
+    addPosts();
 }
 catch (e) {
     console.error(e);
-}
+}   
 

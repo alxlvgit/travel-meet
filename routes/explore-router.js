@@ -57,10 +57,10 @@ router.get('/events/:id/groups/create', async (req, res) => {
 }
 );
 
-router.get('/individual/', async (req, res) => {
-  res.render('./explore-views/individual-post');
-}
-);
+// router.get('/individual/', async (req, res) => {
+//   res.render('./explore-views/individual-post');
+// }
+// );
 
 
 
