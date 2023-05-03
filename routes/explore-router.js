@@ -12,9 +12,18 @@ router.get('/', async (req, res) => {
 
 // Feeds post page
 router.get('/feeds/:id', async (req, res) => {
-  const postId = req.params.id;
-  res.render('./explore-views/feeds-post', { postId: postId });
-});
+    try {
+      const postId = req.params.id;
+      const postData = await prisma.post.findUnique({
+        where: {
+          id: postId
+        }
+      });
+      res.render('./explore-views/feeds-post', { post: postData });
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
 // Event page
 router.get('/events/:id', async (req, res) => {
@@ -72,6 +81,10 @@ router.get('/events/:id/groups/create', async (req, res) => {
 }
 );
 
+router.get('/posts/:id', (req, res) => {
+    const postId = req.params.id;
+    res.render('./explore-views/feeds-post', { postId });
+  });
 // router.get('/individual/', async (req, res) => {
 //   res.render('./explore-views/individual-post');
 // }
