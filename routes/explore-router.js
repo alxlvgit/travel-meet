@@ -1,11 +1,10 @@
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
-const { fetchSingleEvent, filterEventImages, getGroups, totalNumberOfPeopleForEvent } = require('../services/events-services');
+const { fetchSingleEvent, filterEventImages, getGroups, totalNumberOfPeopleForEvent, checkIfUserIsMemberOrCreator } = require('../services/events-services');
 const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
     const users = await prisma.user.findMany();
-    console.log(users, "test DB");
     res.render('./explore-views/explore', { users: users });
 }
 );
@@ -52,7 +51,15 @@ router.get('/event/:eventId/group/:groupId', async (req, res) => {
                 members: true,
             }
         });
-        res.render('./explore-views/group', { group: group, event: eventData, eventImageURL: eventImage[0].url, totalNumberOfPeople: totalNumberOfPeople });
+        const { isMember, isCreator } = checkIfUserIsMemberOrCreator(group, req.user.id);
+        res.render('./explore-views/group', {
+            group: group,
+            event: eventData, eventImageURL: eventImage[0].url,
+            totalNumberOfPeople: totalNumberOfPeople,
+            user: req.user,
+            isMember: isMember,
+            isCreator: isCreator
+        });
     } catch (error) {
         console.log(error);
     }

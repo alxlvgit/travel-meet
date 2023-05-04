@@ -57,22 +57,28 @@
                             %>)</h1>
                     <div class="swiper w-full z-20">
                         <div class="swiper-wrapper w-full flex items-center justify-start">
-                            <% group.members.forEach(member=> { %>
-                                <div class="swiper-slide w-auto">
-                                    <img class="w-16 h-16 object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2 m-1"
-                                        src="<%- member.profileImageURI %>" alt="Profile 1" />
-                                </div>
-                                <% }) %>
+
                         </div>
                     </div>
                 </div>
             </div>
             <footer class="fixed bottom-0 w-full text-md border-t shadow m-auto z-50 bg-white px-4 py-3">
-                <div class="flex justify-between sm:justify-evenly">
+                <div class="flex justify-between sm:justify-evenly control-buttons" data-user-id="<%-user.id  %>">
                     <a class="flex justify-center items-center text-md text-[#878d26] font-bold"
                         href="/events/<%- event.id %>/groups/create">
                         <i class="fa-solid fa-plus fa-2x mx-2"></i> Create Group</a>
-                    <button class="text-[#878d26] font-bold text-md flex items-center justify-center">
+                    <button
+                        class="text-[#878d26] font-bold text-md flex items-center justify-center delete-button hidden"
+                        data-groupId="<%- group.id %>">
+                        <i class="fa-solid fa-trash fa-2x mx-2"></i> Delete
+                    </button>
+                    <button
+                        class="text-[#878d26] font-bold text-md flex items-center justify-center leave-button hidden"
+                        data-userId="<%- user.id %> " data-groupId="<%- group.id %>">
+                        <i class="fa-solid fa-users-slash fa-2x mx-2"></i> Leave
+                    </button>
+                    <button class="text-[#878d26] font-bold text-md flex items-center justify-center join-button hidden"
+                        data-userId="<%- user.id %>" data-groupId="<%- group.id %>">
                         <i class="fa-solid fa-users fa-2x mx-2"></i> Join
                     </button>
                 </div>
