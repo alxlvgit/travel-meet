@@ -93,6 +93,11 @@ router.get('/posts/:id', (req, res) => {
     res.render('./explore-views/feeds-post', { postId });
   });
 
+// router.get('/feeds/:postId', (req, res) => {
+//     const post = getPostById(req.params.postId);
+//     res.render('explore-views/feeds-post', { creatorName: post.creatorName });
+//   });
+
 
 
 
