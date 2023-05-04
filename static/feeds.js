@@ -2,27 +2,6 @@
 const feedsButton = document.getElementById('feed-link');
 const feedsContainer = document.getElementById('feeds-container');
 
-// Sort feeds handler
-const sortFeeds = async (button) => {
-  const category = button.dataset.apiQuery;
-  await renderPosts(category);
-}
-
-// Sorts category buttons
-feedsButton.addEventListener('click', () => {
-  container.innerHTML = "";
-  sortingButtons.forEach(btn => {
-    btn.classList.remove('active-icon');
-  });
-  defaultSortBtn.classList.add('active-icon');
-  feedsButton.classList.add('active');
-  eventsButton.classList.remove('active');
-  const outdoorsIcon = document.querySelector('.outdoors')
-  outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
-  sortFeeds(defaultSortBtn);
-});
-
-
 // Fetch from backend
 const getPosts = async (category) => {
   try {
@@ -42,7 +21,6 @@ const getPosts = async (category) => {
     }
   };
 }
-
 
 // Create function to create post cards
 const createPostCard = async (post) => {
@@ -109,12 +87,16 @@ const renderPosts = async (category) => {
   }
 }
 
+// Sort feeds handler
+const sortFeeds = async (button) => {
+  const category = button.dataset.apiQuery;
+  await renderPosts(category);
+}
 
 // Handler for feeds button
 const feedsButtonHandler = async () => {
   // Cancel any pending requests
   cancelRequests();
-  abortPendingEventsCreation = true;
   container.innerHTML = "";
   feedsButton.classList.add('active');
   eventsButton.classList.remove('active');
@@ -124,10 +106,9 @@ const feedsButtonHandler = async () => {
     btn.classList.remove('active-icon');
   });
   defaultSortBtn.classList.add('active-icon');
-  await renderPosts();
+  await sortFeeds(defaultSortBtn);
 }
 
 feedsButton.addEventListener('click', () => {
   feedsButtonHandler();
 });
-
