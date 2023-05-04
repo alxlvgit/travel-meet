@@ -44,11 +44,11 @@ router.get('/event/:eventId/group/:groupId', async (req, res) => {
         const totalNumberOfPeople = await totalNumberOfPeopleForEvent(groups);
         const group = await prisma.group.findUnique({
             where: {
-                id: req.params.groupId
+                id: Number(req.params.groupId)
             },
             include: {
                 creator: true,
-                members: true,
+                members: true
             }
         });
         res.render('./explore-views/group', {
@@ -70,7 +70,8 @@ router.post('/create-group/:eventId', async (req, res) => {
             data: {
                 name: req.body.groupName,
                 creatorId: req.user.id,
-                eventId: req.params.eventId
+                eventId: req.params.eventId,
+                creatorMessage: req.body.creatorMessage,
             }
         });
         res.redirect(`/event/${req.params.eventId}`);
@@ -85,7 +86,7 @@ router.get('/delete-group/:groupId/:eventId', async (req, res) => {
     try {
         await prisma.group.delete({
             where: {
-                id: req.params.groupId
+                id: Number(req.params.groupId)
             }
         });
         res.redirect(`/event/${req.params.eventId}`);

@@ -8,7 +8,10 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  relationMode = "prisma"
 }
+
+
 
 
 
@@ -49,7 +52,7 @@ model Event {
 }
 
 model Group {
-  id         String  @id @id @default(autoincrement())
+  id         Int  @id @default(autoincrement())
   name       String
   creator    User    @relation(name: "GroupCreator",fields: [creatorId], references: [id])
   creatorId  Int
