@@ -55,5 +55,6 @@ model Group {
   event      Event @relation("GroupToEvent", fields: [eventId], references: [id])
   eventId    String
   members    User[]  @relation("GroupToUser")
+  creatorMessage  String
 }
 
