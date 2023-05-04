@@ -3,10 +3,9 @@ const feedsButton = document.getElementById('feed-link');
 const feedsContainer = document.getElementById('feeds-container');
 
 // Sort feeds handler
-const sortFeeds = async (category) => {
-  const posts = await getPosts();
-  const filteredPosts = category ? posts.filter(post => post.category === category) : posts;
-  renderPosts(filteredPosts);
+const sortFeeds = async (button) => {
+  const category = button.dataset.apiQuery;
+  await renderPosts(category);
 }
 
 // Sorts category buttons
@@ -25,25 +24,23 @@ feedsButton.addEventListener('click', () => {
 
 
 // Fetch from backend
-const getPosts = async () => {
-    try {
-        const response = await fetch('/api-posts/posts?limit=10', { signal: abortController.signal });
-        const data = await response.json();
-        if (data) {
-            console.log(data);
-            return data.posts;
-        } else {
-            console.log("Something went wrong");
-        }
+const getPosts = async (category) => {
+  try {
+    const response = await fetch(`/api-posts/posts?limit=10&category=${category}`, {
+      method: 'GET'
+    });
+    const data = await response.json();
+    if (data) {
+      console.log(data);
+      return data.posts;
+    } else {
+      console.log("Something went wrong");
     }
-    catch (error) {
-        if (error.name === 'AbortError') {
-            throw new Error("Get posts fetch aborted. Aborted all pending feeds request.");
-        } else {
-            console.log(error);
-        }
-    }
-}
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 // Create function to create post cards
 const createPostCard = async (post) => {
@@ -76,16 +73,12 @@ const createPostCard = async (post) => {
     };
 }
 
-// Render posts to DOM
-const renderPosts = async () => {
-    // Cancel all pending requests
-    cancelRequests();
-    container.innerHTML = '';
-    try {
-        const posts = await getPosts();
-        posts.forEach(async (post) => {
-            const { postLink, card } = await createPostCard(post);
-            card.innerHTML = `
+const renderPosts = async (category) => {
+  container.innerHTML = '';
+  const posts = await getPosts(category);
+  posts.forEach(async (post) => {
+    const { postLink, card } = await createPostCard(post);
+    card.innerHTML = `
     <div class="w-full h-40 flex justify-center items-center">
     <img src="${post.imageURI}" class="object-cover rounded-xl h-5/6 lg:w-1/2 sm:w-3/4 max-w-full max-h-full" alt="${post.altText}">
   </div>
