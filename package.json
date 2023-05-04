@@ -2,7 +2,7 @@
   "name": "travelmeet",
   "version": "1.0.0",
   "description": "",
-  "main": "testDB.js",
+  "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
     "build-css": "npx tailwindcss -i ./input.css -o ./static/output.css"
@@ -19,10 +19,14 @@
   "homepage": "https://github.com/alxlvgit/TravelMeet#readme",
   "dependencies": {
     "@prisma/client": "^4.13.0",
+    "body-parser": "^1.20.2",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
-    "node": "^19.8.1"
+    "express-session": "^1.17.3",
+    "node": "^19.8.1",
+    "node-fetch": "^3.3.1",
+    "swiper": "^9.2.4"
   },
   "devDependencies": {
     "prisma": "^4.13.0",

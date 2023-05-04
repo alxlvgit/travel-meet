@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" class="w-full h-full">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
+
+
+
+  <!-- use tailwind cdn for development only -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- use tailwind cdn for development only-->
+
+  <script defer src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+  <link href="/output.css" rel="stylesheet" />
+  <script defer src="/secret-keys.js"></script>
+  <script defer src="/event-group.js"></script>
+  <script defer src="/create-group.js"></script>
+  <title>Event</title>
+</head>
+
+<body class="w-full h-full">
+  <a href="/" class="absolute top-5 left-2 text-white font-bold text-sm sm:text-base z-10 back-link">
+    <i class="fa-solid fa-angle-left fa-2xl"></i>
+  </a>
+  <%- include ("../partials/create-group-form.ejs") %>
+    <div class="flex flex-col m-auto w-full h-full box-border relative">
+      <!-- top section start-->
+      <%- include("../partials/event-top.ejs"); %>
+        <!-- top section end-->
+
+        <!-- bottom section start-->
+        <div class="box-border overflow-x-hidden overflow-y-auto w-full h-3/4 mb-20">
+          <div class="col-span-2 flex flex-col w-full px-5 ">
+            <h1 class="text-2xl font-semibold text-left w-full mt-6 mb-1 text-gray-600">
+              Groups
+            </h1>
+            <p class="w-full text-gray-500 text-xs mb-4">
+              <%- eventGroups.length %> groups will visit this event
+            </p>
+          </div>
+          <div class="grid grid-cols-2 event-groups w-full relative m-auto gap-5 px-5">
+            <% eventGroups.forEach(group=> { %>
+              <div
+                class="group-card col-span-1 flex-col flex h-fit rounded-xl p-5 border-gray-100 shadow-md shadow-gray-300 mb-3 relative">
+                <a href="/event/<%- event.id %>/group/<%- group.id %>" class="w-full h-full absolute top-0 left-0 z-10">
+                </a>
+                <h1 class="text-lg font-bold mt-2 w-3/4 line-clamp-3">
+                  <%- group.name %>
+                </h1>
+                <p class="text-xs mb-4 text-gray-500 mt-1">
+                  Creator: <%- group.creator.name %>
+                </p>
+                <div class="swiper w-full z-20">
+                  <div class="swiper-wrapper w-full">
+                    <% group.members.forEach(member=> { %>
+                      <div class="swiper-slide w-auto mr-1">
+                        <img class="w-8 h-8 object-cover rounded-full border border-gray-100 shadow-md"
+                          src="<%- member.profileImageURI %>" alt="Profile 1" />
+                      </div>
+                      <% }) %>
+                  </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">
+                  <%- group.members.length %> participants
+                </p>
+              </div>
+              <% }) %>
+          </div>
+
+        </div>
+
+        <!-- bottom section end-->
+    </div>
+    <footer class="fixed bottom-0 w-full border-t shadow m-auto z-40 bg-white px-4 py-3">
+      <button class="openFormButton flex justify-center items-center text-base text-[#878d26] font-bold m-auto">
+        <i class="fa-solid fa-plus fa-2x mx-2"></i> Create Group</button>
+    </footer>
+</body>
+
+</html>
