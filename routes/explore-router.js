@@ -98,7 +98,9 @@ router.get('/posts/:id', (req, res) => {
 //     res.render('explore-views/feeds-post', { creatorName: post.creatorName });
 //   });
 
-
+router.get('/meet', (req, res) => {
+    res.render('./meet/map');
+  });
 
 
 module.exports = router;
