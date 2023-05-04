@@ -66,6 +66,7 @@ async function createGroup() {
     }
   })
   console.log(`New group created with id: ${newGroup.id}`)
+
 }
 
 // try {

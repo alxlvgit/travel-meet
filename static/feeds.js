@@ -23,62 +23,69 @@ feedsButton.addEventListener('click', () => {
   sortFeeds(defaultSortBtn);
 });
 
+
 // Fetch from backend
 const getPosts = async () => {
-  try {
-    const response = await fetch('/api-posts/posts?limit=10', {
-      method: 'GET'
-    });
-    const data = await response.json();
-    if (data) {
-      console.log(data);
-      return data.posts;
-    } else {
-      console.log("Something went wrong");
+    try {
+        const response = await fetch('/api-posts/posts?limit=10', { signal: abortController.signal });
+        const data = await response.json();
+        if (data) {
+            console.log(data);
+            return data.posts;
+        } else {
+            console.log("Something went wrong");
+        }
     }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
+    catch (error) {
+        if (error.name === 'AbortError') {
+            throw new Error("Get posts fetch aborted. Aborted all pending feeds request.");
+        } else {
+            console.log(error);
+        }
+    }
+}
 
 // Create function to create post cards
 const createPostCard = async (post) => {
-  const postLink = document.createElement('a');
-  postLink.href = `/posts/${post.id}`;
-  postLink.classList.add('w-full', 'h-3/4', 'absolute');
-  const card = document.createElement('div');
-  card.classList.add(
-    'event-card',
-    'flex',
-    'flex-col',
-    'justify-center',
-    'items-center',
-    'p-4',
-    'border',
-    'border-gray-100',
-    'rounded-xl',
-    'shadow-md',
-    'mb-3',
-    'mx-2',
-    'h-84',
-    'box-border',
-    'overflow-hidden',
-    'hover:shadow-lg',
-    'cursor-pointer'
-  );
-  return {
-    card,
-    postLink,
-  };
+    const postLink = document.createElement('a');
+    postLink.href = `/posts/${post.id}`;
+    postLink.classList.add('w-full', 'h-3/4', 'absolute');
+    const card = document.createElement('div');
+    card.classList.add(
+        'event-card',
+        'flex',
+        'flex-col',
+        'justify-center',
+        'items-center',
+        'p-4',
+        'border',
+        'border-gray-100',
+        'rounded-xl',
+        'shadow-md',
+        'mb-3',
+        'mx-2',
+        'h-84',
+        'box-border',
+        'overflow-hidden',
+        'hover:shadow-lg',
+        'cursor-pointer'
+    );
+    return {
+        card,
+        postLink,
+    };
 }
 
+// Render posts to DOM
 const renderPosts = async () => {
-  container.innerHTML = '';
-  const posts = await getPosts();
-  posts.forEach(async (post) => {
-    const { postLink, card } = await createPostCard(post);
-    card.innerHTML = `
+    // Cancel all pending requests
+    cancelRequests();
+    container.innerHTML = '';
+    try {
+        const posts = await getPosts();
+        posts.forEach(async (post) => {
+            const { postLink, card } = await createPostCard(post);
+            card.innerHTML = `
     <div class="w-full h-40 flex justify-center items-center">
     <img src="${post.imageURI}" class="object-cover rounded-xl h-5/6 lg:w-1/2 sm:w-3/4 max-w-full max-h-full" alt="${post.altText}">
   </div>
@@ -97,7 +104,34 @@ const renderPosts = async () => {
     </div>
   </div>
     `
-    card.appendChild(postLink);
-    container.appendChild(card);
-  });
+            card.appendChild(postLink);
+            container.appendChild(card);
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
+
+
+// Handler for feeds button
+const feedsButtonHandler = async () => {
+    // Cancel any pending requests
+    cancelRequests();
+    abortPendingEventsCreation = true;
+    container.innerHTML = "";
+    feedsButton.classList.add('active');
+    eventsButton.classList.remove('active');
+    const outdoorsIcon = document.querySelector('.outdoors')
+    outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
+    sortingButtons.forEach(btn => {
+        btn.classList.remove('active-icon');
+    });
+    defaultSortBtn.classList.add('active-icon');
+    await renderPosts();
+}
+
+
+feedsButton.addEventListener('click', () => {
+    feedsButtonHandler();
+});
+
