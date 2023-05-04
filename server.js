@@ -74,10 +74,9 @@ app.use((req, res, next) => {
     next();
 });
 
-
+app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/static"));
-app.use(express.urlencoded({ extended: true }));
 app.use('/', exploreRouter);
 app.use('/api-events', apiEventsRouter);
 app.use('/api-posts', apiPostsRouter);

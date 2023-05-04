@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
-const { fetchSingleEvent, filterEventImages, getGroups, totalNumberOfPeopleForEvent, checkIfUserIsMemberOrCreator } = require('../services/events-services');
+const { fetchSingleEvent, filterEventImages, getGroups, totalNumberOfPeopleForEvent } = require('../services/events-services');
 const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
@@ -16,7 +16,7 @@ router.get('/feeds/:id', async (req, res) => {
 );
 
 // Event page
-router.get('/events/:id', async (req, res) => {
+router.get('/event/:id', async (req, res) => {
     try {
         const eventData = await fetchSingleEvent(req.params.id);
         const eventImage = await filterEventImages(eventData.images);
@@ -51,14 +51,11 @@ router.get('/event/:eventId/group/:groupId', async (req, res) => {
                 members: true,
             }
         });
-        const { isMember, isCreator } = checkIfUserIsMemberOrCreator(group, req.user.id);
         res.render('./explore-views/group', {
             group: group,
             event: eventData, eventImageURL: eventImage[0].url,
             totalNumberOfPeople: totalNumberOfPeople,
-            user: req.user,
-            isMember: isMember,
-            isCreator: isCreator
+            user: req.user
         });
     } catch (error) {
         console.log(error);
@@ -67,17 +64,37 @@ router.get('/event/:eventId/group/:groupId', async (req, res) => {
 );
 
 // Create group page
-router.get('/events/:id/groups/create', async (req, res) => {
+router.post('/create-group/:eventId', async (req, res) => {
     try {
-        const eventData = await fetchSingleEvent(req.params.id);
-        const eventImage = await filterEventImages(eventData.images);
-        const eventImageURL = eventImage[0].url;
-        res.render('./explore-views/create-group', { event: eventData, eventImageURL: eventImageURL });
+        await prisma.group.create({
+            data: {
+                name: req.body.groupName,
+                creatorId: req.user.id,
+                eventId: req.params.eventId
+            }
+        });
+        res.redirect(`/event/${req.params.eventId}`);
     } catch (error) {
         console.log(error);
     }
 }
 );
+
+// Delete group
+router.get('/delete-group/:groupId/:eventId', async (req, res) => {
+    try {
+        await prisma.group.delete({
+            where: {
+                id: req.params.groupId
+            }
+        });
+        res.redirect(`/event/${req.params.eventId}`);
+    } catch (error) {
+        console.log(error);
+    }
+}
+);
+
 
 
 module.exports = router;

@@ -49,12 +49,13 @@ model Event {
 }
 
 model Group {
-  id         String  @id @default(uuid()) 
+  id         String  @id @id @default(autoincrement())
   name       String
   creator    User    @relation(name: "GroupCreator",fields: [creatorId], references: [id])
   creatorId  Int
   event      Event @relation("GroupToEvent", fields: [eventId], references: [id])
   eventId    String
   members    User[]  @relation("GroupToUser")
+  creatorMessage String
 }
 

@@ -1,8 +1,8 @@
-let groupPageOpen = false;
 const currentUrl = window.location.href;
+const backButton = document.querySelector('.back-link');
 const eventId = currentUrl.split('/')[4];
-const groupId = currentUrl.split('/')[6];
-
+let groupRelatedPageOpen = false;
+let groupId = "";
 
 // Init Swiper for event and groups
 const swiper = new Swiper(".swiper", {
@@ -13,31 +13,30 @@ const swiper = new Swiper(".swiper", {
     },
 });
 
-// Check if URL contains group
+// Check if URL contains only event, or event and group
 if (currentUrl.includes('event') && currentUrl.includes('group')) {
-    groupPageOpen = true;
-    console.log('URL contains both "event" and "group"');
+    groupRelatedPageOpen = true;
+    console.log("Group page is open");
 } else {
-    console.log('URL does not contain both "event" and "group"');
+    console.log("Event page is open");
 }
 
-
-// handle rendered groups window
-const handleRenderedGroupWindow = async () => {
-    const backButton = document.querySelector('.back-link');
-    backButton.attributes.href.value = `/events/${eventId}`;
+// handle group window
+const handleGroupWindow = async () => {
+    groupId = currentUrl.split('/')[6];
     const joinButton = document.querySelector('.join-button');
     const leaveButton = document.querySelector('.leave-button');
     handleJoinButton(joinButton);
     handleLeaveButton(leaveButton);
-    await renderMembers();
+    await renderGroupMembers();
 }
 
-// Check if groups are rendered
-if (groupPageOpen) {
-    handleRenderedGroupWindow();
+// Check if group related window is open
+if (groupRelatedPageOpen) {
+    handleGroupWindow();
 }
 
+// Generate group member HTML
 function generateMemberHtml(member) {
     return `
       <div class="swiper-slide w-auto">
@@ -47,8 +46,8 @@ function generateMemberHtml(member) {
     `;
 }
 
-// Render groups
-async function renderMembers() {
+// Render group members to DOM 
+async function renderGroupMembers() {
     const response = await fetch(`/api-events/group/${groupId}`, {
         method: 'GET',
         headers: {
@@ -56,18 +55,21 @@ async function renderMembers() {
         },
     });
     const data = await response.json();
-    const group = data.group;
     const membersContainer = document.querySelector('.members-container .swiper-wrapper');
     membersContainer.innerHTML = '';
+    const group = data.group;
     group.members.forEach(member => {
         const memberHtml = generateMemberHtml(member);
-        membersContainer.insertAdjacentHTML('beforeend', memberHtml);
+        membersContainer.innerHTML += memberHtml;
     });
+    swiper.update();
     const { isCreator, isMember } = await checkIfCreatorOrMember(group, data.userId);
     switchFooterButtons(isCreator, isMember);
+    const membersTitle = document.querySelector('.members-title');
+    membersTitle.innerText = `Members (${group.members.length})`;
 }
 
-
+// Switch footer buttons
 const switchFooterButtons = (isCreator, isMember) => {
     const joinButton = document.querySelector('.join-button');
     const leaveButton = document.querySelector('.leave-button');
@@ -85,15 +87,12 @@ const switchFooterButtons = (isCreator, isMember) => {
         leaveButton.classList.add('hidden');
         deleteButton.classList.add('hidden');
     }
-    console.log('isCreator', isCreator);
-    console.log('isMember', isMember);
 }
 
+// Check if user is group creator or member
 const checkIfCreatorOrMember = async (group, userId) => {
     let isCreator = false;
     let isMember = false;
-    console.log(group.creatorId);
-    console.log(userId);
     if (group.creatorId === userId) {
         isCreator = true;
     }
@@ -101,15 +100,12 @@ const checkIfCreatorOrMember = async (group, userId) => {
         if (member.id === userId) {
             isMember = true;
         }
-    }
-    );
+    });
     return {
         isCreator,
         isMember,
     };
 }
-
-
 
 // Handle join button
 function handleJoinButton(joinButton) {
@@ -123,7 +119,7 @@ function handleJoinButton(joinButton) {
             },
         });
         if (response.ok) {
-            await renderMembers();
+            await renderGroupMembers();
         } else {
             alert(response.statusText);
         }
@@ -143,14 +139,41 @@ function handleLeaveButton(leaveButton) {
             },
         });
         if (response.ok) {
-            await renderMembers();
+            await renderGroupMembers();
         } else {
             alert(response.statusText);
         }
     });
 }
 
+// Create Group Form elements and listeners
+const openFormButton = document.querySelector(".openFormButton");
+const closeFormButton = document.getElementById("closeFormButton");
+const formContainer = document.getElementById("formContainer");
 
+openFormButton.addEventListener("click", () => {
+    formContainer.classList.remove("hidden");
+});
+closeFormButton.addEventListener("click", () => {
+    formContainer.classList.add("hidden");
+});
+formContainer.addEventListener("click", (event) => {
+    if (event.target === formContainer) {
+        formContainer.classList.add("hidden");
+    }
+});
+
+// Get a reference to the form and the input field
+const form = document.querySelector('form');
+const input = document.querySelector('#groupName');
+
+// Add an event listener to the form's submit event
+form.addEventListener('submit', (event) => {
+    if (input.value.trim().length < 1) {
+        event.preventDefault();
+        alert('Please enter a group name');
+    }
+});
 
 
 
