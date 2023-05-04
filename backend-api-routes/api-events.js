@@ -83,5 +83,4 @@ router.put(`/groups/:groupId/leave`, async (req, res) => {
 }
 );
 
-
 module.exports = router;
