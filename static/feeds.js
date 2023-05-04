@@ -1,8 +1,15 @@
 
 const feedsButton = document.getElementById('feed-link');
-
 const feedsContainer = document.getElementById('feeds-container');
 
+// Sort feeds handler
+const sortFeeds = async (category) => {
+  const posts = await getPosts();
+  const filteredPosts = category ? posts.filter(post => post.category === category) : posts;
+  renderPosts(filteredPosts);
+}
+
+// Sorts category buttons
 feedsButton.addEventListener('click', () => {
   container.innerHTML = "";
   sortingButtons.forEach(btn => {
@@ -16,23 +23,12 @@ feedsButton.addEventListener('click', () => {
   sortFeeds(defaultSortBtn);
 });
 
-// Sorting buttons handler for feeds
-// Logic needed to sort feeds based on category // Do this next
-const sortFeeds = async (button) => {
-  console.log("sort feeds here based on category click");
-  renderPosts();
-}
-
-// Create function to pull posts from database
-// Max 10 posts
-
 // Fetch from backend
-
 const getPosts = async () => {
   try {
-    const response = await fetch('/api-posts/posts', {
+    const response = await fetch('/api-posts/posts?limit=10', {
       method: 'GET'
-    })
+    });
     const data = await response.json();
     if (data) {
       console.log(data);
@@ -40,11 +36,11 @@ const getPosts = async () => {
     } else {
       console.log("Something went wrong");
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
   }
-}
+};
+
 
 // Create function to create post cards
 const createPostCard = async (post) => {
@@ -84,19 +80,19 @@ const renderPosts = async () => {
     const { postLink, card } = await createPostCard(post);
     card.innerHTML = `
     <div class="w-full h-40 flex justify-center items-center">
-    <img src="${post.imageURI}" class="object-cover rounded-xl h-5/6 w-1/2 max-w-full max-h-full" alt="${post.altText}">
+    <img src="${post.imageURI}" class="object-cover rounded-xl h-5/6 lg:w-1/2 sm:w-3/4 max-w-full max-h-full" alt="${post.altText}">
   </div>
   <div class='flex flex-col justify-center items-center w-full'>
-    <h3 class='text-md font-semibold line-clamp-2 sm:text-xl text-center mt-3'>${post.title}</h3>
-    <div class="flex items-center justify-center w-full mt-2">
+    <h3 class='text-md font-semibold line-clamp-2 sm:text-xl text-center mt-2'>${post.title}</h3>
+    <div class="flex items-center justify-between lg:w-1/2 sm:w-3/4 mt-2">
       <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
-        <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${post.author}
+        <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${post.authorId.name}
       </p>
       <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
         <i class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i>${post.location}
       </p>
       <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
-        <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"> </i>${new Date(post.createdAt).toLocaleDateString()}
+        <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"> </i>${new Date(post.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
       </p>
     </div>
   </div>
@@ -105,3 +101,5 @@ const renderPosts = async () => {
     container.appendChild(card);
   });
 }
+
+window.onload = sortPosts(defaultSortBtn);
