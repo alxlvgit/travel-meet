@@ -26,9 +26,7 @@ feedsButton.addEventListener('click', () => {
 // Fetch from backend
 const getPosts = async (category) => {
   try {
-    const response = await fetch(`/api-posts/posts?limit=10&category=${category}`, {
-      method: 'GET'
-    });
+    const response = await fetch(`/api-posts/posts?limit=10&category=${category}`, { signal: abortController.signal });
     const data = await response.json();
     if (data) {
       console.log(data);
@@ -37,48 +35,54 @@ const getPosts = async (category) => {
       console.log("Something went wrong");
     }
   } catch (error) {
-    console.log(error);
-  }
-};
+    if (error.name === 'AbortError') {
+      throw new Error("Get posts fetch aborted. Aborted all pending feeds request.");
+    } else {
+      console.log(error);
+    }
+  };
+}
 
 
 // Create function to create post cards
 const createPostCard = async (post) => {
-    const postLink = document.createElement('a');
-    postLink.href = `/posts/${post.id}`;
-    postLink.classList.add('w-full', 'h-3/4', 'absolute');
-    const card = document.createElement('div');
-    card.classList.add(
-        'event-card',
-        'flex',
-        'flex-col',
-        'justify-center',
-        'items-center',
-        'p-4',
-        'border',
-        'border-gray-100',
-        'rounded-xl',
-        'shadow-md',
-        'mb-3',
-        'mx-2',
-        'h-84',
-        'box-border',
-        'overflow-hidden',
-        'hover:shadow-lg',
-        'cursor-pointer'
-    );
-    return {
-        card,
-        postLink,
-    };
+  const postLink = document.createElement('a');
+  postLink.href = `/posts/${post.id}`;
+  postLink.classList.add('w-full', 'h-3/4', 'absolute');
+  const card = document.createElement('div');
+  card.classList.add(
+    'event-card',
+    'flex',
+    'flex-col',
+    'justify-center',
+    'items-center',
+    'p-4',
+    'border',
+    'border-gray-100',
+    'rounded-xl',
+    'shadow-md',
+    'mb-3',
+    'mx-2',
+    'h-84',
+    'box-border',
+    'overflow-hidden',
+    'hover:shadow-lg',
+    'cursor-pointer'
+  );
+  return {
+    card,
+    postLink,
+  };
 }
 
 const renderPosts = async (category) => {
+  cancelRequests();
   container.innerHTML = '';
-  const posts = await getPosts(category);
-  posts.forEach(async (post) => {
-    const { postLink, card } = await createPostCard(post);
-    card.innerHTML = `
+  try {
+    const posts = await getPosts(category);
+    posts.forEach(async (post) => {
+      const { postLink, card } = await createPostCard(post);
+      card.innerHTML = `
     <div class="w-full h-40 flex justify-center items-center">
     <img src="${post.imageURI}" class="object-cover rounded-xl h-5/6 lg:w-1/2 sm:w-3/4 max-w-full max-h-full" alt="${post.altText}">
   </div>
@@ -97,34 +101,33 @@ const renderPosts = async (category) => {
     </div>
   </div>
     `
-            card.appendChild(postLink);
-            container.appendChild(card);
-        });
-    } catch (error) {
-        console.log(error);
-    }
+      card.appendChild(postLink);
+      container.appendChild(card);
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 
 // Handler for feeds button
 const feedsButtonHandler = async () => {
-    // Cancel any pending requests
-    cancelRequests();
-    abortPendingEventsCreation = true;
-    container.innerHTML = "";
-    feedsButton.classList.add('active');
-    eventsButton.classList.remove('active');
-    const outdoorsIcon = document.querySelector('.outdoors')
-    outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
-    sortingButtons.forEach(btn => {
-        btn.classList.remove('active-icon');
-    });
-    defaultSortBtn.classList.add('active-icon');
-    await renderPosts();
+  // Cancel any pending requests
+  cancelRequests();
+  abortPendingEventsCreation = true;
+  container.innerHTML = "";
+  feedsButton.classList.add('active');
+  eventsButton.classList.remove('active');
+  const outdoorsIcon = document.querySelector('.outdoors')
+  outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
+  sortingButtons.forEach(btn => {
+    btn.classList.remove('active-icon');
+  });
+  defaultSortBtn.classList.add('active-icon');
+  await renderPosts();
 }
 
-
 feedsButton.addEventListener('click', () => {
-    feedsButtonHandler();
+  feedsButtonHandler();
 });
 
