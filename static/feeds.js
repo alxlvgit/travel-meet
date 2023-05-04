@@ -44,33 +44,33 @@ const getPosts = async (category) => {
 
 // Create function to create post cards
 const createPostCard = async (post) => {
-    const postLink = document.createElement('a');
-    postLink.href = `/posts/${post.id}`;
-    postLink.classList.add('w-full', 'h-3/4', 'absolute');
-    const card = document.createElement('div');
-    card.classList.add(
-        'event-card',
-        'flex',
-        'flex-col',
-        'justify-center',
-        'items-center',
-        'p-4',
-        'border',
-        'border-gray-100',
-        'rounded-xl',
-        'shadow-md',
-        'mb-3',
-        'mx-2',
-        'h-84',
-        'box-border',
-        'overflow-hidden',
-        'hover:shadow-lg',
-        'cursor-pointer'
-    );
-    return {
-        card,
-        postLink,
-    };
+  const postLink = document.createElement('a');
+  postLink.href = `/posts/${post.id}`;
+  postLink.classList.add('w-full', 'h-3/4', 'absolute');
+  const card = document.createElement('div');
+  card.classList.add(
+    'event-card',
+    'flex',
+    'flex-col',
+    'justify-center',
+    'items-center',
+    'p-4',
+    'border',
+    'border-gray-100',
+    'rounded-xl',
+    'shadow-md',
+    'mb-3',
+    'mx-2',
+    'h-84',
+    'box-border',
+    'overflow-hidden',
+    'hover:shadow-lg',
+    'cursor-pointer'
+  );
+  return {
+    card,
+    postLink,
+  };
 }
 
 const renderPosts = async (category) => {
@@ -97,17 +97,14 @@ const renderPosts = async (category) => {
     </div>
   </div>
     `
-            card.appendChild(postLink);
-            container.appendChild(card);
-        });
-    } catch (error) {
-        console.log(error);
-    }
+    card.appendChild(postLink);
+    container.appendChild(card);
+  });
 }
 
 
-// Handler for feeds button
-const feedsButtonHandler = async () => {
+  // Handler for feeds button
+  const feedsButtonHandler = async () => {
     // Cancel any pending requests
     cancelRequests();
     abortPendingEventsCreation = true;
@@ -117,14 +114,13 @@ const feedsButtonHandler = async () => {
     const outdoorsIcon = document.querySelector('.outdoors')
     outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
     sortingButtons.forEach(btn => {
-        btn.classList.remove('active-icon');
+      btn.classList.remove('active-icon');
     });
     defaultSortBtn.classList.add('active-icon');
     await renderPosts();
-}
+  }
 
-
-feedsButton.addEventListener('click', () => {
+  feedsButton.addEventListener('click', () => {
     feedsButtonHandler();
-});
+  });
 
