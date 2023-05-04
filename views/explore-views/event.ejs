@@ -7,55 +7,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
 
-  <link href="/output.css" rel="stylesheet" />
 
-  <!-- use cdn for development only -->
+  <!-- use tailwind cdn for development only -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- use cdn for development only-->
+  <!-- use tailwind cdn for development only-->
 
-  <script defer src="../secret-keys.js"></script>
-  <script defer src="../event.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+  <link href="/output.css" rel="stylesheet" />
+  <script defer src="/secret-keys.js"></script>
+  <script defer src="/event-group.js"></script>
+  <script defer src="/create-group.js"></script>
   <title>Event</title>
 </head>
 
 <body class="w-full h-full">
-  <div class="flex flex-col m-auto w-full h-full box-border relative">
-    <div class="flex-col event-details w-full relative h-1/4 bg-gray-700">
-      <a href="/" class="absolute top-5 left-2 text-white font-bold text-sm sm:text-base z-10">
-        <i class="fa-solid fa-angle-left fa-2xl"></i>
-      </a>
-      <h1
-        class="absolute text-lg line-clamp-2 text-center event-title z-10 text-white font-bold w-1/2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 sm:top-7">
-        <%- event.name %>
-      </h1>
-      <img src="<%- eventImageURL %>" alt=""
-        class="w-full h-full object-cover absolute top-0 left-0 z-0 brightness-50 opacity-40" />
-      <a href="<%- event.url %>" target="_blank"
-        class="bg-[#878d26] sm:hover:bg-white sm:hover:text-[#878d26] text-white font-bold py-2 px-2 rounded text-xs sm:py-2 sm:px-2 absolute sm:text-sm z-10 top-5 right-2">
-        Get Tickets
-      </a>
-      <div
-        class="flex-row flex absolute justify-between items-center align-middle w-full bottom-0 left-0 z-10 px-2 sm:px-5 py-2">
-        <p class="text-sm text-center event-location text-white line-clamp-2 mr-3">
-          <i class="fa-solid fa-map-marker-alt mr-1"></i>
-          <%- event._embedded.venues[0].name %>
-        </p>
-        <p class="text-sm text-center event-date text-white line-clamp-2 mr-3">
-          <i class="fa-solid fa-calendar mr-1"></i>
-          <%- event.dates.start.localDate %> <%- event.dates.start.localTime.split(':')[0] %>:<%-
-                event.dates.start.localTime.split(':')[1] %>
-        </p>
-        <p
-          class="text-sm text-center people-number text-white bg-[#878d26] rounded-full p-1 sm:p-2 flex justify-center items-center max-w-2/6">
-          <i class="mr-1 fa-solid fa-user-friends"></i>
-          5
-        </p>
-      </div>
+  <a href="/" class="absolute top-5 left-2 text-white font-bold text-sm sm:text-base z-10 back-link">
+    <i class="fa-solid fa-angle-left fa-2xl"></i>
+  </a>
+  <%- include ("../partials/create-group-form.ejs") %>
+    <div class="flex flex-col m-auto w-full h-full box-border relative">
+      <!-- top section start-->
+      <%- include("../partials/event-top.ejs"); %>
+        <!-- top section end-->
+
+        <!-- bottom section start-->
+        <div class="box-border overflow-x-hidden overflow-y-auto w-full h-3/4 mb-20">
+          <div class="col-span-2 flex flex-col w-full px-5 ">
+            <h1 class="text-2xl font-semibold text-left w-full mt-6 mb-1 text-gray-600">
+              Groups
+            </h1>
+            <p class="w-full text-gray-500 text-xs mb-4">
+              <%- eventGroups.length %> groups will visit this event
+            </p>
+          </div>
+          <div class="grid grid-cols-2 event-groups w-full relative m-auto gap-5 px-5">
+            <% eventGroups.forEach(group=> { %>
+              <div
+                class="group-card col-span-1 flex-col flex h-fit rounded-xl p-5 border-gray-100 shadow-md shadow-gray-300 mb-3 relative">
+                <a href="/event/<%- event.id %>/group/<%- group.id %>" class="w-full h-full absolute top-0 left-0 z-10">
+                </a>
+                <h1 class="text-lg font-bold mt-2 w-3/4 line-clamp-3">
+                  <%- group.name %>
+                </h1>
+                <p class="text-xs mb-4 text-gray-500 mt-1">
+                  Creator: <%- group.creator.name %>
+                </p>
+                <div class="swiper w-full z-20">
+                  <div class="swiper-wrapper w-full">
+                    <% group.members.forEach(member=> { %>
+                      <div class="swiper-slide w-auto mr-1">
+                        <img class="w-8 h-8 object-cover rounded-full border border-gray-100 shadow-md"
+                          src="<%- member.profileImageURI %>" alt="Profile 1" />
+                      </div>
+                      <% }) %>
+                  </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">
+                  <%- group.members.length %> participants
+                </p>
+              </div>
+              <% }) %>
+          </div>
+
+        </div>
+
+        <!-- bottom section end-->
     </div>
-    <div class="flex-col event-groups">
-      <h1 class="text-xl text-center">Groups</h1>
-    </div>
-  </div>
+    <footer class="fixed bottom-0 w-full border-t shadow m-auto z-40 bg-white px-4 py-3">
+      <button class="openFormButton flex justify-center items-center text-base text-[#878d26] font-bold m-auto">
+        <i class="fa-solid fa-plus fa-2x mx-2"></i> Create Group</button>
+    </footer>
 </body>
 
 </html>

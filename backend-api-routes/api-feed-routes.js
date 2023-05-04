@@ -12,7 +12,7 @@ router.get('/posts', async (req, res) => {
       author: true,
     }
   });
-  console.log(posts);
+  // console.log(posts);
   res.json({ posts: posts });
 });
 
