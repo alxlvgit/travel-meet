@@ -1,55 +1,88 @@
-const feedsButton = document.getElementById("feed-link");
+
+const feedsButton = document.getElementById('feed-link');
+
+const feedsContainer = document.getElementById('feeds-container');
+
+feedsButton.addEventListener('click', () => {
+  container.innerHTML = "";
+  sortingButtons.forEach(btn => {
+    btn.classList.remove('active-icon');
+  });
+  defaultSortBtn.classList.add('active-icon');
+  feedsButton.classList.add('active');
+  eventsButton.classList.remove('active');
+  const outdoorsIcon = document.querySelector('.outdoors')
+  outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
+  sortFeeds(defaultSortBtn);
+});
 
 // Sorting buttons handler for feeds
+// Logic needed to sort feeds based on category // Do this next
 const sortFeeds = async (button) => {
-    console.log("sortFeeds function called");
-
+  console.log("sort feeds here based on category click");
+  renderPosts();
 }
 
+// Create function to pull posts from database
+// Max 10 posts
+
 // Fetch from backend
+
 const getPosts = async () => {
-    try {
-        const response = await fetch('/api-posts/posts', { signal: abortController.signal });
-        const data = await response.json();
-        if (data) {
-            console.log(data);
-            return data.posts;
-        } else {
-            console.log("Something went wrong");
-        }
+  try {
+    const response = await fetch('/api-posts/posts', {
+      method: 'GET'
+    })
+    const data = await response.json();
+    if (data) {
+      console.log(data);
+      return data.posts;
+    } else {
+      console.log("Something went wrong");
     }
-    catch (error) {
-        if (error.name === 'AbortError') {
-            throw new Error("Get posts fetch aborted. Aborted all pending feeds request.");
-        } else {
-            console.log(error);
-        }
-    }
+  }
+  catch (error) {
+    console.log(error);
+  }
 }
 
 // Create function to create post cards
 const createPostCard = async (post) => {
-    const postLink = document.createElement('a');
-    postLink.href = `/posts/${post.id}`;
-    postLink.classList.add('w-full', 'h-3/4', 'absolute');
-    const card = document.createElement('div');
-    card.classList.add('post-card', 'flex', 'flex-col', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-3', 'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden', 'hover:shadow-lg', 'cursor-pointer');
-    return {
-        card,
-        postLink,
-    };
+  const postLink = document.createElement('a');
+  postLink.href = `/posts/${post.id}`;
+  postLink.classList.add('w-full', 'h-3/4', 'absolute');
+  const card = document.createElement('div');
+  card.classList.add(
+    'event-card',
+    'flex',
+    'flex-col',
+    'justify-center',
+    'items-center',
+    'p-4',
+    'border',
+    'border-gray-100',
+    'rounded-xl',
+    'shadow-md',
+    'mb-3',
+    'mx-2',
+    'h-84',
+    'box-border',
+    'overflow-hidden',
+    'hover:shadow-lg',
+    'cursor-pointer'
+  );
+  return {
+    card,
+    postLink,
+  };
 }
 
-// Render posts to DOM
 const renderPosts = async () => {
-    // Cancel all pending requests
-    cancelRequests();
-    container.innerHTML = '';
-    try {
-        const posts = await getPosts();
-        posts.forEach(async (post) => {
-            const { postLink, card } = await createPostCard(post);
-            card.innerHTML = `
+  container.innerHTML = '';
+  const posts = await getPosts();
+  posts.forEach(async (post) => {
+    const { postLink, card } = await createPostCard(post);
+    card.innerHTML = `
     <div class="w-full h-40 flex justify-center items-center">
     <img src="${post.imageURI}" class="object-cover rounded-xl h-5/6 w-1/2 max-w-full max-h-full" alt="${post.altText}">
   </div>
@@ -68,34 +101,7 @@ const renderPosts = async () => {
     </div>
   </div>
     `
-            card.appendChild(postLink);
-            container.appendChild(card);
-        });
-    } catch (error) {
-        console.log(error);
-    }
+    card.appendChild(postLink);
+    container.appendChild(card);
+  });
 }
-
-
-// Handler for feeds button
-const feedsButtonHandler = async () => {
-    // Cancel any pending requests
-    cancelRequests();
-    abortPendingEventsCreation = true;
-    container.innerHTML = "";
-    feedsButton.classList.add('active');
-    eventsButton.classList.remove('active');
-    const outdoorsIcon = document.querySelector('.outdoors')
-    outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
-    sortingButtons.forEach(btn => {
-        btn.classList.remove('active-icon');
-    });
-    defaultSortBtn.classList.add('active-icon');
-    await renderPosts();
-}
-
-
-feedsButton.addEventListener('click', () => {
-    feedsButtonHandler();
-});
-
