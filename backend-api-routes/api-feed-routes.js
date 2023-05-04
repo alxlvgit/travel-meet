@@ -3,7 +3,11 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 router.get('/posts', async (req, res) => {
+  const { limit, category } = req.query;
+  const where = category ? { category } : {};
   const posts = await prisma.post.findMany({
+    take: parseInt(limit),
+    where: where,
     include: {
       author: true,
     }

@@ -3,10 +3,9 @@ const feedsButton = document.getElementById('feed-link');
 const feedsContainer = document.getElementById('feeds-container');
 
 // Sort feeds handler
-const sortFeeds = async (category) => {
-  const posts = await getPosts();
-  const filteredPosts = category ? posts.filter(post => post.category === category) : posts;
-  renderPosts(filteredPosts);
+const sortFeeds = async (button) => {
+  const category = button.dataset.apiQuery;
+  await renderPosts(category);
 }
 
 // Sorts category buttons
@@ -24,9 +23,9 @@ feedsButton.addEventListener('click', () => {
 });
 
 // Fetch from backend
-const getPosts = async () => {
+const getPosts = async (category) => {
   try {
-    const response = await fetch('/api-posts/posts?limit=10', {
+    const response = await fetch(`/api-posts/posts?limit=10&category=${category}`, {
       method: 'GET'
     });
     const data = await response.json();
@@ -73,9 +72,9 @@ const createPostCard = async (post) => {
   };
 }
 
-const renderPosts = async () => {
+const renderPosts = async (category) => {
   container.innerHTML = '';
-  const posts = await getPosts();
+  const posts = await getPosts(category);
   posts.forEach(async (post) => {
     const { postLink, card } = await createPostCard(post);
     card.innerHTML = `
