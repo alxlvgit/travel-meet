@@ -86,7 +86,7 @@ const renderPosts = async () => {
     <h3 class='text-md font-semibold line-clamp-2 sm:text-xl text-center mt-2'>${post.title}</h3>
     <div class="flex items-center justify-between lg:w-1/2 sm:w-3/4 mt-2">
       <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
-        <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${post.authorId.name}
+        <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${post.author.name}
       </p>
       <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
         <i class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i>${post.location}
