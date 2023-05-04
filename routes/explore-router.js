@@ -85,10 +85,7 @@ router.get('/posts/:id', (req, res) => {
     const postId = req.params.id;
     res.render('./explore-views/feeds-post', { postId });
   });
-// router.get('/individual/', async (req, res) => {
-//   res.render('./explore-views/individual-post');
-// }
-// );
+
 
 
 

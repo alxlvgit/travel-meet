@@ -30,12 +30,14 @@ model User {
 model Post {
   id        Int      @id @default(autoincrement())
   title     String
-  content   String
-  imageName String
+  createdAt DateTime @default(now())
   caption   String
   imageURI  String
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+  altText   String
+  location  String
+  category  String
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
 }
 
 model Event {

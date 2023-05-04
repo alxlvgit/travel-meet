@@ -6,8 +6,8 @@ const prisma = new PrismaClient()
 async function addUser() {
   const user = await prisma.user.create({
     data: {
-      name: 'John Doe',
-      email: 'john@mail.com',
+      name: 'Brett Gill',
+      email: 'brett@mail.com',
       password: 'secret'
     }
   })
@@ -17,12 +17,25 @@ async function addUser() {
 async function addPosts() {
   const post = await prisma.post.create({
     data: {
+<<<<<<< HEAD
       title: 'Lost in space',
       content: 'How to survive in space',
       imageName: 'Rocket ship',
       caption: 'Spave ship',
       imageURI: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTPsDUnsQDDRNuMIluwFqXKpOfYj-PEHgXPw&usqp=CAU',
       authorId: 1
+=======
+      title: 'Belize is the best!',
+      createdAt: new Date(),
+      caption: 'This is a beautiful place!',
+      imageURI: 'https://cdn.pixabay.com/photo/2023/01/18/12/39/river-7726732__480.jpg',
+      altText: 'Beautiful Belize',
+      location: 'Belize',
+      category: 'travel',
+      author: {
+        connect: { id: 1 }
+      },
+>>>>>>> 66d70228d053b31d91d7db8edbec405a3a7ea0d4
     }
   })
   console.log(post)
@@ -83,6 +96,7 @@ async function createGroup() {
 //     console.error(e);
 // }
 
+<<<<<<< HEAD
 try 
 {
     addPosts();
@@ -91,3 +105,11 @@ catch (e) {
     console.error(e);
 }   
 
+=======
+try {
+  addPosts();
+}
+catch (e) {
+  console.error(e);
+}
+>>>>>>> 66d70228d053b31d91d7db8edbec405a3a7ea0d4
