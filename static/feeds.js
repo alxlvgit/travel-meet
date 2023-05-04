@@ -101,5 +101,3 @@ const renderPosts = async () => {
     container.appendChild(card);
   });
 }
-
-window.onload = sortPosts(defaultSortBtn);

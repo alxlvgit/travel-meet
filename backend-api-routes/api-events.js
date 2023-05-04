@@ -16,5 +16,4 @@ router.get('/groups/:eventId', async (req, res) => {
 }
 );
 
-
 module.exports = router;
