@@ -17,14 +17,6 @@ async function addUser() {
 async function addPosts() {
   const post = await prisma.post.create({
     data: {
-<<<<<<< HEAD
-      title: 'Lost in space',
-      content: 'How to survive in space',
-      imageName: 'Rocket ship',
-      caption: 'Spave ship',
-      imageURI: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTPsDUnsQDDRNuMIluwFqXKpOfYj-PEHgXPw&usqp=CAU',
-      authorId: 1
-=======
       title: 'Belize is the best!',
       createdAt: new Date(),
       caption: 'This is a beautiful place!',
@@ -35,7 +27,6 @@ async function addPosts() {
       author: {
         connect: { id: 1 }
       },
-
     }
   })
   console.log(post)
@@ -91,24 +82,16 @@ async function createGroup() {
 //     console.error(e);
 // }
 
+try {
+    createGroup();
+}
+catch (e) {
+    console.error(e);
+}
+
 // try {
-//     createGroup();
+//   addPosts();
 // }
 // catch (e) {
-//     console.error(e);
+//   console.error(e);
 // }
-
-try {
-    createGroup();
-}
-catch (e) {
-    console.error(e);
-}   
-
-=======
-try {
-    createGroup();
-}
-catch (e) {
-    console.error(e);
-}
