@@ -7,8 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
 
-
-
     <!-- use tailwind cdn for development only -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- use tailwind cdn for development only-->
@@ -17,73 +15,81 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
     <link href="/output.css" rel="stylesheet" />
     <script defer src="/event-group.js"></script>
+    <script defer src="/create-group.js"></script>
     <title>Event</title>
 </head>
 
 <body class="w-full h-full">
-    <div class="flex flex-col m-auto w-full h-full box-border relative">
-        <!-- top section start-->
-        <%- include("../partials/event-top.ejs"); %>
-            <!-- top section end-->
+    <a href="/event/<%-event.id %>"
+        class="absolute top-5 left-2 text-white font-bold text-sm sm:text-base z-10 back-link">
+        <i class="fa-solid fa-angle-left fa-2xl"></i>
+    </a>
+    <%- include ("../partials/create-group-form.ejs") %>
+        <div class="flex flex-col m-auto w-full h-full box-border relative">
+            <!-- top section start-->
+            <%- include("../partials/event-top.ejs"); %>
+                <!-- top section end-->
 
-            <!-- bottom section start-->
-            <div
-                class="flex flex-col group-details w-full overflow-y-auto overflow-x-hidden box-border  h-3/4 mb-20 m-auto px-5 ">
-                <p class="w-2/3 text-gray-500 text-xs mt-6">Group name</p>
-                <h1 class="text-2xl font-bold text-left w-2/3  mb-8  text-gray-600">
-                    <%- group.name %>
-                </h1>
-                <h1 class="w-full text-center  text-xl text-black font-bold mb-4">Founder</h1>
-                <div class="founder-container flex w-full justify-start items-center mb-2">
-                    <img src="<%- group.creator.profileImageURI %>"
-                        class="w-16 h-16  object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2"
-                        alt="">
-                    <div class="flex flex-col ml-3 justify-self-center justify-start">
-                        <h1 class="text-lg font-semibold text-left w-full">
-                            <%- group.creator.name %>
-                        </h1>
-                        <p class="w-full text-gray-500 text-xs">
-                            <%- group.creator.email %>
-                        </p>
+                <!-- bottom section start-->
+                <div
+                    class="flex flex-col group-details w-full overflow-y-auto overflow-x-hidden box-border  h-3/4 mb-20 m-auto px-5 ">
+                    <p class="w-2/3 text-gray-500 text-xs mt-6">Group name</p>
+                    <h1 class="text-2xl font-bold text-left w-2/3  mb-8  text-gray-600">
+                        <%- group.name %>
+                    </h1>
+                    <h1 class="w-full text-center  text-xl text-black font-bold mb-4">Founder</h1>
+                    <div class="founder-container flex w-full justify-start items-center mb-2">
+                        <img src="<%- group.creator.profileImageURI %>"
+                            class="w-16 h-16  object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2"
+                            alt="">
+                        <div class="flex flex-col ml-3 justify-self-center justify-start">
+                            <h1 class="text-lg font-semibold text-left w-full">
+                                <%- group.creator.name %>
+                            </h1>
+                            <p class="w-full text-gray-500 text-xs">
+                                <%- group.creator.email %>
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <p class="font-semibold text-base">Message from <%- group.creator.name.split(" ")[0] %>
+                    <p class="font-semibold text-base">Message from <%- group.creator.name.split(" ")[0] %>
                 </p>
-                        <p class=" mb-8">Adipiscing bibendum est ultricies integer. Velit scelerisque in dictum non
-                        consectetur a. Massa enim nec dui nunc. Sagittis id consectetur purus ut faucibus. A erat nam at
-                        lectus. </p>
-                <div class="members-container flex-col flex h-fit w-auto relative">
-                    <h1 class=" w-full text-center mb-4 text-xl text-black font-bold">Members (<%- group.members.length
-                            %>)</h1>
-                    <div class="swiper w-full z-20">
-                        <div class="swiper-wrapper w-full flex items-center justify-start">
+                        <p class=" mb-8">
+                            <%- group.creatorMessage %>
+                    </p>
+                    <div class="members-container flex-col flex h-fit w-auto relative">
+                        <h1 class=" w-full text-center mb-4 text-xl text-black font-bold members-title"></h1>
+                        <div class="swiper w-full z-20">
+                            <div class="swiper-wrapper w-full flex items-center justify-start">
 
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <footer class="fixed bottom-0 w-full text-md border-t shadow m-auto z-50 bg-white px-4 py-3">
-                <div class="flex justify-between sm:justify-evenly control-buttons" data-user-id="<%-user.id  %>">
-                    <a class="flex justify-center items-center text-md text-[#878d26] font-bold"
-                        href="/events/<%- event.id %>/groups/create">
-                        <i class="fa-solid fa-plus fa-2x mx-2"></i> Create Group</a>
-                    <button
-                        class="text-[#878d26] font-bold text-md flex items-center justify-center delete-button hidden"
-                        data-groupId="<%- group.id %>">
-                        <i class="fa-solid fa-trash fa-2x mx-2"></i> Delete
-                    </button>
-                    <button
-                        class="text-[#878d26] font-bold text-md flex items-center justify-center leave-button hidden"
-                        data-userId="<%- user.id %> " data-groupId="<%- group.id %>">
-                        <i class="fa-solid fa-users-slash fa-2x mx-2"></i> Leave
-                    </button>
-                    <button class="text-[#878d26] font-bold text-md flex items-center justify-center join-button hidden"
-                        data-userId="<%- user.id %>" data-groupId="<%- group.id %>">
-                        <i class="fa-solid fa-users fa-2x mx-2"></i> Join
-                    </button>
-                </div>
-    </div>
-    </footer>
+                <!-- bottom section end-->
+
+                <footer class="fixed bottom-0 w-full text-md border-t shadow m-auto z-40 bg-white px-4 py-3">
+                    <div class="flex justify-between sm:justify-evenly" data-user-id="<%-user.id  %>">
+                        <button
+                            class="openFormButton flex justify-center items-center text-md text-[#878d26] font-bold">
+                            <i class="fa-solid fa-plus fa-2x mx-2"></i> Create Group</button>
+                        <a href="/delete-group/<%- group.id %>/<%- event.id %>"
+                            class="text-[#878d26] font-bold text-md flex items-center justify-center delete-button hidden"
+                            data-groupId="<%- group.id %>">
+                            <i class="fa-solid fa-trash fa-2x mx-2"></i> Delete
+                        </a>
+                        <button
+                            class="text-[#878d26] font-bold text-md flex items-center justify-center leave-button hidden"
+                            data-userId="<%- user.id %> " data-groupId="<%- group.id %>">
+                            <i class="fa-solid fa-users-slash fa-2x mx-2"></i> Leave
+                        </button>
+                        <button
+                            class="text-[#878d26] font-bold text-md flex items-center justify-center join-button hidden"
+                            data-userId="<%- user.id %>" data-groupId="<%- group.id %>">
+                            <i class="fa-solid fa-users fa-2x mx-2"></i> Join
+                        </button>
+                    </div>
+        </div>
+        </footer>
 </body>
 
 </html>

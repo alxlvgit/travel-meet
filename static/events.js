@@ -69,6 +69,7 @@ const getPeopleFromAllGroups = async (eventId, signal) => {
   }
 }
 
+// Get properly formatted event price range
 const eventPricing = (event) => {
   if (event.priceRanges) {
     const min = event.priceRanges[0].min;
@@ -89,7 +90,7 @@ const eventPricing = (event) => {
 // Create event card
 const createEventCard = async (event) => {
   const eventLink = document.createElement('a');
-  eventLink.href = `/events/${event.id}`;
+  eventLink.href = `/event/${event.id}`;
   eventLink.classList.add('w-full', 'h-full', "absolute", "top-0", "left-0", "z-10");
   const eventImage = event.images.filter(image => image.ratio === '16_9' && image.width === 2048);
   const eventCard = document.createElement('div');
@@ -103,7 +104,6 @@ const createEventCard = async (event) => {
 const renderEvents = async () => {
   // Cancel all pending requests
   cancelRequests();
-  // render events
   try {
     container.innerHTML = "";
     const events = await filterEvents(10, await getEvents(abortController.signal));
@@ -141,7 +141,7 @@ const renderEvents = async () => {
   }
 }
 
-// --------------------- Event listeners ---------------------------------
+// --------------------- Event listeners and handlers  ---------------------------------
 
 // Events button handler
 const showEvents = async () => {

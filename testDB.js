@@ -35,7 +35,7 @@ async function addPosts() {
       author: {
         connect: { id: 1 }
       },
->>>>>>> 66d70228d053b31d91d7db8edbec405a3a7ea0d4
+
     }
   })
   console.log(post)
@@ -59,21 +59,23 @@ async function addEvent() {
 
 // Create a new group with a creator, event, and members
 async function createGroup() {
-    const newGroup = await prisma.group.create({
-        data: {
-            name: 'My new group',
-            creator: {
-                connect: { id: 1 }
-            },
-            event: {
-                connect: { id: "rZ7HnEZ1A30vAP" }
-            },
-            members: {
-                connect: { id: 2 }
-            }
-        }
-    })
-    console.log(`New group created with id: ${newGroup.id}`)
+  const newGroup = await prisma.group.create({
+    data: {
+      name: 'My new group',
+      creator: {
+        connect: { id: 1 }
+      },
+      event: {
+        connect: { id: "rZ7HnEZ1A30vAP" }
+      },
+      members: {
+        connect: { id: 2 }
+      },
+      creatorMessage: 'Welcome to my group!'
+    }
+  })
+  console.log(`New group created with id: ${newGroup.id}`)
+
 }
 
 // try {
@@ -96,10 +98,8 @@ async function createGroup() {
 //     console.error(e);
 // }
 
-<<<<<<< HEAD
-try 
-{
-    addPosts();
+try {
+    createGroup();
 }
 catch (e) {
     console.error(e);
@@ -107,9 +107,8 @@ catch (e) {
 
 =======
 try {
-  addPosts();
+    createGroup();
 }
 catch (e) {
-  console.error(e);
+    console.error(e);
 }
->>>>>>> 66d70228d053b31d91d7db8edbec405a3a7ea0d4

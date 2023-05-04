@@ -1,5 +1,4 @@
 // This folder contains AJAX routes for the events page
-
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -9,7 +8,7 @@ const { totalNumberOfPeopleForEvent } = require('../services/events-services');
 router.get('/groups/:eventId', async (req, res) => {
     const groups = await prisma.group.findMany({
         where: {
-            eventId: req.params.eventId,
+            eventId: `${req.params.eventId}`,
         },
         include: {
             members: true,
@@ -24,7 +23,7 @@ router.get('/groups/:eventId', async (req, res) => {
 router.get('/group/:groupId', async (req, res) => {
     const group = await prisma.group.findUnique({
         where: {
-            id: req.params.groupId,
+            id: Number(req.params.groupId),
         },
         include: {
             members: true,
@@ -41,7 +40,7 @@ router.put(`/groups/:groupId/join`, async (req, res) => {
     try {
         const updatedGroup = await prisma.group.update({
             where: {
-                id: groupId,
+                id: Number(groupId),
             },
             data: {
                 members: {
@@ -66,7 +65,7 @@ router.put(`/groups/:groupId/leave`, async (req, res) => {
     try {
         const updatedGroup = await prisma.group.update({
             where: {
-                id: groupId,
+                id: Number(groupId),
             },
             data: {
                 members: {
@@ -83,6 +82,5 @@ router.put(`/groups/:groupId/leave`, async (req, res) => {
     }
 }
 );
-
 
 module.exports = router;
