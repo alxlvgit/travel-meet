@@ -46,6 +46,19 @@ const totalNumberOfPeopleForEvent = async (groups) => {
     return totalNumberOfPeople;
 }
 
+const checkIfUserIsMemberOrCreator = (group, userId) => {
+    let isMember = false;
+    let isCreator = false;
+    group.members.forEach(member => {
+        if (member.id === userId) {
+            isMember = true;
+        }
+    });
+    if (group.creator.id === userId) {
+        isCreator = true;
+    }
+    return { isMember, isCreator };
+}
 
 
-module.exports = { fetchSingleEvent, filterEventImages, getGroups, totalNumberOfPeopleForEvent };
+module.exports = { fetchSingleEvent, filterEventImages, getGroups, totalNumberOfPeopleForEvent, checkIfUserIsMemberOrCreator };
