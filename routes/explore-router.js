@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
 // Feeds post page
 router.get('/feeds/:id', async (req, res) => {
     try {
-      const postId = req.params.id;
+      const postId = req.params.id; 
       const postData = await prisma.post.findUnique({
         where: {
           id: postId

@@ -7,6 +7,6 @@
 
 */
 -- AlterTable
-ALTER TABLE `User` ADD COLUMN `profileImageCaption` VARCHAR(191) NOT NULL,
-    ADD COLUMN `profileImageName` VARCHAR(191) NOT NULL,
-    ADD COLUMN `profileImageURI` VARCHAR(191) NOT NULL;
+-- ALTER TABLE `User` ADD COLUMN `profileImageCaption` VARCHAR(191) NOT NULL,
+--     ADD COLUMN `profileImageName` VARCHAR(191) NOT NULL,
+--     ADD COLUMN `profileImageURI` VARCHAR(191) NOT NULL;
