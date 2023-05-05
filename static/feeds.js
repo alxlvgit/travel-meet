@@ -61,7 +61,7 @@ const renderPosts = async (category) => {
       const { postLink, card } = await createPostCard(post);
       card.innerHTML = `
     <div class="w-full h-40 flex justify-center items-center">
-    <img src="${post.imageURI}" class="object-cover rounded-xl h-28 w-5/6 max-w-full max-h-full" alt="${post.altText}">
+    <img src="${post.imageURI}" class="object-cover rounded-xl h-28 w-5/6 lg:w-1/2 max-w-full max-h-full" alt="${post.altText}">
   </div>
   <div class='flex flex-col justify-center items-center w-full'>
     <h3 class='text-md font-semibold line-clamp-2 sm:text-xl text-center mt-2'>${post.title}</h3>
