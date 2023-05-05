@@ -113,3 +113,6 @@ const feedsButtonHandler = async () => {
 feedsButton.addEventListener('click', () => {
   feedsButtonHandler();
 });
+
+// Render feeds, set default sort button to active, set events button to active
+window.onload = feedsButton.classList.add('active'), sortFeeds(defaultSortBtn);

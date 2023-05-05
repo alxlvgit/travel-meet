@@ -23,13 +23,13 @@
   <header>
     <div class="fixed top-0 w-full z-50 bg-white drop-shadow-sm">
       <div class="flex justify-center mt-2 mb-2 text-[#878d26]">
-        <button id="event-link"
-          class="inline-block mr-0 rounded-l-xl shadow-md text-center text-md px-7 py-2 switch-btn">
-          Events
-        </button>
         <button id="feed-link"
-          class="inline-block ml-0 rounded-r-xl shadow-md text-md text-center px-7 py-2 switch-btn">
+          class="inline-block ml-0 rounded-l-xl shadow-md text-md text-center px-7 py-2 switch-btn">
           Feeds
+        </button>
+        <button id="event-link"
+          class="inline-block mr-0 rounded-r-xl shadow-md text-center text-md px-7 py-2 switch-btn">
+          Events
         </button>
       </div>
       <div class="flex mt-2 p-4 border-b justify-evenly header-div">
@@ -58,4 +58,5 @@
   </div>
   <%- include("../partials/footer.ejs"); %>
 </body>
+
 </html>

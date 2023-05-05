@@ -182,5 +182,4 @@ sortingButtons.forEach(button => {
   });
 });
 
-// Render events, set default sort button to active, set events button to active
-window.onload = eventsButton.classList.add('active'), defaultSortBtn.classList.add('active-icon'), sortEvents(defaultSortBtn);
+
