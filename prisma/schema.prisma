@@ -48,4 +48,3 @@ model Group {
   members    User[]  @relation("GroupToUser")
   creatorMessage  String
 }
-

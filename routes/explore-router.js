@@ -11,9 +11,18 @@ router.get('/', async (req, res) => {
 
 // Feeds post page
 router.get('/feeds/:id', async (req, res) => {
-    res.render('./explore-views/feeds-post');
-}
-);
+    try {
+      const postId = req.params.id; 
+      const postData = await prisma.post.findUnique({
+        where: {
+          id: postId
+        }
+      });
+      res.render('./explore-views/feeds-post', { post: postData });
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
 // Event page
 router.get('/event/:id', async (req, res) => {
@@ -95,6 +104,18 @@ router.get('/delete-group/:groupId/:eventId', async (req, res) => {
     }
 }
 );
+
+router.get('/posts/:id', (req, res) => {
+    const postId = req.params.id;
+    res.render('./explore-views/feeds-post', { postId });
+  });
+
+// router.get('/feeds/:postId', (req, res) => {
+//     const post = getPostById(req.params.postId);
+//     res.render('explore-views/feeds-post', { creatorName: post.creatorName });
+//   });
+
+
 
 
 

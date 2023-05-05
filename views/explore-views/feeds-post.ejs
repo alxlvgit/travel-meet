@@ -1,18 +1,153 @@
+ <!-- Not the dynamic info -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <title>Document</title>
+  <title>Page Title</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/6en8XCp+HHAAK5GSLf2xlYtvJ8U2Q4U+9cuEnJoa3" crossorigin="anonymous">
 </head>
-
-<body>
-  <div class="flex flex-col">
-    <h1 class="text-3xl text-center sm:text-right">Feed - Individual Post</h1>
+<body class="bg-gray-100">
+  <div class="avatar-name flex items-center space-x-4 p-4 relative">
+    <img class="w-16 h-16 rounded-full ml-8" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSshW2NpetcJKgpq6jaRpnFR2uxuGAXWEN8KQ&usqp=CAU" alt="Avatar">
+    <div class="flex-grow">
+      <h2 class="text-xl font-semibold">John Doe</h2>
+      <p>I am a crazy traveler</p>
+    </div>
+    <button class="bg-blue-500 text-white py-2 px-4 rounded">Message</button>
   </div>
-</body>
+  <p class="p-4">Fun hiking/walking around and seeing the Grizzlies, few shows going on throughout the area which were fun for all ages.</p>
 
+  <div class="box p-4 mx-auto my-4 bg-gray-300 rounded w-1/2 text-center">
+    <a href="https://www.youtube.com/watch?v=eEoSnIHMB7Q">Learn More about This Location</a>
+  </div>
+
+  <h2 class="text-2xl font-semibold p-4">Related-Feeds You Might Like</h2>
+  <div id="card-container" class="card-container flex flex-wrap justify-center">
+    <!-- Cards will be generated here -->
+  </div>
+
+  <script>
+    const data = [
+      {
+        title: "Belize is the best!",
+        createdAt: new Date(),
+        caption: "This is a beautiful place!",
+        imageURI:
+          "https://cdn.pixabay.com/photo/2023/01/18/12/39/river-7726732__480.jpg",
+        altText: "Beautiful Belize",
+        location: "Belize",
+        category: "travel",
+        author: {
+          connect: { id: 1 },
+        },
+      },
+      // Add more card data objects here if needed
+      {
+        title: "Mountains are the best!",
+        createdAt: new Date(),
+        caption: "What try climbing a mountain!",
+        imageURI:
+          "https://cdn.pixabay.com/photo/2016/10/22/17/46/scotland-1761292__480.jpg",
+        altText: "Mountains mountains mountains",
+        location: "Mountains",
+        category: "Climbing",
+        author: {
+          connect: { id: 2 },
+        },
+      },
+      {
+        title: "Forest and air is the best!",
+        createdAt: new Date(),
+        caption: "Nice place to live!",
+        imageURI : "https://cdn.pixabay.com/photo/2016/08/11/23/48/italy-1587287__480.jpg",
+altText: "Nice environment",
+location: "Mexico",
+category: "Camping",
+author: {
+connect: { id: 3 },
+},
+},
+{
+title: "Beach is a great place to go in summer!",
+createdAt: new Date(),
+caption: "How beautiful the beach is!",
+imageURI:"https://cdn.pixabay.com/photo/2016/11/29/04/19/beach-1867285__480.jpg",
+altText: "Go swimming in the beach",
+location: "San Diego",
+category: "travel",
+author: {
+connect: { id: 4 },
+},
+},
+];
+
+function createCard(cardData) {
+const card = document.createElement("div");
+card.classList.add(
+"card",
+"m-4",
+"p-4",
+"bg-white",
+"border",
+"border-gray-300",
+"rounded-md",
+"w-80"
+);
+const img = document.createElement("img");
+img.classList.add("w-full", "h-40", "object-cover", "mb-4", "rounded-md");
+img.src = cardData.imageURI;
+img.alt = cardData.altText;
+
+const title = document.createElement("h3");
+title.classList.add("text-xl", "font-semibold", "mb-2");
+title.innerText = cardData.title;
+
+const caption = document.createElement("p");
+caption.classList.add("mb-2");
+caption.innerText = cardData.caption;
+
+const user = document.createElement("p");
+user.classList.add("mb-2", "flex", "items-center");
+const userIcon = document.createElement("i");
+userIcon.classList.add("fas", "fa-user", "mr-2");
+user.appendChild(userIcon);
+const userName = document.createElement("span");
+userName.innerText = "John Doe";
+user.appendChild(userName);
+
+const location = document.createElement("p");
+location.classList.add("mb-2", "flex", "items-center");
+const locationIcon = document.createElement("i");
+locationIcon.classList.add("fas", "fa-map-marker-alt", "mr-2");
+location.appendChild(locationIcon);
+location.innerText = cardData.location;
+
+const date = document.createElement("p");
+date.classList.add("text-sm", "text-gray-600", "flex", "items-center");
+const dateIcon = document.createElement("i");
+dateIcon.classList.add("fas", "fa-calendar-alt", "mr-2");
+date.appendChild(dateIcon);
+date.innerText = `Created at: ${cardData.createdAt.toLocaleDateString()}`;
+
+card.appendChild(img);
+card.appendChild(title);
+card.appendChild(caption);
+card.appendChild(user);
+card.appendChild(location);
+card.appendChild(date);
+
+return card;
+}
+
+const cardContainer = document.getElementById("card-container");
+
+data.forEach((cardData) => {
+const card = createCard(cardData);
+cardContainer.appendChild(card);
+});
+</script>
+
+</body>
 </html>
