@@ -120,7 +120,7 @@ const renderEvents = async () => {
             <i class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i>${event._embedded.venues[0].city.name}
           </p>
           <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
-            <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"> </i>${event.dates.start.localDate}
+            <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"> </i>${new Date(event.dates.start.localDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </p>
           <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
             <i class="far fa-clock w-4 h-4 text-center mr-1 text-black"></i>${new Date(event.dates.start.dateTime).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}
