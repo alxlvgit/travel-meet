@@ -5,9 +5,9 @@ const exploreRouter = require('./routes/explore-router');
 const apiEventsRouter = require('./backend-api-routes/api-events');
 const apiPostsRouter = require('./backend-api-routes/api-feed-routes');
 const session = require('express-session');
+const postCreateRouter = require('./routes/post-create-router');
 
 const app = express();
-
 
 // For testing purposes only
 // Middleware with fake current app user
@@ -74,12 +74,14 @@ app.use((req, res, next) => {
     next();
 });
 
+// Middleware to parse request body
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/static"));
 app.use('/', exploreRouter);
 app.use('/api-events', apiEventsRouter);
 app.use('/api-posts', apiPostsRouter);
+app.use('/post-create', postCreateRouter);
 
 app.get("/secretKeys", (req, res) => {
   const secrets = {

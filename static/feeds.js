@@ -34,6 +34,7 @@ const createPostCard = async (post) => {
     'flex-col',
     'justify-center',
     'items-center',
+    'w-full',
     'border',
     'border-gray-100',
     'rounded-xl',
@@ -43,10 +44,7 @@ const createPostCard = async (post) => {
     'box-border',
     'overflow-hidden',
     'hover:shadow-lg',
-    'cursor-pointer',
-    'w-11/12',
-    'mx-auto',
-    'sm:w-3/4'
+    'cursor-pointer'
   );
   return {
     card,

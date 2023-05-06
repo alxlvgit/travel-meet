@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/4f07117f88.js" crossorigin="anonymous"></script>
+  <link href="/output.css" rel="stylesheet" />
+  <script src="/post-create.js"></script>
+  <title>Add Post</title>
+
+  <!-- Add Tailwind CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+  <header>
+    <div class="relative">
+      <button class="text-white font-bold py-2 px-4 rounded absolute top-0 right-0">
+        <i class="fa-solid fa-xmark" style="color: #000000;"></i>
+      </button>
+    </div>
+  
+    <div class="bg-white rounded-md shadow-md flex justify-center items-center">
+      <label for="file-input" class="relative rounded-lg cursor-pointer hover:bg-gray-300 pointer-events-auto w-40 h-40"
+        style="line-height: 40px;">
+        <i class="fa-regular fa-images fa-5x p-8 pointer-events-none" style="color: #000000;"></i>
+      </label>
+      <input id="file-input" type="file" class="absolute w-full opacity-0 cursor-pointer"
+        style="z-index: 999; line-height: 40px;" />
+    </div>
+  </header>
+
+  <div>
+    <h1 class="text-center font-bold mt-2 mb-2">User's Post</h1>
+
+    <div class="h-12 w-12 rounded-full max-w-20 object-center">
+      <img class="rounded-full"
+        src="https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png"
+        alt="Circular image">
+    </div>
+
+
+    <form id="addPostContainer" action="/post-create" method="POST">
+      <!-- Add margin bottom to the labels -->
+
+      <div class="mb-4">
+        <label class="block font-bold mb-2" for="title">Post Title</label>
+        <input class="border border-gray-400 p-2 rounded-lg w-full" type="text" name="title" id="title"
+          placeholder="Title" required>
+      </div>
+
+      <div class="mb-4">
+        <label class="block font-bold mb-2" for="description">Description</label>
+        <input class="border border-gray-400 p-2 rounded-lg w-full" type="text" name="description" id="description"
+          placeholder="Add Description" required>
+      </div>
+
+      <div class="mb-4">
+        <label class="block font-bold mb-2" for="location">Location</label>
+        <input class="border border-gray-400 p-2 rounded-lg w-full" type="text" name="location" id="location"
+          placeholder="Location" required>
+      </div>
+
+      <div class="mb-4">
+        <label class="block font-bold mb-2" for="date">Date</label>
+        <input class="border border-gray-400 p-2 rounded-lg w-full" type="date" name="date" id="date" placeholder="Date"
+          required>
+      </div>
+
+      <div class="mb-4">
+        <label class="block font-bold mb-2" for="category">Category</label>
+        <select class="border border-gray-400 p-2 rounded-lg w-full" name="category" id="category" required>
+          <option value="art">Art</option>
+          <option value="music">Music</option>
+          <option value="sport">Sport</option>
+          <option value="seminar">Seminar</option>
+          <option value="outdoors">Outdoors</option>
+        </select>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <input type="submit" value="Add Post"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+
+
+      </div>
+    </form>
+  </div>
+  <%- include("../partials/footer.ejs"); %>
+</body>
+
+</html>
