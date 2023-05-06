@@ -95,8 +95,8 @@ const createEventCard = async (event) => {
   const eventImage = event.images.filter(image => image.ratio === '16_9' && image.width === 2048);
   const eventCard = document.createElement('div');
   const eventPriceRange = eventPricing(event);
-  eventCard.classList.add('event-card', 'flex', "relative", 'flex-row', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-3',
-    'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden', 'hover:shadow-lg', 'cursor-pointer', "sm:h-64", "sm:mb-5", "sm:w-9/12", "sm:m-auto");
+  eventCard.classList.add('event-card', 'flex', "relative", 'flex-row', 'justify-between', 'items-center', 'p-4', 'border', 'border-gray-100', 'rounded-xl', 'shadow-md', 'mb-4',
+    'ml-5', 'mr-5', 'h-48', 'box-border', 'overflow-hidden', 'hover:shadow-lg', 'cursor-pointer', "sm:h-64", "sm:mb-5", "sm:w-7/12", "sm:m-auto");
   return { eventCard, eventLink, eventImage, eventPriceRange };
 }
 

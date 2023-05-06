@@ -26,9 +26,10 @@ const getPosts = async (category) => {
 const createPostCard = async (post) => {
   const postLink = document.createElement('a');
   postLink.href = `/posts/${post.id}`;
-  postLink.classList.add('w-full', 'h-3/4', 'absolute');
+  postLink.classList.add('w-full', 'h-full', 'absolute');
   const card = document.createElement('div');
   card.classList.add(
+    'relative',
     'event-card',
     'flex',
     'flex-col',
@@ -38,15 +39,17 @@ const createPostCard = async (post) => {
     'border-gray-100',
     'rounded-xl',
     'shadow-md',
-    'mb-3',
+    'mb-4',
     'h-84',
     'box-border',
     'overflow-hidden',
     'hover:shadow-lg',
     'cursor-pointer',
-    'w-11/12',
-    'mx-auto',
-    'sm:w-3/4'
+    'mx-5',
+    'bg-gray-50',
+    'sm:w-7/12',
+    'sm:mb-5',
+    'sm:m-auto',
   );
   return {
     card,
@@ -62,19 +65,19 @@ const renderPosts = async (category) => {
     posts.forEach(async (post) => {
       const { postLink, card } = await createPostCard(post);
       card.innerHTML = `
-    <div class="w-full h-40 flex justify-center items-center">
-    <img src="${post.imageURI}" class="object-cover rounded-xl h-28 w-5/6 lg:w-1/2 max-w-full max-h-full" alt="${post.altText}">
+    <div class="w-full h-40 sm:h-60 flex justify-center items-center">
+    <img src="${post.imageURI}" class="object-cover rounded-xl h-full w-full max-w-full max-h-full" alt="${post.altText}">
   </div>
   <div class='flex flex-col justify-center items-center w-full'>
-    <h3 class='text-md font-semibold line-clamp-2 sm:text-xl text-center mt-2'>${post.title}</h3>
-    <div class="flex items-center justify-between lg:w-1/2 sm:w-3/4 mt-2">
-      <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
+    <h3 class='text-md font-semibold line-clamp-1 sm:text-xl text-center mt-2'>${post.title}</h3>
+    <div class="flex items-center justify-between w-full px-4 lg:w-1/2 sm:w-3/4 mt-2">
+      <p class='text-xs mb-1  sm:text-sm'>
         <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${post.author.name}
       </p>
-      <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
+      <p class='text-xs mb-1  sm:text-sm'>
         <i class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i>${post.location}
       </p>
-      <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
+      <p class='text-xs mb-1 sm:text-sm'>
         <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"> </i>${new Date(post.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
       </p>
     </div>
