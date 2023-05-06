@@ -91,6 +91,12 @@ const renderPosts = async (category) => {
 // Sort feeds handler
 const sortFeeds = async (button) => {
   const category = button.dataset.apiQuery;
+  const outdoorsIcon = document.querySelector('.outdoors')
+  outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
+  sortingButtons.forEach(btn => {
+    btn.classList.remove('active-icon');
+  });
+  defaultSortBtn.classList.add('active-icon');
   await renderPosts(category);
 }
 
@@ -101,12 +107,6 @@ const feedsButtonHandler = async () => {
   container.innerHTML = "";
   feedsButton.classList.add('active');
   eventsButton.classList.remove('active');
-  const outdoorsIcon = document.querySelector('.outdoors')
-  outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
-  sortingButtons.forEach(btn => {
-    btn.classList.remove('active-icon');
-  });
-  defaultSortBtn.classList.add('active-icon');
   await sortFeeds(defaultSortBtn);
 }
 
