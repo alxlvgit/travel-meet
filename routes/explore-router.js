@@ -12,17 +12,17 @@ router.get('/', async (req, res) => {
 // Feeds post page
 router.get('/feeds/:id', async (req, res) => {
     try {
-      const postId = req.params.id; 
-      const postData = await prisma.post.findUnique({
-        where: {
-          id: postId
-        }
-      });
-      res.render('./explore-views/feeds-post', { post: postData });
+        const postId = req.params.id;
+        const postData = await prisma.post.findUnique({
+            where: {
+                id: postId
+            }
+        });
+        res.render('./explore-views/feeds-post', { post: postData });
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
-  });
+});
 
 // Event page
 router.get('/event/:id', async (req, res) => {
@@ -105,15 +105,21 @@ router.get('/delete-group/:groupId/:eventId', async (req, res) => {
 }
 );
 
-router.get('/posts/:id', (req, res) => {
-    const postId = req.params.id;
-    res.render('./explore-views/feeds-post', { postId });
-  });
-
-// router.get('/feeds/:postId', (req, res) => {
-//     const post = getPostById(req.params.postId);
-//     res.render('explore-views/feeds-post', { creatorName: post.creatorName });
-//   });
+router.get('/posts/:id', async (req, res) => {
+    const postId = Number(req.params.id);
+    try {
+        const postData = await prisma.post.findUnique({
+            where: {
+                id: postId
+            }
+        });
+        console.log(postData);
+        res.render('./explore-views/feeds-post', { post: postData });
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
 
 
 
