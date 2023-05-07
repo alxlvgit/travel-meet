@@ -108,7 +108,18 @@ router.get('/delete-group/:groupId/:eventId', async (req, res) => {
 router.get('/posts/:id', (req, res) => {
     const postId = req.params.id;
     res.render('./explore-views/feeds-post', { postId });
-  });
+  })
+
+  // Profile page
+  // Profile page
+router.get('/profile', async (req, res) => {
+    try {
+        res.render('./profile/user-profile');
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 
 // router.get('/feeds/:postId', (req, res) => {
 //     const post = getPostById(req.params.postId);
