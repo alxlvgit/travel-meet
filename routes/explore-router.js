@@ -111,6 +111,9 @@ router.get('/posts/:id', async (req, res) => {
         const postData = await prisma.post.findUnique({
             where: {
                 id: postId
+            },
+            include: {
+                author: true,
             }
         });
         console.log(postData);

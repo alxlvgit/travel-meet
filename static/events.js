@@ -1,6 +1,6 @@
 const container = document.querySelector('.container');
 const eventsButton = document.getElementById("event-link");
-let sortingButtons = document.querySelectorAll(".sort-btn");
+let filteringButtons = document.querySelectorAll(".sort-btn");
 const defaultSortBtn = document.getElementById("default-btn");
 let apiKeySearchQueryParam = "";
 
@@ -35,7 +35,7 @@ const getEvents = async (signal) => {
 }
 
 // Filter events to try get at least 10 events with unique names
-const filterEvents = async (maxNumber, foundEvents) => {
+const filterEventsByMaxNumber = async (maxNumber, foundEvents) => {
   const uniqueNames = [];
   const uniqueEvents = [];
   foundEvents.events.some(event => {
@@ -106,7 +106,7 @@ const renderEvents = async () => {
   cancelRequests();
   try {
     container.innerHTML = "";
-    const events = await filterEvents(10, await getEvents(abortController.signal));
+    const events = await filterEventsByMaxNumber(10, await getEvents(abortController.signal));
     for (const event of events) {
       const { totalNumberOfPeople } = await getPeopleFromAllGroups(event.id, abortController.signal);
       const { eventCard, eventLink, eventImage, eventPriceRange } = await createEventCard(event);
@@ -150,11 +150,11 @@ const showEvents = async () => {
   eventsButton.classList.add('active');
   const outdoorsIcon = document.querySelector('.outdoors')
   outdoorsIcon ? outdoorsIcon.classList.add('hidden') : null;
-  sortingButtons.forEach(btn => {
+  filteringButtons.forEach(btn => {
     btn.classList.remove('active-icon');
   });
   defaultSortBtn.classList.add('active-icon');
-  await sortEvents(defaultSortBtn);
+  await filterEventsByCategories(defaultSortBtn);
 }
 
 // Events button listener
@@ -163,18 +163,18 @@ eventsButton.addEventListener('click', async () => {
 });
 
 // Sorting buttons handler
-const sortEvents = async (button) => {
+const filterEventsByCategories = async (button) => {
   const apiQueryParam = button.dataset.apiQuery;
   apiKeySearchQueryParam = apiQueryParam;
   await renderEvents();
 }
 
 // Sorting buttons listener
-sortingButtons.forEach(button => {
+filteringButtons.forEach(button => {
   button.addEventListener('click', () => {
-    eventsButton.classList.contains('active') ? sortEvents(button) : sortFeeds(button);
+    eventsButton.classList.contains('active') ? filterEventsByCategories(button) : filterFeedsByCategories(button);
     // Remove active class from all buttons
-    sortingButtons.forEach(btn => {
+    filteringButtons.forEach(btn => {
       btn.classList.remove('active-icon');
     });
     // Add active class to clicked button

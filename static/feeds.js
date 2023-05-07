@@ -70,14 +70,17 @@ const renderPosts = async (category) => {
   </div>
   <div class='flex flex-col justify-center items-center w-full'>
     <h3 class='text-md font-semibold line-clamp-1 sm:text-xl text-center mt-2'>${post.title}</h3>
-    <div class="flex items-center justify-between w-full px-4 lg:w-1/2 sm:w-3/4 mt-2">
-      <p class='text-xs mb-1  sm:text-sm'>
-        <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${post.author.name}
+    <div class="flex items-center justify-between w-full px-4 pb-2 lg:w-1/2 sm:w-3/4 mt-2">
+      <div class="flex items-center justify-center mr-2">
+      <img src="${post.author.profileImageURI}" class="w-4 h-4 rounded-full mr-1" alt="${post.author.name}">
+      <p class='text-xs sm:text-sm text-center'>
+      ${post.author.name}
       </p>
-      <p class='text-xs mb-1  sm:text-sm'>
+      </div>
+      <p class='text-xs sm:text-sm text-center mr-2'>
         <i class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i>${post.location}
       </p>
-      <p class='text-xs mb-1 sm:text-sm'>
+      <p class='text-xs sm:text-sm text-center'>
         <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"> </i>${new Date(post.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
       </p>
     </div>
@@ -92,11 +95,11 @@ const renderPosts = async (category) => {
 }
 
 // Sort feeds handler
-const sortFeeds = async (button) => {
+const filterFeedsByCategories = async (button) => {
   const category = button.dataset.apiQuery;
   const outdoorsIcon = document.querySelector('.outdoors')
   outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
-  sortingButtons.forEach(btn => {
+  filteringButtons.forEach(btn => {
     btn.classList.remove('active-icon');
   });
   defaultSortBtn.classList.add('active-icon');
@@ -110,7 +113,7 @@ const feedsButtonHandler = async () => {
   container.innerHTML = "";
   feedsButton.classList.add('active');
   eventsButton.classList.remove('active');
-  await sortFeeds(defaultSortBtn);
+  await filterFeedsByCategories(defaultSortBtn);
 }
 
 feedsButton.addEventListener('click', () => {
@@ -118,4 +121,4 @@ feedsButton.addEventListener('click', () => {
 });
 
 // Render feeds, set default sort button to active, set events button to active
-window.onload = feedsButton.classList.add('active'), sortFeeds(defaultSortBtn);
+window.onload = feedsButton.classList.add('active'), filterFeedsByCategories(defaultSortBtn);
