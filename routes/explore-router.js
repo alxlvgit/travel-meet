@@ -121,6 +121,7 @@ router.get('/profile', async (req, res) => {
 });
 
 
+
 // router.get('/feeds/:postId', (req, res) => {
 //     const post = getPostById(req.params.postId);
 //     res.render('explore-views/feeds-post', { creatorName: post.creatorName });
