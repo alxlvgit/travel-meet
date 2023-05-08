@@ -6,6 +6,15 @@ const relatedFeedsContainer = document.querySelector(".related-feeds");
 const creatorMessageContainer = document.querySelector(".creator-message");
 const creatorContainer = document.querySelector(".creator-container");
 
+// Init Swiper
+const swiper = new Swiper(".swiper", {
+    slidesPerView: "auto",
+    freeMode: true,
+    mousewheel: {
+        releaseOnEdges: true,
+    },
+});
+
 arrowButtonContainer.addEventListener("click", () => {
     if (topSection.classList.contains("h-5/6")) {
         bottomSection.classList.remove("overflow-y-hidden", "h-1/6");
