@@ -79,26 +79,28 @@
             <%- post.authorMessage %>
         </p>
       </div>
-      <div class="related-feeds flex-col flex w-auto relative h-full">
-        <h1 class=" w-full text-center mb-6 text-xl text-black font-bold members-title">Related Feeds You Might Like
-        </h1>
-        <div class="swiper w-full z-20 h-fit">
-          <div class="swiper-wrapper w-full flex items-center justify-start">
-            <% relatedPosts.forEach(post=> { %>
-              <div
-                class="swiper-slide w-auto mr-2 flex flex-col justify-center relative hover:brightness-75 transition-all ease-in-out duration-500">
-                <a href="/posts/<%- post.id %>" class="absolute top-0 left-0 w-full h-full"></a>
-                <img class="w-24 h-24 object-cover rounded-xl border border-gray-100 shadow-md sm:w-32 sm:h-32"
-                  src="<%- post.imageURI %>" alt="Post Image" />
-                <p class="text-center max-w-full text-xs mt-1 sm:text-sm">
-                  <i class="fas fa-map-marker-alt text-center w-3 h-3 text-black">
-                  </i>
-                  <%- post.location %>
-                </p>
-              </div>
-              <% }) %>
+      <div class="related-feeds flex-col flex w-auto relative">
+        <% if (relatedPosts.length> 0) { %>
+          <h1 class=" w-full text-center mb-6 text-xl text-black font-bold members-title">Related Feeds You Might Like
+          </h1>
+          <div class="swiper w-full z-20 h-fit">
+            <div class="swiper-wrapper w-full flex items-center justify-start">
+              <% relatedPosts.forEach(post=> { %>
+                <div
+                  class="swiper-slide w-auto mr-2 flex flex-col justify-center relative hover:brightness-75 transition-all ease-in-out duration-500">
+                  <a href="/posts/<%- post.id %>" class="absolute top-0 left-0 w-full h-full"></a>
+                  <img class="w-24 h-24 object-cover rounded-xl border border-gray-100 shadow-md sm:w-32 sm:h-32"
+                    src="<%- post.imageURI %>" alt="Post Image" />
+                  <p class="text-center max-w-full text-xs mt-1 sm:text-sm">
+                    <i class="fas fa-map-marker-alt text-center w-3 h-3 text-black">
+                    </i>
+                    <%- post.location %>
+                  </p>
+                </div>
+                <% }) %>
+            </div>
           </div>
-        </div>
+          <% } %>
       </div>
     </div>
     <!-- bottom section end-->

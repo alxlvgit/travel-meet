@@ -94,7 +94,7 @@ const renderPosts = async (category) => {
   }
 }
 
-// Sort feeds handler
+// Filter feeds handler
 const filterFeedsByCategories = async (button) => {
   const category = button.dataset.apiQuery;
   const outdoorsIcon = document.querySelector('.outdoors')
