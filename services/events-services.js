@@ -40,8 +40,15 @@ const getGroups = async (eventId) => {
 
 const totalNumberOfPeopleForEvent = async (groups) => {
     let totalNumberOfPeople = 0;
+    // ensure same user is not counted twice
+    const userIds = [];
     groups.forEach(group => {
-        totalNumberOfPeople += group.members.length;
+        group.members.forEach(member => {
+            if (!userIds.includes(member.id)) {
+                userIds.push(member.id);
+                totalNumberOfPeople++;
+            }
+        });
     });
     return totalNumberOfPeople;
 }

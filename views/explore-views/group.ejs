@@ -8,7 +8,7 @@
     <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
 
     <!-- use tailwind cdn for development only -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <!-- use tailwind cdn for development only-->
 
     <script defer src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
@@ -25,14 +25,14 @@
         <i class="fa-solid fa-angle-left fa-2xl"></i>
     </a>
     <%- include ("../partials/create-group-form.ejs") %>
-        <div class="flex flex-col m-auto w-full h-full box-border relative">
+        <div class="flex flex-col m-auto w-full h-full box-border relative ">
             <!-- top section start-->
             <%- include("../partials/event-top.ejs"); %>
                 <!-- top section end-->
 
                 <!-- bottom section start-->
                 <div
-                    class="flex flex-col group-details w-full overflow-y-auto overflow-x-hidden box-border  h-3/4 mb-20 m-auto px-5 ">
+                    class="flex flex-col group-details w-full overflow-y-auto overflow-x-hidden box-border  h-3/4 mb-20 m-auto px-5">
                     <p class="w-2/3 text-gray-500 text-xs mt-6">Group name</p>
                     <h1 class="text-2xl font-bold text-left w-2/3  mb-8  text-gray-600">
                         <%- group.name %>
@@ -42,7 +42,7 @@
                         <img src="<%- group.creator.profileImageURI %>"
                             class="w-16 h-16  object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2"
                             alt="">
-                        <div class="flex flex-col ml-3 justify-self-center justify-start">
+                        <div class="flex flex-col ml-3 justify-start flex-1">
                             <h1 class="text-lg font-semibold text-left w-full">
                                 <%- group.creator.name %>
                             </h1>
@@ -50,6 +50,10 @@
                                 <%- group.creator.email %>
                             </p>
                         </div>
+                        <button class="rounded-2xl border border-[#878d26] px-3 py-1 m-1 text-base">
+                            <i class="fa-solid fa-message text-base text-[#878d26] mr-2"></i>
+                            Message
+                        </button>
                     </div>
                     <p class="font-semibold text-base">Message from <%- group.creator.name.split(" ")[0] %>
                 </p>

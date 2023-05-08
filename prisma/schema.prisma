@@ -11,10 +11,6 @@ datasource db {
   relationMode = "prisma"
 }
 
-
-
-
-
 model User {
   id       Int      @id @default(autoincrement())
   name     String
@@ -28,6 +24,7 @@ model User {
   followers User[] @relation("UserToUser")
   groups    Group[]  @relation("GroupToUser")
   createdGroups Group[] @relation("GroupCreator")
+  likes     Like[]  @relation("UserToLike")
 }
 
 model Post {
@@ -41,16 +38,16 @@ model Post {
   category  String
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  Int?  
+  authorMessage String 
+  likes     Like[]  @relation("PostToLike")
 }
 
-model Event {
-  id         String  @id
-  name       String
-  date       DateTime
-  venue      String
-  latitude   Float
-  longitude  Float
-  groups     Group[] @relation("GroupToEvent")
+model Like {
+  id        Int      @id @default(autoincrement())
+  post      Post     @relation(name:"PostToLike", fields: [postId], references: [id])
+  postId    Int
+  user      User     @relation(name:"UserToLike", fields: [userId], references: [id])
+  userId    Int
 }
 
 model Group {
@@ -58,7 +55,6 @@ model Group {
   name       String
   creator    User    @relation(name: "GroupCreator",fields: [creatorId], references: [id])
   creatorId  Int
-  event      Event @relation("GroupToEvent", fields: [eventId], references: [id])
   eventId    String
   members    User[]  @relation("GroupToUser")
   creatorMessage  String
