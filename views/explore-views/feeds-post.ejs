@@ -1,18 +1,109 @@
+<!-- Not the dynamic info -->
 <!DOCTYPE html>
-<html lang="en">
+<html class="w-full h-full" lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Title</title>
+  <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+  <link href="/output.css" rel="stylesheet" />
+
+  <!-- use tailwind cdn for development only -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <title>Document</title>
+  <!-- use tailwind cdn for development only-->
+
+  <script defer src="../post.js"></script>
 </head>
 
-<body>
-  <div class="flex flex-col">
-    <h1 class="text-3xl text-center sm:text-right">Feed - Individual Post</h1>
+<body class="w-full h-full">
+  <a href="/" class="absolute top-5 left-2 text-white font-bold text-sm sm:text-base z-10 back-link">
+    <i class="fa-solid fa-angle-left fa-2xl"></i>
+  </a>
+  <!-- Main container start -->
+  <div class="flex flex-col m-auto w-full h-full box-border relative">
+    <!-- top section start-->
+    <div class="transition-all ease-in-out duration-500 flex-col w-full relative h-1/4" id="top-section">
+      <img src="<%- post.imageURI %>" alt="<%- post.caption %>"
+        class="w-full h-full object-cover absolute top-0 left-0 z-0" />
+      <div class="w-full h-full flex flex-col justify-end relative">
+        <div class="absolute h-12 w-full opacity-50 bg-black bottom-0" id="bottom-tint">
+        </div>
+        <div class=" h-12 flex-row flex justify-between items-center align-middle w-full z-20 px-3 sm:px-10 py-2"
+          id="image-bottom">
+          <p class="text-sm text-left event-location text-white line-clamp-2 mr-4 sm:text-lg">
+            <i class="fa-solid fa-map-marker-alt mr-1"></i>
+            <%- post.location %>
+          </p>
+          <p class="text-sm text-center event-date text-white line-clamp-2 mr-4 sm:text-lg">
+            <i class="fa-solid fa-calendar mr-1"></i>
+            <%- post.createdAt.toLocaleDateString('en-US', { month: 'long' , day: 'numeric' , year: 'numeric' }) %>
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- top section end-->
+
+    <!-- bottom section start-->
+    <div
+      class="transition-all ease-in-out duration-500 flex flex-col w-full overflow-y-auto overflow-x-hidden box-border relative h-3/4 mb-6 px-5"
+      id="bottom-section">
+      <div class="relative h-fit flex justify-center items-center ease-in-out transform hover:scale-110"
+        id="arrow-button">
+        <button class="focus:outline-none p-2" id="arrow-icon">
+          <i class="fa-solid fa-angle-down text-4xl"></i>
+        </button>
+      </div>
+      <div class="creator-container flex  w-full items-center">
+        <img src="<%- post.author.profileImageURI %>"
+          class="w-10 h-10  object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2" alt="">
+        <div class="flex flex-col ml-3 justify-start flex-1 creator-info">
+          <h1 class="text-base font-semibold text-left w-1/2">
+            <%- post.author.name %>
+          </h1>
+          <p class="w-1/2 text-gray-500 text-xs">
+            <%- post.author.email %>
+          </p>
+        </div>
+        <button class="rounded-2xl border border-[#878d26] px-3 py-1 m-1 text-base">
+          <i class="fa-solid fa-message text-base text-[#878d26] mr-2"></i>
+          Message
+        </button>
+      </div>
+      <div class="creator-message mt-2">
+        <p class="font-semibold text-base">Message from <%- post.author.name.split(" ")[0] %>
+        </p>
+                <p class=" mb-8">
+            <%- post.authorMessage %>
+        </p>
+      </div>
+      <div class="related-feeds flex-col flex w-auto relative h-full">
+        <h1 class=" w-full text-center mb-6 text-xl text-black font-bold members-title">Related Feeds You Might Like
+        </h1>
+        <div class="swiper w-full z-20 h-fit">
+          <div class="swiper-wrapper w-full flex items-center justify-start">
+            <% relatedPosts.forEach(post=> { %>
+              <div
+                class="swiper-slide w-auto mr-2 flex flex-col justify-center relative hover:brightness-75 transition-all ease-in-out duration-500">
+                <a href="/posts/<%- post.id %>" class="absolute top-0 left-0 w-full h-full"></a>
+                <img class="w-24 h-24 object-cover rounded-xl border border-gray-100 shadow-md sm:w-32 sm:h-32"
+                  src="<%- post.imageURI %>" alt="Post Image" />
+                <p class="text-center max-w-full text-xs mt-1 sm:text-sm">
+                  <i class="fas fa-map-marker-alt text-center w-3 h-3 text-black">
+                  </i>
+                  <%- post.location %>
+                </p>
+              </div>
+              <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- bottom section end-->
   </div>
+  <!-- Main container end -->
 </body>
 
 </html>

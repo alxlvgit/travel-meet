@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
 const { fetchSingleEvent, filterEventImages, getGroups, totalNumberOfPeopleForEvent } = require('../services/events-services');
+const { getPost, getRelatedPosts } = require('../services/posts-services');
 const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
@@ -11,9 +12,18 @@ router.get('/', async (req, res) => {
 
 // Feeds post page
 router.get('/feeds/:id', async (req, res) => {
-    res.render('./explore-views/feeds-post');
-}
-);
+    try {
+        const postId = req.params.id;
+        const postData = await prisma.post.findUnique({
+            where: {
+                id: postId
+            }
+        });
+        res.render('./explore-views/feeds-post', { post: postData });
+    } catch (error) {
+        console.log(error);
+    }
+});
 
 // Event page
 router.get('/event/:id', async (req, res) => {
@@ -95,6 +105,20 @@ router.get('/delete-group/:groupId/:eventId', async (req, res) => {
     }
 }
 );
+
+router.get('/posts/:id', async (req, res) => {
+    const postId = Number(req.params.id);
+    try {
+        const postData = await getPost(postId);
+        const relatedPosts = await getRelatedPosts(postData.category, postId);
+        res.render('./explore-views/feeds-post', { post: postData, relatedPosts: relatedPosts });
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+
+
 
 
 
