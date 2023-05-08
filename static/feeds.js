@@ -30,7 +30,7 @@ const createPostCard = async (post) => {
   const card = document.createElement('div');
   card.classList.add(
     'relative',
-    'event-card',
+    'post-card',
     'flex',
     'flex-col',
     'justify-center',
@@ -62,14 +62,14 @@ const renderPosts = async (category) => {
   container.innerHTML = '';
   try {
     const posts = await getPosts(category);
-    posts.forEach(async (post) => {
+    for (const post of posts) {
       const { postLink, card } = await createPostCard(post);
       card.innerHTML = `
     <div class="w-full h-40 sm:h-60 flex justify-center items-center">
     <img src="${post.imageURI}" class="object-cover rounded-xl h-full w-full max-w-full max-h-full" alt="${post.altText}">
   </div>
-  <div class='flex flex-col justify-center items-center w-full'>
-    <h3 class='text-md font-semibold line-clamp-1 sm:text-xl text-center mt-2'>${post.title}</h3>
+  <div class='flex flex-col justify-center items-center w-full overflow-hidden'>
+    <h3 class='text-md font-semibold line-clamp-1 w-11/12 sm:text-xl text-center mt-2'>${post.title}</h3>
     <div class="flex items-center justify-between w-full px-4 pb-2 lg:w-1/2 sm:w-3/4 mt-2">
       <div class="flex items-center justify-center mr-2">
       <img src="${post.author.profileImageURI}" class="w-4 h-4 rounded-full mr-1" alt="${post.author.name}">
@@ -88,7 +88,7 @@ const renderPosts = async (category) => {
     `
       card.appendChild(postLink);
       container.appendChild(card);
-    });
+    };
   } catch (error) {
     console.log(error);
   }

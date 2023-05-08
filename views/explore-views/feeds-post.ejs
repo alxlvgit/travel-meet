@@ -23,7 +23,7 @@
   <!-- Main container start -->
   <div class="flex flex-col m-auto w-full h-full box-border relative">
     <!-- top section start-->
-    <div class="flex-col w-full relative h-1/4 justify-end id transition-all ease-in-out duration-500" id="top-section">
+    <div class="transition-all ease-in-out duration-500 flex-col w-full relative h-1/4" id="top-section">
       <img src="<%- post.imageURI %>" alt="<%- post.caption %>"
         class="w-full h-full object-cover absolute top-0 left-0 z-0" />
       <div class="w-full h-full flex flex-col justify-end relative">
@@ -46,7 +46,7 @@
 
     <!-- bottom section start-->
     <div
-      class="flex flex-col w-full overflow-y-auto overflow-x-hidden box-border relative  h-3/4 mb-20 m-auto px-5 transition-all ease-in-out duration-500"
+      class="transition-all ease-in-out duration-500 flex flex-col w-full overflow-y-auto overflow-x-hidden box-border relative h-3/4 mb-20 px-5"
       id="bottom-section">
       <div class="relative h-fit flex justify-center items-center ease-in-out transform hover:scale-110"
         id="arrow-button">
@@ -54,18 +54,18 @@
           <i class="fa-solid fa-angle-down text-4xl"></i>
         </button>
       </div>
-      <div class="creator-container flex w-full justify-start items-center mb-2">
+      <div class="creator-container flex  w-full items-center">
         <img src="<%- post.author.profileImageURI %>"
-          class="w-16 h-16  object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2" alt="">
-        <div class="flex flex-col ml-3 justify-start flex-1">
-          <h1 class="text-lg font-semibold text-left w-full">
+          class="w-10 h-10  object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2" alt="">
+        <div class="flex flex-col ml-3 justify-start flex-1 creator-info">
+          <h1 class="text-base font-semibold text-left w-1/2">
             <%- post.author.name %>
           </h1>
-          <p class="w-full text-gray-500 text-xs">
+          <p class="w-1/2 text-gray-500 text-xs">
             <%- post.author.email %>
           </p>
         </div>
-        <button class="rounded-2xl border border-[#878d26] px-4 text-lg">
+        <button class="rounded-2xl border border-[#878d26] px-3 py-1 m-1 text-base">
           <i class="fa-solid fa-message text-base text-[#878d26] mr-2"></i>
           Message
         </button>
