@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/alxlvgit/TravelMeet#readme",
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.15.1",
     "@prisma/client": "^4.13.0",
     "body-parser": "^1.20.2",
     "dotenv": "^16.0.3",

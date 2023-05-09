@@ -158,6 +158,7 @@ const showEvents = async () => {
     btn.classList.remove('active-icon');
   });
   defaultSortBtn.classList.add('active-icon');
+  await getCurrentUserLocation();
   await filterEventsByCategories(defaultSortBtn);
 }
 

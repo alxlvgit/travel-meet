@@ -46,21 +46,23 @@ app.use(async (req, res, next) => {
 // Test middleware to store user location in session
 app.post('/updateLocation', (req, res) => {
     const locationData = req.body;
-    // Store the location data in the current session
-    console.log(locationData, "location data from client");
-    req.session.locationData = locationData;
-    res.sendStatus(200);
+    if ("noPermissionFromUser" in locationData) {
+        console.log("No permission from user to get location");
+        req.session.locationData = null;
+        res.sendStatus(200);
+    } else {
+        // Store the location data in the current session
+        console.log(locationData, "location data from client");
+        req.session.locationData = locationData;
+        res.sendStatus(200);
+    }
 });
 
 app.get('/getLocation', (req, res) => {
     const locationData = req.session.locationData;
     console.log(locationData, "location data stored in session");
-    res.json(locationData);
+    locationData ? res.json(locationData) : res.json({ error: "No location data found in session" });
 });
-
-
-
-
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/static"));
@@ -73,7 +75,8 @@ app.use('/api-posts', apiPostsRouter);
 
 app.get("/secretKeys", (req, res) => {
     const secrets = {
-        TICKETMASTER_API_KEY: `${process.env.TICKETMASTER_API_KEY}`
+        TICKETMASTER_API_KEY: `${process.env.TICKETMASTER_API_KEY}`,
+        GOOGLE_MAPS_API_KEY: `${process.env.GOOGLE_MAPS_API_KEY}`,
     }
     res.status(200).json(JSON.stringify(secrets));
 });
