@@ -150,8 +150,8 @@ const renderEvents = async () => {
 // Events button handler
 const showEvents = async () => {
   container.innerHTML = '';
-  feedsButton.classList.remove('active');
   eventsButton.classList.add('active');
+  feedsButton.classList.remove('active');
   const outdoorsIcon = document.querySelector('.outdoors')
   outdoorsIcon ? outdoorsIcon.classList.add('hidden') : null;
   filteringButtons.forEach(btn => {

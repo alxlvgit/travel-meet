@@ -123,8 +123,8 @@ feedsButton.addEventListener('click', async () => {
 // Render feeds, set default sort button to active, set events button to active
 window.addEventListener('DOMContentLoaded', async () => {
   try {
-    eventsButton.classList.remove('active');
     feedsButton.classList.add('active');
+    eventsButton.classList.remove('active');
     await getCurrentUserLocation();
     await filterFeedsByCategories(defaultSortBtn);
   } catch (error) {

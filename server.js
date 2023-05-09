@@ -76,7 +76,7 @@ app.use('/api-posts', apiPostsRouter);
 app.get("/secretKeys", (req, res) => {
     const secrets = {
         TICKETMASTER_API_KEY: `${process.env.TICKETMASTER_API_KEY}`,
-        GOOGLE_MAPS_API_KEY: `${process.env.GOOGLE_MAPS_API_KEY}`,
+        MAPBOX_API_KEY: `${process.env.MAPBOX_API_KEY}`,
     }
     res.status(200).json(JSON.stringify(secrets));
 });
