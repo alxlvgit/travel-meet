@@ -131,5 +131,3 @@ window.addEventListener('DOMContentLoaded', async () => {
     console.log(error);
   }
 });
-
-// window.onload = feedsButton.classList.add('active'), filterFeedsByCategories(defaultSortBtn);
