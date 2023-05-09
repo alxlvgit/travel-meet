@@ -121,4 +121,15 @@ feedsButton.addEventListener('click', () => {
 });
 
 // Render feeds, set default sort button to active, set events button to active
-window.onload = feedsButton.classList.add('active'), filterFeedsByCategories(defaultSortBtn);
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    eventsButton.classList.remove('active');
+    feedsButton.classList.add('active');
+    await getCurrentUserLocation();
+    await filterFeedsByCategories(defaultSortBtn);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// window.onload = feedsButton.classList.add('active'), filterFeedsByCategories(defaultSortBtn);
