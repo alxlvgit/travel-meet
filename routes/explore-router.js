@@ -65,7 +65,7 @@ router.get('/event/:eventId/group/:groupId', async (req, res) => {
             group: group,
             event: eventData, eventImageURL: eventImage[0].url,
             totalNumberOfPeople: totalNumberOfPeople,
-            user: req.user
+            user: req.session.user
         });
     } catch (error) {
         console.log(error);
@@ -79,7 +79,7 @@ router.post('/create-group/:eventId', async (req, res) => {
         await prisma.group.create({
             data: {
                 name: req.body.groupName,
-                creatorId: req.user.id,
+                creatorId: req.session.user.id,
                 eventId: req.params.eventId,
                 creatorMessage: req.body.creatorMessage,
             }

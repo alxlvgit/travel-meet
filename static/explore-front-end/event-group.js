@@ -116,7 +116,7 @@ function handleJoinButton(joinButton) {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-            },
+            }
         });
         if (response.ok) {
             await renderGroupMembers();
@@ -131,12 +131,11 @@ function handleLeaveButton(leaveButton) {
     leaveButton.addEventListener('click', async (event) => {
         event.preventDefault();
         const groupId = leaveButton.dataset.groupid;
-        console.log(groupId);
         const response = await fetch(`/api-events/groups/${groupId}/leave`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-            },
+            }
         });
         if (response.ok) {
             await renderGroupMembers();
