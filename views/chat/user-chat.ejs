@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gray-100">
+  <div id="app" class="container mx-auto mt-10">
+    <!-- Search bar and chat icon -->
+    <div class="flex items-center mb-6">
+      <input type="text" id="searchInput" class="flex-grow bg-white rounded-l-lg p-2" placeholder="Search users...">
+      <button id="createChatBtn" class="bg-blue-500 text-white rounded-r-lg p-2">
+        <i class="fas fa-comments"></i>
+      </button>
+    </div>
+
+    <!-- User list -->
+    <div id="userList" class="grid grid-cols-1 gap-4">
+      <% users.forEach(user => { %>
+        <div class="flex items-center" data-user-id="<%- user.id %>">
+          <img src="<%- user.profileImageURI %>" alt="<%- user.name %>" class="w-10 h-10 rounded-full">
+          <p class="ml-4"><%- user.name %></p>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const createChatBtn = document.getElementById('createChatBtn');
+
+    searchInput.addEventListener('input', () => {
+      // Filtering users based on input should be handled by the server.
+      // You'll need to make an AJAX request to the server with the search term and update the user list with the returned data.
+    });
+
+    createChatBtn.addEventListener('click', () => {
+      // Implement chat creation logic here
+    });
+  </script>
+</body>
+</html>

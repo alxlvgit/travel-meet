@@ -128,5 +128,20 @@ router.get('/profile', async (req, res) => {
     }
  });
 
+//Chat page
+router.get('/chat', async (req, res) => {
+    try {
+      // Query all users
+      const users = await prisma.user.findMany();
+  
+      // Render the EJS template and pass the users
+      res.render('chat/user-chat', { users: users });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  
+
+
 
 module.exports = router;
