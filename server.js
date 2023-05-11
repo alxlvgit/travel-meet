@@ -1,16 +1,21 @@
+
+// Import libraries
 const express = require('express');
 require('dotenv').config()
-const port = process.env.PORT || 3000;
+
+// Create express app
+const app = express();
 const exploreRouter = require('./routes/explore-router');
 const apiEventsRouter = require('./backend-api-routes/api-events');
 const apiPostsRouter = require('./backend-api-routes/api-feed-routes');
 const apiUserRouter = require('./backend-api-routes/api-user-routes');
 const userProfileRouter = require('./routes/userProfileRouter');
+const postCreateRouter = require('./routes/post-create-router');
+
 const session = require('express-session');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, { cors: { origin: "*" } });
 const mapRouter = require('./routes/meet-map-router')(io);
@@ -75,8 +80,9 @@ app.use('/meet', mapRouter);
 app.use('/api-events', apiEventsRouter);
 app.use('/api-posts', apiPostsRouter);
 app.use('/api-user', apiUserRouter);
-
 app.use('/user-profile', userProfileRouter);
+app.use('/post-create', postCreateRouter);
+
 
 app.get("/secretKeys", (req, res) => {
     const secrets = {

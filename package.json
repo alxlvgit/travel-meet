@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/alxlvgit/TravelMeet#readme",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.331.0",
     "@googlemaps/js-api-loader": "^1.15.1",
     "@prisma/client": "^4.13.0",
     "body-parser": "^1.20.2",
@@ -28,6 +29,7 @@
     "express-session": "^1.17.3",
     "ioredis": "^5.3.2",
     "mapbox-gl": "^2.14.1",
+    "multer": "^1.4.5-lts.1",
     "node": "^19.8.1",
     "node-fetch": "^3.3.1",
     "socket.io": "^4.6.1",
