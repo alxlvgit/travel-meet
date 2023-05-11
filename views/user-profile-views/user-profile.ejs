@@ -20,19 +20,6 @@
                followIcon.classList.add('fa-user-plus');
            }
        }
-
-       function toggleEventsAndFeeds() {
-           const eventsBtn = document.getElementById('eventsBtn');
-           const feedsBtn = document.getElementById('feedsBtn');
-           const eventsContent = document.getElementById('eventsContent');
-           const feedsContent = document.getElementById('feedsContent');
-          
-           eventsBtn.classList.toggle('bg-gray-200');
-           feedsBtn.classList.toggle('bg-gray-200');
-          
-           eventsContent.classList.toggle('hidden');
-           feedsContent.classList.toggle('hidden');
-       }
    </script>
 </head>
 <body class="bg-gray-100">
@@ -53,36 +40,25 @@
                                <p>Some words to describe</p>
                            </div>
                            <div class="flex flex-col space-y-2">
-       <div class="flex space-x-4">
-           <button id="followBtn" class="rounded-2xl border border-[#878d26] px-3 py-1 m-1 text-base" onclick="toggleFollow()">
-               <i id="followIcon" class="fas fa-user-plus text-base text-[#878d26] mr-2"></i>
-               Follow
-           </button>
-           <button class="rounded-2xl border border-[#878d26] px-3 py-1 m-1 text-base">
-               <i class="fas fa-comment text-base text-[#878d26] mr-2"></i>
-               Message
-           </button>
-       </div>                               
-   </div>
-                          
-                               </div>
-                               </div>
-                           </div>
-                       </div>
-                       <div class="mt-4">
-                           <div class="flex justify-center items-center">
                                <div class="flex space-x-4">
-                                   <button id="eventsBtn" onclick="toggleEventsAndFeeds()" class="bg-gray-200 py-2 px-4 rounded-md">Events</button>
-                                   <button id="feedsBtn" onclick="toggleEventsAndFeeds()" class="py-2 px-4 rounded-md">Feeds</button>
-                               </div>
+                                   <button id="followBtn" class="rounded-2xl border border-[#878d26] px-3 py-1 m-1 text-base" onclick="toggleFollow()">
+                                       <i id="followIcon" class="fas fa-user-plus text-base text-[#878d26] mr-2"></i>
+                                       Follow
+                                   </button>
+                                   <button class="rounded-2xl border border-[#878d26] px-3 py-1 m-1 text-base">
+                                       <i class="fas fa-comment text-base text-[#878d26] mr-2"></i>
+                                       Message
+                                   </button>
+                               </div>                               
                            </div>
                        </div>
-                       <div id="posts" class="mt-4">
-                           <div id="eventsContent" class="hidden">
-                           </div>
-                           <div id="feedsContent">
-                           </div>
+                   </div>
+                   <div id="posts" class="mt-4">
+                       <div id="feedsContent">
                        </div>
+                   </div>
+                   <div class="flex justify-center items-center mt-8">
+                       <h1 class="text-2xl font-bold">My Posts</h1>
                    </div>
                </div>
            </div>
@@ -90,9 +66,3 @@
    </div>
 </body>
 </html>
-
-
-
-
-
-
