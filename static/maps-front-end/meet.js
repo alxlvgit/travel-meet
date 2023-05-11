@@ -158,8 +158,8 @@ const renderNearbyMarkers = async (map, storedLocations) => {
 const generateRandomLocationForTestUser = async (userLocation) => {
     // console.log(userLocation, "user location in random location function");
     const { latitude, longitude } = userLocation;
-    const randomLat = latitude + (Math.random() - 0.5) * 0.02;
-    const randomLng = longitude + (Math.random() - 0.5) * 0.02;
+    const randomLat = latitude + (Math.random() - 0.5) * 0.1;
+    const randomLng = longitude + (Math.random() - 0.5) * 0.1;
     return { randomLat, randomLng };
 };
 

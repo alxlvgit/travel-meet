@@ -7,11 +7,16 @@ module.exports = (io) => {
     const usersInRoom = new Set();
 
     // For testing purposes only. Store test locations in Redis
-    const storedLocations = [{ userId: "1", lat: 49.25, lng: -123.0035 }, { userId: "2", lat: 49.3043, lng: -123.1443 }, { userId: "3", lat: 49.2768, lng: -123.1120 }, { userId: "4", lat: 49.2827, lng: -123.1207 }, { userId: "5", lat: 49.2024, lng: -123.1000 }];
+    const storedLocations = [{ userId: "5", lat: 49.2689, lng: -123.0035, iconUrl: "https://indianmemetemplates.com/wp-content/uploads/fu-that-yao-ming.jpg" },
+    { userId: "6", lat: 49.3043, lng: -123.1443, iconUrl: "https://wallpaper.dog/large/10747737.jpg" },
+    { userId: "7", lat: 49.2768, lng: -123.1120, iconUrl: "https://www.shutterstock.com/image-vector/vector-guy-meme-face-any-260nw-491615011.jpg" },
+    { userId: "8", lat: 49.2827, lng: -123.1207, iconUrl: "https://rlv.zcache.com/awesome_face_rage_f7u12_funny_meme_classic_round_sticker-r35ccef514463441b9ace70325551f930_0ugmp_8byvr_307.jpg" },
+    { userId: "9", lat: 49.2024, lng: -123.1000, iconUrl: "https://wallpapercave.com/wp/wp7645654.jpg" }];
 
     // Store test locations in Redis
     storedLocations.forEach((location) => {
         redis.geoadd('locations', location.lng, location.lat, location.userId);
+        redis.hset('userIcons', location.userId, location.iconUrl);
         console.log('location added to redis', location);
         redis.expire('locations', 600, function (err, reply) {
             if (err) throw err;
@@ -23,7 +28,7 @@ module.exports = (io) => {
     const getStoredLocations = (socket, io) => {
         socket.on('getStoredLocations', ({ lat, lng, userId }) => {
             // console.log(`storedLocations event emitted. Getting stored locations from Redis for user ${userId}`);
-            redis.georadius('locations', lng, lat, 10, 'km', 'WITHDIST', 'WITHCOORD', 'ASC', (err, locations) => {
+            redis.georadius('locations', lng, lat, 20, 'km', 'WITHDIST', 'WITHCOORD', 'ASC', (err, locations) => {
                 if (err) {
                     console.log(err);
                 } else {
