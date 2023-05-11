@@ -39,9 +39,15 @@
                     </h1>
                     <h1 class="w-full text-center  text-xl text-black font-bold mb-4">Founder</h1>
                     <div class="founder-container flex w-full justify-start items-center mb-2">
-                        <img src="<%- group.creator.profileImageURI %>"
+                        <!-- <img src="<%- group.creator.profileImageURI %>"
                             class="w-16 h-16  object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2"
-                            alt="">
+                            alt=""> -->
+                            <a href="/user-profile/<%- group.creator.id %>">
+                                <img src="<%- group.creator.profileImageURI %>"
+                                    class="w-16 h-16 object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2"
+                                    alt="">
+                            </a>
+                            
                         <div class="flex flex-col ml-3 justify-start flex-1">
                             <h1 class="text-lg font-semibold text-left w-full">
                                 <%- group.creator.name %>
@@ -64,7 +70,6 @@
                         <h1 class=" w-full text-center mb-4 text-xl text-black font-bold members-title"></h1>
                         <div class="swiper w-full z-20">
                             <div class="swiper-wrapper w-full flex items-center justify-start">
-
                             </div>
                         </div>
                     </div>

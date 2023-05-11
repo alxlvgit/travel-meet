@@ -5,6 +5,7 @@ const exploreRouter = require('./routes/explore-router');
 const apiEventsRouter = require('./backend-api-routes/api-events');
 const apiPostsRouter = require('./backend-api-routes/api-feed-routes');
 const apiUserRouter = require('./backend-api-routes/api-user-routes');
+const userProfileRouter = require('./routes/userProfileRouter');
 const session = require('express-session');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -75,6 +76,7 @@ app.use('/api-events', apiEventsRouter);
 app.use('/api-posts', apiPostsRouter);
 app.use('/api-user', apiUserRouter);
 
+app.use('/user-profile', userProfileRouter);
 
 app.get("/secretKeys", (req, res) => {
     const secrets = {

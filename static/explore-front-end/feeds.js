@@ -25,7 +25,7 @@ const getPosts = async (category) => {
 const createPostCard = async (post) => {
   const postLink = document.createElement('a');
   postLink.href = `/posts/${post.id}`;
-  postLink.classList.add('w-full', 'h-full', 'absolute');
+  postLink.classList.add('w-full', 'h-full', 'absolute', 'z-10');
   const card = document.createElement('div');
   card.classList.add(
     'relative',
@@ -70,8 +70,10 @@ const renderPosts = async (category) => {
   <div class='flex flex-col justify-center items-center w-full overflow-hidden'>
     <h3 class='text-md font-semibold line-clamp-1 w-11/12 sm:text-xl text-center mt-2'>${post.title}</h3>
     <div class="flex items-center justify-between w-full px-4 pb-2 lg:w-1/2 sm:w-3/4 mt-2">
-      <div class="flex items-center justify-center mr-2">
-      <img src="${post.author.profileImageURI}" class="w-4 h-4 rounded-full mr-1" alt="${post.author.name}">
+      <div class="flex items-center justify-center mr-2 relative" > 
+      <a class= "absolute w-full h-full top-0 left-0 z-20" href="/user-profile/${post.author.id}">
+      </a>
+      <img src="${post.author.profileImageURI}" class="w-4 h-4 sm:h-6 sm:w-6 rounded-full mr-1" alt="${post.author.name}">
       <p class='text-xs sm:text-sm text-center'>
       ${post.author.name}
       </p>

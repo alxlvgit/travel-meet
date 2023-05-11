@@ -110,6 +110,7 @@ router.get('/posts/:id', async (req, res) => {
     const postId = Number(req.params.id);
     try {
         const postData = await getPost(postId);
+        console.log(postData);
         const relatedPosts = await getRelatedPosts(postData.category, postId);
         res.render('./explore-views/feeds-post', { post: postData, relatedPosts: relatedPosts });
     }
@@ -118,8 +119,14 @@ router.get('/posts/:id', async (req, res) => {
     }
 });
 
-
-
+//Profile page
+router.get('/profile', async (req, res) => {
+    try {
+        res.render('./user-profile-views/user-profile');
+    } catch (error) {
+        console.log(error);
+    }
+ });
 
 
 module.exports = router;
