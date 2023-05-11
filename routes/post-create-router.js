@@ -1,17 +1,62 @@
-
 const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+// Import s3 bucket
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+
+// Import dotenv
+const dotenv = require('dotenv');
+dotenv.config()
+
+const bucketName = process.env.BUCKET_NAME
+const bucketRegion = process.env.BUCKET_REGION
+const accessKey = process.env.ACCESS_KEY
+const secretAccessKey = process.env.SECRET_ACCESS_KEY
+
+const s3 = new S3Client({
+  credentials: { 
+    accessKeyId: accessKey,
+    secretAccessKey: secretAccessKey,
+  },
+  region: bucketRegion, 
+});
+
+// Import Multer
+const multer = require('multer');
+
+// Set Multer storage
+const storage =  multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+// Create middleware to upload image
+  // Can change to multiple photos later
 // Get add post page
 router.get('/', (req, res) => {
-  res.render('add-post-views/post-create');
+  res.render('add-post-views/post-create', { 
+    user: req.session.user
+  });
 });
 
 // Create a new post
-router.post('/', async (req, res) => {
+router.post('/', upload.single('image'), async (req, res) => {
   const { title, caption, location, category, authorMessage } = req.body;
+  console.log(req.body);
+  console.log(req.file);
+  req.file.buffer
+
+  const params = {
+    Bucket: bucketName,
+    Key: req.file.originalname,
+    Body: req.file.buffer,
+    ContentType: req.file.mimetype,
+  };
+
+const command = new PutObjectCommand(params)
+
+await s3.send(command)
+
   const post = await prisma.post.create({
     data: {
       title: title,
