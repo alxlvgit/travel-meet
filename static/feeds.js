@@ -26,10 +26,11 @@ const getPosts = async (category) => {
 const createPostCard = async (post) => {
   const postLink = document.createElement('a');
   postLink.href = `/posts/${post.id}`;
-  postLink.classList.add('w-full', 'h-3/4', 'absolute');
+  postLink.classList.add('w-full', 'h-full', 'absolute');
   const card = document.createElement('div');
   card.classList.add(
-    'event-card',
+    'relative',
+    'post-card',
     'flex',
     'flex-col',
     'justify-center',
@@ -38,15 +39,17 @@ const createPostCard = async (post) => {
     'border-gray-100',
     'rounded-xl',
     'shadow-md',
-    'mb-3',
+    'mb-4',
     'h-84',
     'box-border',
     'overflow-hidden',
     'hover:shadow-lg',
     'cursor-pointer',
-    'w-11/12',
-    'mx-auto',
-    'sm:w-3/4'
+    'mx-5',
+    'bg-gray-50',
+    'sm:w-7/12',
+    'sm:mb-5',
+    'sm:m-auto',
   );
   return {
     card,
@@ -59,22 +62,25 @@ const renderPosts = async (category) => {
   container.innerHTML = '';
   try {
     const posts = await getPosts(category);
-    posts.forEach(async (post) => {
+    for (const post of posts) {
       const { postLink, card } = await createPostCard(post);
       card.innerHTML = `
-    <div class="w-full h-40 flex justify-center items-center">
-    <img src="${post.imageURI}" class="object-cover rounded-xl h-28 w-5/6 lg:w-1/2 max-w-full max-h-full" alt="${post.altText}">
+    <div class="w-full h-40 sm:h-60 flex justify-center items-center">
+    <img src="${post.imageURI}" class="object-cover rounded-xl h-full w-full max-w-full max-h-full" alt="${post.altText}">
   </div>
-  <div class='flex flex-col justify-center items-center w-full'>
-    <h3 class='text-md font-semibold line-clamp-2 sm:text-xl text-center mt-2'>${post.title}</h3>
-    <div class="flex items-center justify-between lg:w-1/2 sm:w-3/4 mt-2">
-      <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
-        <i class="fas fa-users text-center w-4 h-4 mr-1 text-black"></i>${post.author.name}
+  <div class='flex flex-col justify-center items-center w-full overflow-hidden'>
+    <h3 class='text-md font-semibold line-clamp-1 w-11/12 sm:text-xl text-center mt-2'>${post.title}</h3>
+    <div class="flex items-center justify-between w-full px-4 pb-2 lg:w-1/2 sm:w-3/4 mt-2">
+      <div class="flex items-center justify-center mr-2">
+      <img src="${post.author.profileImageURI}" class="w-4 h-4 rounded-full mr-1" alt="${post.author.name}">
+      <p class='text-xs sm:text-sm text-center'>
+      ${post.author.name}
       </p>
-      <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
+      </div>
+      <p class='text-xs sm:text-sm text-center mr-2'>
         <i class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i>${post.location}
       </p>
-      <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
+      <p class='text-xs sm:text-sm text-center'>
         <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"> </i>${new Date(post.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
       </p>
     </div>
@@ -82,18 +88,18 @@ const renderPosts = async (category) => {
     `
       card.appendChild(postLink);
       container.appendChild(card);
-    });
+    };
   } catch (error) {
     console.log(error);
   }
 }
 
-// Sort feeds handler
-const sortFeeds = async (button) => {
+// Filter feeds handler
+const filterFeedsByCategories = async (button) => {
   const category = button.dataset.apiQuery;
   const outdoorsIcon = document.querySelector('.outdoors')
   outdoorsIcon ? outdoorsIcon.classList.remove('hidden') : null;
-  sortingButtons.forEach(btn => {
+  filteringButtons.forEach(btn => {
     btn.classList.remove('active-icon');
   });
   defaultSortBtn.classList.add('active-icon');
@@ -107,12 +113,11 @@ const feedsButtonHandler = async () => {
   container.innerHTML = "";
   feedsButton.classList.add('active');
   eventsButton.classList.remove('active');
-  await sortFeeds(defaultSortBtn);
-}
+  await filterFeedsByCategories(defaultSortBtn);
 
 feedsButton.addEventListener('click', () => {
   feedsButtonHandler();
 });
 
 // Render feeds, set default sort button to active, set events button to active
-window.onload = feedsButton.classList.add('active'), sortFeeds(defaultSortBtn);
+window.onload = feedsButton.classList.add('active'), filterFeedsByCategories(defaultSortBtn);
