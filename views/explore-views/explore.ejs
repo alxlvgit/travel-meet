@@ -11,17 +11,22 @@
   <!-- use cdn for development only -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- use cdn for development only-->
-
+  <script defer src="../maps-front-end/user-location.js"></script>
   <script defer src="../secret-keys.js"></script>
-  <script defer src="../events.js"></script>
-  <script defer src="../feeds.js"></script>
+  <script defer src="../explore-front-end/events.js"></script>
+  <script defer src="../explore-front-end/feeds.js"></script>
 
   <title>Events</title>
 </head>
 
 <body class="font-sans">
+  <div id="loading"
+    class="fixed hidden top-0 left-0 w-full h-full bg-black bg-opacity-50 flex flex-col justify-center items-center z-50">
+    <div class="spinner border-4 border-opacity-75 border-white border-t-0 rounded-full w-12 h-12 animate-spin"></div>
+    <div class="mt-10 font-semibold text-lg text-white loading-status text-center">Getting your location...</div>
+  </div>
   <header>
-    <div class="fixed top-0 w-full z-50 bg-white drop-shadow-sm">
+    <div class="fixed top-0 w-full z-40 bg-white drop-shadow-sm">
       <div class="flex justify-center mt-2 mb-2 text-[#878d26]">
         <button id="feed-link"
           class="inline-block ml-0 rounded-l-xl shadow-md text-md text-center px-7 py-2 switch-btn">

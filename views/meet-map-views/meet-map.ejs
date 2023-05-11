@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" class="w-full h-full">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+        crossorigin="anonymous"></script>
+
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+    <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
+    <link href="/output.css" rel="stylesheet" />
+
+    <!-- use cdn for development only -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- use cdn for development only-->
+    <script defer src="../maps-front-end/user-location.js"></script>
+    <script defer src="../secret-keys.js"></script>
+    <script defer src="../maps-front-end/meet.js"></script>
+    <title>Map</title>
+</head>
+
+<body class="w-full h-full relative">
+    <div id="loading"
+        class="fixed hidden top-0 left-0 w-full h-full bg-black bg-opacity-50 flex flex-col justify-center items-center z-50">
+        <div class="spinner border-4 border-opacity-75 border-white border-t-0 rounded-full w-12 h-12 animate-spin">
+        </div>
+        <div class="mt-10 font-semibold text-lg text-white loading-status text-center">Getting your location...</div>
+    </div>
+    <select name="users" id="users">
+        <option value="1">User 1</option>
+        <option value="2">User 2</option>
+        <option value="3">User 3</option>
+        <option value="4">User 4</option>
+    </select>
+    <label class="flex items-center cursor-pointer">
+        <span class="mr-2">Share my location</span>
+        <input type="checkbox" id="share-location-checkbox" data-id="<%- user.id %>"
+            class="form-checkbox h-4 w-4 text-green-600 transition duration-150 ease-in-out">
+    </label>
+    <div id="map" class="w-full h-full">
+
+    </div>
+    <%- include("../partials/footer.ejs"); %>
+</body>
+
+</html>

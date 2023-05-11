@@ -1,4 +1,3 @@
-
 const feedsButton = document.getElementById('feed-link');
 const feedsContainer = document.getElementById('feeds-container');
 
@@ -113,11 +112,21 @@ const feedsButtonHandler = async () => {
   container.innerHTML = "";
   feedsButton.classList.add('active');
   eventsButton.classList.remove('active');
+  await getCurrentUserLocation();
   await filterFeedsByCategories(defaultSortBtn);
 
-feedsButton.addEventListener('click', () => {
-  feedsButtonHandler();
+feedsButton.addEventListener('click', async () => {
+  await feedsButtonHandler();
 });
 
 // Render feeds, set default sort button to active, set events button to active
-window.onload = feedsButton.classList.add('active'), filterFeedsByCategories(defaultSortBtn);
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    feedsButton.classList.add('active');
+    eventsButton.classList.remove('active');
+    await getCurrentUserLocation();
+    await filterFeedsByCategories(defaultSortBtn);
+  } catch (error) {
+    console.log(error);
+  }
+});
