@@ -1,12 +1,15 @@
+// Import libraries
 const express = require('express');
 require('dotenv').config()
-const port = process.env.PORT || 3000;
 const exploreRouter = require('./routes/explore-router');
 const apiEventsRouter = require('./backend-api-routes/api-events');
 const apiPostsRouter = require('./backend-api-routes/api-feed-routes');
-const session = require('express-session');
 const postCreateRouter = require('./routes/post-create-router');
 
+// Middleware for session
+const session = require('express-session');
+
+// Create express app
 const app = express();
 
 // For testing purposes only
@@ -76,13 +79,30 @@ app.use((req, res, next) => {
 
 // Middleware to parse request body
 app.use(express.urlencoded({ extended: true }));
+
+// Set view engine to ejs
 app.set('view engine', 'ejs');
+
+// Set up static file middleware to serve static files from the static directory
 app.use(express.static(__dirname + "/static"));
+
+// Route configuration
 app.use('/', exploreRouter);
 app.use('/api-events', apiEventsRouter);
 app.use('/api-posts', apiPostsRouter);
 app.use('/post-create', postCreateRouter);
 
+// Middleware for session
+app.use(session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: false
+}));
+
+// Middleware for parsing JSON
+app.use(express.json());
+
+// Get ticketmaster secret key through API
 app.get("/secretKeys", (req, res) => {
   const secrets = {
     TICKETMASTER_API_KEY: `${process.env.TICKETMASTER_API_KEY}`
@@ -90,6 +110,8 @@ app.get("/secretKeys", (req, res) => {
   res.status(200).json(JSON.stringify(secrets));
 });
 
+// Port handling
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log("Node application listening on port " + port);

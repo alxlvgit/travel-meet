@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
 const { fetchSingleEvent, filterEventImages, getGroups, totalNumberOfPeopleForEvent } = require('../services/events-services');
 const { getPost, getRelatedPosts } = require('../services/posts-services');
+// Crashes without but the file is empty
 const prisma = new PrismaClient();
 
 router.get('/', async (req, res) => {
@@ -117,9 +118,5 @@ router.get('/posts/:id', async (req, res) => {
         console.log(error);
     }
 });
-
-
-
-
 
 module.exports = router;

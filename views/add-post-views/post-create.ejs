@@ -3,93 +3,90 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://kit.fontawesome.com/4f07117f88.js" crossorigin="anonymous"></script>
-  <link href="/output.css" rel="stylesheet" />
-  <script src="/post-create.js"></script>
   <title>Add Post</title>
-
-  <!-- Add Tailwind CSS CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
 </head>
 
-<body>
-  <header>
-    <div class="relative">
-      <button class="text-white font-bold py-2 px-4 rounded absolute top-0 right-0">
-        <i class="fa-solid fa-xmark" style="color: #000000;"></i>
-      </button>
-    </div>
-  
-    <div class="bg-white rounded-md shadow-md flex justify-center items-center">
-      <label for="file-input" class="relative rounded-lg cursor-pointer hover:bg-gray-300 pointer-events-auto w-40 h-40"
-        style="line-height: 40px;">
-        <i class="fa-regular fa-images fa-5x p-8 pointer-events-none" style="color: #000000;"></i>
-      </label>
-      <input id="file-input" type="file" class="absolute w-full opacity-0 cursor-pointer"
-        style="z-index: 999; line-height: 40px;" />
+<body class="bg-white">
+
+  <header class="flex justify-center items-center p-4 bg-gray-50">
+    <div class="bg-white rounded-md shadow-md flex justify-center items-center w-full h-40 relative">
+      <div class="absolute top-0 right-0">
+        <button id="add-post-back-btn" class="text-white font-bold py-2 px-4 rounded">
+          <i class="fa-solid fa-arrow-rotate-left" style="color: #000000;"></i>
+        </button>
+      </div>
+
+      <div class="relative flex justify-center items-center">
+        <label for="file-input"
+          class="relative rounded-lg cursor-pointer hover:bg-gray-300 pointer-events-auto w-full h-40"
+          style="line-height: 40px;">
+          <i class="fa-regular fa-images fa-5x p-8" style="color: #000000;"></i>
+        </label>
+        <input id="file-input" type="file" class="absolute w-full opacity-0 cursor-pointer"
+          style="z-index: 999; line-height: 40px;" />
+      </div>
     </div>
   </header>
 
-  <div>
-    <h1 class="text-center font-bold mt-2 mb-2">User's Post</h1>
+  <main>
+    <div class="flex flex-col items-center justify-center mt-0">
+      <h1 class="text-xl mb-2">Post Creator</h1>
 
-    <div class="h-12 w-12 rounded-full max-w-20 object-center">
-      <img class="rounded-full"
-        src="https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png"
-        alt="Circular image">
+      <div class="h-20 w-20 max-w-20 object-center">
+        <!-- Needs to be logged in users image -->
+        <img class="rounded-full h-full w-full"
+          src="https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png"
+          alt="Circular image">
+      </div>
+      
+
+      <div class="mt-8">
+
+        <form id="addPostContainer" action="/post-create" method="POST" class="w-full max-w-sm">
+          <div class="mb-4">
+            <input class="border border-gray-400 rounded-lg py-2 px-4 w-full" type="text" name="title" id="title"
+              placeholder="Title" required>
+          </div>
+          <div class="mb-4">
+            <textarea class="border border-gray-400 rounded-lg py-2 px-4 w-full" name="caption" id="caption"
+              placeholder="Add Caption" required></textarea>
+          </div>
+          <div class="mb-4">
+            <input class="border border-gray-400 rounded-lg py-2 px-4 w-full" type="text" name="location" id="location"
+              placeholder="Location" required>
+          </div>
+          <div class="mb-4">
+            <select class="border border-gray-400 rounded-lg py-2 px-4 w-full" name="category" id="category"
+              placeholder="Category" required>
+              <option value="" disabled selected hidden>Choose Category</option>
+              <option value="art">Art</option>
+              <option value="music">Music</option>
+              <option value="sport">Sport</option>
+              <option value="seminar">Seminar</option>
+              <option value="outdoors">Outdoors</option>
+            </select>
+          </div>
+          <!-- Move button solely to the footer ejs -->
+          <div class="flex items-center justify-center">
+            <button type="submit"
+              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-14">
+              Add Post
+            </button>
+          </div>
+
+        </form>
+
+      </div>
     </div>
+  </main>
 
-
-    <form id="addPostContainer" action="/post-create" method="POST">
-      <!-- Add margin bottom to the labels -->
-
-      <div class="mb-4">
-        <label class="block font-bold mb-2" for="title">Post Title</label>
-        <input class="border border-gray-400 p-2 rounded-lg w-full" type="text" name="title" id="title"
-          placeholder="Title" required>
-      </div>
-
-      <div class="mb-4">
-        <label class="block font-bold mb-2" for="description">Description</label>
-        <input class="border border-gray-400 p-2 rounded-lg w-full" type="text" name="description" id="description"
-          placeholder="Add Description" required>
-      </div>
-
-      <div class="mb-4">
-        <label class="block font-bold mb-2" for="location">Location</label>
-        <input class="border border-gray-400 p-2 rounded-lg w-full" type="text" name="location" id="location"
-          placeholder="Location" required>
-      </div>
-
-      <div class="mb-4">
-        <label class="block font-bold mb-2" for="date">Date</label>
-        <input class="border border-gray-400 p-2 rounded-lg w-full" type="date" name="date" id="date" placeholder="Date"
-          required>
-      </div>
-
-      <div class="mb-4">
-        <label class="block font-bold mb-2" for="category">Category</label>
-        <select class="border border-gray-400 p-2 rounded-lg w-full" name="category" id="category" required>
-          <option value="art">Art</option>
-          <option value="music">Music</option>
-          <option value="sport">Sport</option>
-          <option value="seminar">Seminar</option>
-          <option value="outdoors">Outdoors</option>
-        </select>
-      </div>
-
-      <div class="flex items-center justify-between">
-        <input type="submit" value="Add Post"
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-
-
-      </div>
-    </form>
-  </div>
-  <%- include("../partials/footer.ejs"); %>
+  <footer>
+    <%- include('../partials/add-post-bottom') %>
+  </footer>
+  
 </body>
 
 </html>
