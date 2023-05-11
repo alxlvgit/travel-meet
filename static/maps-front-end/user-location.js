@@ -68,6 +68,7 @@ async function updateUserLocationOnServer(location) {
             body: JSON.stringify(responseLocation)
         });
         if (response.ok) {
+            console.log("User location updated on server.");
             return;
         } else {
             console.log(response.statusText);
@@ -85,7 +86,7 @@ async function getCurrentUserLocation() {
         const permissionGranted = await checkIfPermissionGranted();
         if (locationStoredOnServer && permissionGranted) {
             console.log("User location stored in session. Returning location from session.");
-            return;
+            return locationStoredOnServer;
         }
         console.log("User location not stored in session. Getting location from browser.");
         loadingStatus.innerText = "Getting your location...";
@@ -94,6 +95,7 @@ async function getCurrentUserLocation() {
         loadingWindow.classList.add("hidden");
         userLocation = { latitude: position.coords.latitude, longitude: position.coords.longitude };
         await updateUserLocationOnServer(userLocation);
+        console.log("User location updated on server. Returning location from browser.");
         return userLocation;
     } catch (error) {
         loadingStatus.innerText = "Failed to get your location. This page will work with limited functionality.";

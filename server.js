@@ -2,19 +2,23 @@ const express = require('express');
 require('dotenv').config()
 const port = process.env.PORT || 3000;
 const exploreRouter = require('./routes/explore-router');
-const mapRouter = require('./routes/meet-map-router');
 const apiEventsRouter = require('./backend-api-routes/api-events');
 const apiPostsRouter = require('./backend-api-routes/api-feed-routes');
-const apiLocationRouter = require('./backend-api-routes/api-location-routes');
+const apiUserRouter = require('./backend-api-routes/api-user-routes');
 const session = require('express-session');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-
-
 const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, { cors: { origin: "*" } });
+const mapRouter = require('./routes/meet-map-router')(io);
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname + "/static"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
 
 // For testing purposes only
 // Session middleware with cookie expiration of 15 minutes
@@ -52,7 +56,7 @@ app.post('/updateLocation', (req, res) => {
         res.sendStatus(200);
     } else {
         // Store the location data in the current session
-        console.log(locationData, "location data from client");
+        // console.log(locationData, "location data from client");
         req.session.locationData = locationData;
         res.sendStatus(200);
     }
@@ -64,13 +68,12 @@ app.get('/getLocation', (req, res) => {
     locationData ? res.json(locationData) : res.json({ error: "No location data found in session" });
 });
 
-app.set('view engine', 'ejs');
-app.use(express.static(__dirname + "/static"));
-app.use('/api-location', apiLocationRouter);
+
 app.use('/', exploreRouter);
 app.use('/meet', mapRouter);
 app.use('/api-events', apiEventsRouter);
 app.use('/api-posts', apiPostsRouter);
+app.use('/api-user', apiUserRouter);
 
 
 app.get("/secretKeys", (req, res) => {
@@ -81,7 +84,6 @@ app.get("/secretKeys", (req, res) => {
     res.status(200).json(JSON.stringify(secrets));
 });
 
-
-app.listen(port, () => {
-    console.log("Node application listening on port " + port);
+server.listen(port, function () {
+    console.log(`Listening on port ${port}`);
 });
