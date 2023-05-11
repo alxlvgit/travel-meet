@@ -117,9 +117,10 @@ const feedsButtonHandler = async () => {
   await getCurrentUserLocation();
   await filterFeedsByCategories(defaultSortBtn);
 
-feedsButton.addEventListener('click', async () => {
-  await feedsButtonHandler();
-});
+  feedsButton.addEventListener('click', async () => {
+    await feedsButtonHandler();
+  });
+}
 
 // Render feeds, set default sort button to active, set events button to active
 window.addEventListener('DOMContentLoaded', async () => {
