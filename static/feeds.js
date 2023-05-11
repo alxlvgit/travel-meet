@@ -114,7 +114,6 @@ const feedsButtonHandler = async () => {
   feedsButton.classList.add('active');
   eventsButton.classList.remove('active');
   await filterFeedsByCategories(defaultSortBtn);
-}
 
 feedsButton.addEventListener('click', () => {
   feedsButtonHandler();
