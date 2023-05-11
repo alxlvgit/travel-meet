@@ -114,7 +114,6 @@ const feedsButtonHandler = async () => {
   eventsButton.classList.remove('active');
   await getCurrentUserLocation();
   await filterFeedsByCategories(defaultSortBtn);
-}
 
 feedsButton.addEventListener('click', async () => {
   await feedsButtonHandler();
