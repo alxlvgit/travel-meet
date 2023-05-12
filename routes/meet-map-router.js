@@ -18,10 +18,6 @@ module.exports = (io) => {
         redis.geoadd('locations', location.lng, location.lat, location.userId);
         redis.hset('userIcons', location.userId, location.iconUrl);
         console.log('location added to redis', location);
-        redis.expire('locations', 600, function (err, reply) {
-            if (err) throw err;
-            // console.log(reply, "reply"); // output: 1
-        });
     });
 
     // Handle event for when a user requests all stored locations in the radius of 10km
@@ -38,6 +34,7 @@ module.exports = (io) => {
                         lng: result[2][0],
                         lat: result[2][1],
                     }));
+
                     // console.log(nearbyUsers, "user will receive storedLocations event with nearby users");
                     const data = { userId, nearbyUsers }
                     io.emit('storedLocations', data);
