@@ -166,35 +166,35 @@ const generateRandomLocationForTestUser = async (userLocation) => {
 };
 
 // Pick test user to share location and see other users' locations
-pickedUser.addEventListener('change', (e) => {
-    const userId = e.target.value;
-    currentTestUser = userId;
-    markers.forEach(marker => marker.remove());
-    console.log(currentTestUser, "current test user id");
-    // shareLocationCheckbox.dataset.id = userId;
-    socket.emit('join', { userId: currentTestUser });
-});
+// pickedUser.addEventListener('change', (e) => {
+//     const userId = e.target.value;
+//     currentTestUser = userId;
+//     markers.forEach(marker => marker.remove());
+//     console.log(currentTestUser, "current test user id");
+//     // shareLocationCheckbox.dataset.id = userId;
+//     socket.emit('join', { userId: currentTestUser });
+// });
 
 // Share location
-shareLocationCheckbox.addEventListener('click', async () => {
-    isSharingLocation = shareLocationCheckbox.checked;
-    console.log(isSharingLocation + "is sharing location" + currentTestUser);
-    try {
-        const userLocation = await getCurrentUserLocation();
-        // console.log(userLocation, "user location");
-        const { randomLat, randomLng } = await generateRandomLocationForTestUser(userLocation);
-        // console.log(randomLat, randomLng, "random location");
-        if (isSharingLocation) {
-            console.log("handling add new shared location for" + currentTestUser);
-            socket.emit('addNewSharedLocation', { userId: currentTestUser, lat: randomLat, lng: randomLng });
-        } else {
-            console.log("handling remove shared location for" + currentTestUser);
-            socket.emit('removeSharedLocation', { userId: currentTestUser, lat: randomLat, lng: randomLng });
-        }
-    } catch (error) {
-        console.error(error);
-    }
-});
+// shareLocationCheckbox.addEventListener('click', async () => {
+//     isSharingLocation = shareLocationCheckbox.checked;
+//     console.log(isSharingLocation + "is sharing location" + currentTestUser);
+//     try {
+//         const userLocation = await getCurrentUserLocation();
+//         // console.log(userLocation, "user location");
+//         const { randomLat, randomLng } = await generateRandomLocationForTestUser(userLocation);
+//         // console.log(randomLat, randomLng, "random location");
+//         if (isSharingLocation) {
+//             console.log("handling add new shared location for" + currentTestUser);
+//             socket.emit('addNewSharedLocation', { userId: currentTestUser, lat: randomLat, lng: randomLng });
+//         } else {
+//             console.log("handling remove shared location for" + currentTestUser);
+//             socket.emit('removeSharedLocation', { userId: currentTestUser, lat: randomLat, lng: randomLng });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//     }
+// });
 
 // Initialize map
 initMap();
