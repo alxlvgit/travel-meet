@@ -57,8 +57,10 @@
                   <div class="swiper-wrapper w-full">
                     <% group.members.forEach(member=> { %>
                       <div class="swiper-slide w-auto mr-1">
-                        <img class="w-8 h-8 object-cover rounded-full border border-gray-100 shadow-md"
-                          src="<%- member.profileImageURI %>" alt="Profile 1" />
+                        <a href="/user-profile/<%- member.id %>">
+                          <img class="w-8 h-8 object-cover rounded-full border border-gray-100 shadow-md"
+                            src="<%- member.profileImageURI %>" alt="Profile 1" />
+                        </a>
                       </div>
                       <% }) %>
                   </div>
