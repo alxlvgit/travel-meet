@@ -5,6 +5,7 @@ require('dotenv').config()
 
 // Create express app
 const app = express();
+const port = process.env.PORT || 3000;
 const exploreRouter = require('./routes/explore-router');
 const apiEventsRouter = require('./backend-api-routes/api-events');
 const apiPostsRouter = require('./backend-api-routes/api-feed-routes');
