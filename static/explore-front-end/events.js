@@ -44,8 +44,16 @@ const filterEventsByMaxNumber = async (maxNumber, foundEvents) => {
   const uniqueEvents = [];
   foundEvents.events.some(event => {
     if (!uniqueNames.includes(event.name)) {
-      uniqueNames.push(event.name);
-      uniqueEvents.push(event);
+      if (event._embedded.attractions) {
+        if (!uniqueNames.includes(event._embedded.attractions[0].name)) {
+          uniqueNames.push(event.name);
+          uniqueNames.push(event._embedded.attractions[0].name);
+          uniqueEvents.push(event);
+        }
+      } else {
+        uniqueNames.push(event.name);
+        uniqueEvents.push(event);
+      }
     }
     return uniqueEvents.length >= maxNumber;
   });
@@ -110,8 +118,9 @@ const renderEvents = async () => {
   cancelRequests();
   try {
     container.innerHTML = "";
-    const events = await filterEventsByMaxNumber(20, await getEvents(abortController.signal));
-    for (const event of events) {
+    const events = await getEvents(abortController.signal);
+    const filteredEvents = await filterEventsByMaxNumber(20, events);
+    for (const event of filteredEvents) {
       const { totalNumberOfPeople } = await getPeopleFromAllGroups(event.id, abortController.signal);
       const { eventCard, eventLink, eventImage, eventPriceRange } = await createEventCard(event);
       eventCard.innerHTML = `
