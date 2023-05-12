@@ -1,5 +1,7 @@
 const socket = io();
 let map = null;
+const footerButtons = document.querySelectorAll('.footer-btn');
+const meetBtn = document.getElementById('meet-btn');
 const shareLocationCheckbox = document.getElementById('share-location-checkbox');
 const pickedUser = document.getElementById('users');
 const markers = [];
@@ -200,6 +202,10 @@ initMap();
 // Join the room when the window loads
 window.addEventListener('load', () => {
     socket.emit('join', { userId: currentTestUser });
+    footerButtons.forEach(btn => {
+        btn.classList.remove('text-[#878d26]');
+    });
+    meetBtn.classList.add('text-[#878d26]');
 }
 );
 

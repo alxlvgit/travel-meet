@@ -12,6 +12,7 @@ const apiPostsRouter = require('./backend-api-routes/api-feed-routes');
 const apiUserRouter = require('./backend-api-routes/api-user-routes');
 const userProfileRouter = require('./routes/userProfileRouter');
 const postCreateRouter = require('./routes/post-create-router');
+const chatRouter = require('./routes/chat-router');
 
 const session = require('express-session');
 const { PrismaClient } = require('@prisma/client');
@@ -83,6 +84,7 @@ app.use('/api-posts', apiPostsRouter);
 app.use('/api-user', apiUserRouter);
 app.use('/user-profile', userProfileRouter);
 app.use('/post-create', postCreateRouter);
+app.use('/chat', chatRouter);
 
 
 app.get("/secretKeys", (req, res) => {

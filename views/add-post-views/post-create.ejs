@@ -7,6 +7,8 @@
   <title>Add Post</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
+  <script defer src="../add-post-front-end/add-post.js"></script>
+
 </head>
 
 <body class="bg-white">
@@ -17,83 +19,85 @@
 
   <main>
     <div class="flex justify-center items-center p-4 bg-gray-50 mb-10">
-        <!-- Form including image -->
-        <form id="addPostContainer" action="/post-create" method="POST" class="w-full max-w-sm"
-          enctype="multipart/form-data">
+      <!-- Form including image -->
+      <form id="addPostContainer" action="/post-create" method="POST" class="w-full max-w-sm"
+        enctype="multipart/form-data">
 
-          <div class="bg-white rounded-md shadow-md flex justify-center items-center w-full h-40 relative">
-            <div class="absolute top-0 right-0">
-              <button id="add-post-back-btn" class="text-white font-bold py-2 px-4 rounded">
-                <i class="fa-solid fa-arrow-rotate-left" style="color: #000000;"></i>
-              </button>
-            </div>
-
-            <div class="flex justify-center items-center p-4 bg-gray-50 mb-10">
-              <!-- Image upload -->
-              <label for="image"
-                class="relative flex rounded-lg cursor-pointer hover:bg-gray-300 pointer-events-auto w-full h-40"
-                style="line-height: 40px;">
-                <i class="fa-regular fa-images fa-5x p-8" style="color: #000000;"></i>
-              </label>
-              <input id="image" type="file" name="image" accept="image/*"
-                class="absolute w-full opacity-0 cursor-pointer" style="z-index: 999; line-height: 40px;" />
-            </div>
-
+        <div class="bg-white rounded-md shadow-md flex justify-center items-center w-full h-40 relative">
+          <div class="absolute top-0 right-0">
+            <button id="add-post-back-btn" class="text-white font-bold py-2 px-4 rounded">
+              <i class="fa-solid fa-arrow-rotate-left" style="color: #000000;"></i>
+            </button>
           </div>
 
-          <!-- Creator and creator image -->
-          <div class="items-center justify-center mt-2 w-full">
-            <h1 class="text-xl mb-2"><%- user.name %></h1>
+          <div class="flex justify-center items-center p-4 bg-gray-50 mb-10">
+            <!-- Image upload -->
+            <label for="image"
+              class="relative flex rounded-lg cursor-pointer hover:bg-gray-300 pointer-events-auto w-full h-40"
+              style="line-height: 40px;">
+              <i class="fa-regular fa-images fa-5x p-8" style="color: #000000;"></i>
+            </label>
+            <input id="image" type="file" name="image" accept="image/*" class="absolute w-full opacity-0 cursor-pointer"
+              style="z-index: 999; line-height: 40px;" />
+          </div>
 
-            <div class="h-20 w-20 max-w-20 object-center mb-4">
-              <!-- Needs to be logged in users image -->
-              <img class="rounded-full h-full w-full"
-                src="<%- user.profileImageURI %>"
-                alt="Circular image">
-            </div>
+        </div>
 
-            <!-- Form inputs -->
-            <div class="mb-4">
-              <input class="border border-gray-400 rounded-lg py-2 px-4 w-full" type="text" name="title" id="title"
-                placeholder="Title" required>
-            </div>
-            <div class="mb-4">
-              <textarea class="border border-gray-400 rounded-lg py-2 px-4 w-full" name="caption" id="caption"
-                placeholder="Add Caption" required></textarea>
-            </div>
-            <div class="mb-4">
-              <input class="border border-gray-400 rounded-lg py-2 px-4 w-full" type="text" name="location"
-                id="location" placeholder="Location" required>
-            </div>
-            <div class="mb-4">
-              <select class="border border-gray-400 rounded-lg py-2 px-4 w-full" name="category" id="category"
-                placeholder="Category" required>
-                <option value="" disabled selected hidden>Choose Category</option>
-                <option value="art">Art</option>
-                <option value="music">Music</option>
-                <option value="sport">Sport</option>
-                <option value="seminar">Seminar</option>
-                <option value="outdoors">Outdoors</option>
-              </select>
-            </div>
-            <footer class="fixed bottom-0 w-full text-md border-t m-auto z-50">
-              <div class="flex justify-evenly px-4 py-3 bg-white sm:px-20 bottom-nav">
-                <button type="submit">
-                  <i class="fa-regular fa-heart" style="color: red;"></i> Save For Later
-                </button>
-                <button type="submit">
-                  <i class="fa-regular fa-calendar-plus" style="color: #000000;"></i> Create Post
-                </button>
-              </div>
-            </footer>
-            <!-- Move button solely to the footer ejs -->
+        <!-- Creator and creator image -->
+        <div class="items-center justify-center mt-2 w-full">
+          <h1 class="text-xl mb-2">
+            <%- user.name %>
+          </h1>
 
-        </form>
+          <div class="h-20 w-20 max-w-20 object-center mb-4">
+            <!-- Needs to be logged in users image -->
+            <img class="rounded-full h-full w-full" src="<%- user.profileImageURI %>" alt="Circular image">
+          </div>
 
-      </div>
+          <!-- Form inputs -->
+          <div class="mb-4">
+            <input class="border border-gray-400 rounded-lg py-2 px-4 w-full" type="text" name="title" id="title"
+              placeholder="Title" required>
+          </div>
+          <div class="mb-4">
+            <textarea class="border border-gray-400 rounded-lg py-2 px-4 w-full" name="caption" id="caption"
+              placeholder="Add Caption" required></textarea>
+          </div>
+          <div class="mb-4">
+            <input class="border border-gray-400 rounded-lg py-2 px-4 w-full" type="text" name="location" id="location"
+              placeholder="Location" required>
+          </div>
+          <div class="mb-4">
+            <select class="border border-gray-400 rounded-lg py-2 px-4 w-full" name="category" id="category"
+              placeholder="Category" required>
+              <option value="" disabled selected hidden>Choose Category</option>
+              <option value="art">Art</option>
+              <option value="music">Music</option>
+              <option value="sport">Sport</option>
+              <option value="seminar">Seminar</option>
+              <option value="outdoors">Outdoors</option>
+            </select>
+          </div>
+          <!-- <footer class="fixed bottom-0 w-full text-md border-t m-auto z-50">
+            <div class="flex justify-evenly px-4 py-3 bg-white sm:px-20 bottom-nav">
+              <button type="submit">
+                <i class="fa-regular fa-heart" style="color: red;"></i> Save For Later
+              </button> -->
+          <button type="submit">
+            <i class="fa-regular fa-calendar-plus" style="color: #000000;"></i> Create Post
+          </button>
+        </div>
+        <!-- </footer> -->
+        <!-- Move button solely to the footer ejs -->
+
+      </form>
+
     </div>
-  </main>
+    </div>
 
+  </main>
+  <%- include("../partials/footer.ejs"); %>
 </body>
+
 
 </html>

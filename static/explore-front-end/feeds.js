@@ -1,5 +1,7 @@
 const feedsButton = document.getElementById('feed-link');
 const feedsContainer = document.getElementById('feeds-container');
+const footerButtons = document.querySelectorAll('.footer-btn');
+const exploreButton = document.getElementById('explore-btn');
 
 // Fetch from backend
 const getPosts = async (category) => {
@@ -132,6 +134,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   try {
     feedsButton.classList.add('active');
     eventsButton.classList.remove('active');
+    footerButtons.forEach(btn => {
+      btn.classList.remove('text-[#878d26]');
+    });
+    exploreButton.classList.add('text-[#878d26]');
     await getCurrentUserLocation();
     await filterFeedsByCategories(defaultSortBtn);
   } catch (error) {
