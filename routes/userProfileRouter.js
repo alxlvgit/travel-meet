@@ -12,7 +12,7 @@ router.get('/:id', async (req, res) => {
                   },
             });
             console.log(user);
-            const currentUser = req.session.user.id === user.id;
+            const currentUser = req.user.id === user.id;
             res.render('./user-profile-views/user-profile', { user: user, currentUser: currentUser });
       } catch (error) {
             console.log(error);
@@ -21,7 +21,7 @@ router.get('/:id', async (req, res) => {
 
 // Current user profile page
 router.get('/', async (req, res) => {
-      const currentUser = req.session.user;
+      const currentUser = req.user;
       const user = await prisma.user.findUnique({
             where: {
                   id: Number(currentUser.id)

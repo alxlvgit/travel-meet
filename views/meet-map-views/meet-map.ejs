@@ -41,10 +41,10 @@
     </select>
     <label class="flex items-center cursor-pointer">
         <span class="mr-2">Share my location</span>
-        <input type="checkbox" id="share-location-checkbox" data-id="<%- user.id %>"
+        <input type="checkbox" id="share-location-checkbox"
             class="form-checkbox h-4 w-4 text-green-600 transition duration-150 ease-in-out">
     </label>
-    <div id="map" class="w-full h-full">
+    <div id="map" class="w-full h-full" data-userId="<%- user.id %>">
 
     </div>
     <%- include("../partials/footer.ejs"); %>

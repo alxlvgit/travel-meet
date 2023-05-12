@@ -1,3 +1,5 @@
+const { ensureAuthenticated } = require('../passport-middleware/check-auth');
+
 module.exports = (io) => {
     const router = require('express').Router();
 
@@ -152,8 +154,8 @@ module.exports = (io) => {
     });
 
     // Meet map route
-    router.get('/', (req, res) => {
-        res.render('./meet-map-views/meet-map', { user: req.session.user });
+    router.get('/', ensureAuthenticated, (req, res) => {
+        res.render('./meet-map-views/meet-map', { user: req.user });
     });
 
     return router;
