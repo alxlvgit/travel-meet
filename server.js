@@ -42,14 +42,14 @@ passportMiddleware(app);
 
 // For testing purposes only
 app.use((req, res, next) => {
-    console.log(`User details are: `);
-    console.log(req.user);
+    // console.log(`User details are: `);
+    // console.log(req.user);
 
-    console.log("Entire session object:");
-    console.log(req.session);
+    // console.log("Entire session object:");
+    // console.log(req.session);
 
-    console.log(`Session details are: `);
-    console.log((req.session).passport);
+    // console.log(`Session details are: `);
+    // console.log((req.session).passport);
     next();
 });
 
@@ -85,7 +85,7 @@ app.get("/secretKeys", (req, res) => {
 
 
 
-app.use('/auth', forwardAuthenticated, authRouter);
+app.use('/auth', authRouter);
 app.use('/', exploreRouter);
 app.use('/meet', mapRouter);
 app.use('/api-events', apiEventsRouter);
