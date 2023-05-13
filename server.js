@@ -85,7 +85,7 @@ app.get("/secretKeys", (req, res) => {
 
 
 
-app.use('/auth', forwardAuthenticated, authRouter);
+app.use('/auth', authRouter);
 app.use('/', exploreRouter);
 app.use('/meet', mapRouter);
 app.use('/api-events', apiEventsRouter);

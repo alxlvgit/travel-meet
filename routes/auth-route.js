@@ -1,6 +1,6 @@
 const express = require("express");
 const passport = require("passport");
-const { forwardAuthenticated } = require("../passport-middleware/check-auth");
+const { forwardAuthenticated, ensureAuthenticated } = require("../passport-middleware/check-auth");
 
 const router = express.Router();
 
@@ -24,7 +24,7 @@ router.post(
     }
 );
 
-router.get("/logout", (req, res) => {
+router.get("/logout", ensureAuthenticated, (req, res) => {
     req.logout((err) => {
         if (err) console.log(err);
     });
