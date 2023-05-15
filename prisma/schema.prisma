@@ -32,13 +32,13 @@ model Post {
   title     String
   createdAt DateTime @default(now())
   caption   String
-  imageURI  String
-  altText   String
+  imageURI  String?
+  altText   String?
   location  String
   category  String
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  Int?  
-  authorMessage String 
+  authorMessage String? 
   likes     Like[]  @relation("PostToLike")
 }
 

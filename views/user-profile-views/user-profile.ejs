@@ -1,68 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Profile Page</title>
-   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-   <script>
-       function toggleFollow() {
-           const followBtn = document.getElementById('followBtn');
-           const followIcon = document.getElementById('followIcon');
-           if (followBtn.innerText === 'Follow') {
-               followBtn.innerText = 'Followed';
-               followIcon.classList.remove('fa-user-plus');
-               followIcon.classList.add('fa-user-check');
-           } else {
-               followBtn.innerText = 'Follow';
-               followIcon.classList.remove('fa-user-check');
-               followIcon.classList.add('fa-user-plus');
-           }
-       }
-   </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
+    <!-- use tailwind cdn for development only -->
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <!-- use tailwind cdn for development only-->
+    <link href="/output.css" rel="stylesheet" />
+    <script defer src="../profile-front-end/profile.js"></script>
+    <script>
+        function toggleFollow() {
+            const followBtn = document.getElementById('followBtn');
+            const followIcon = document.getElementById('followIcon');
+            if (followBtn.innerText === 'Follow') {
+                followBtn.innerText = 'Followed';
+                followIcon.classList.remove('fa-user-plus');
+                followIcon.classList.add('fa-user-check');
+            } else {
+                followBtn.innerText = 'Follow';
+                followIcon.classList.remove('fa-user-check');
+                followIcon.classList.add('fa-user-plus');
+            }
+        }
+    </script>
 </head>
+
 <body class="bg-gray-100">
-   <header class="p-4">
-       <a href="#" onclick="window.location.href='/'" class="text-xl font-bold text-blue-500">&lt;</a>
-   </header>
-   <div class="flex justify-center">
-       <div class="bg-white w-full md:w-2/3 p-4 rounded-lg shadow-md">
-           <div class="flex flex-col items-center">
-               <a href="/profile/1">
-                   <img src="<%- user.profileImageURI %>" alt="User avatar" class="rounded-full w-32 h-32 -mt-16">
-               </a>
-               <div class="w-full mt-4">
-                   <div class="mt-20">
-                       <div class="flex flex-col md:flex-row justify-between items-start">
-                           <div>
-                               <h1 class="text-3xl font-bold"><%- user.name %></h1>
-                               <p>Some words to describe</p>
-                           </div>
-                           <div class="flex flex-col space-y-2">
-                               <div class="flex space-x-4">
-                                   <button id="followBtn" class="rounded-2xl border border-[#878d26] px-3 py-1 m-1 text-base" onclick="toggleFollow()">
-                                       <i id="followIcon" class="fas fa-user-plus text-base text-[#878d26] mr-2"></i>
-                                       Follow
-                                   </button>
-                                   <button class="rounded-2xl border border-[#878d26] px-3 py-1 m-1 text-base">
-                                       <i class="fas fa-comment text-base text-[#878d26] mr-2"></i>
-                                       Message
-                                   </button>
-                               </div>                               
-                           </div>
-                       </div>
-                   </div>
-                   <div id="posts" class="mt-4">
-                       <div id="feedsContent">
-                       </div>
-                   </div>
-                   <div class="flex justify-center items-center mt-8">
-                       <h1 class="text-2xl font-bold">My Posts</h1>
-                   </div>
-               </div>
-           </div>
-       </div>
-   </div>
+    <header class="p-10">
+    </header>
+    <div class="flex justify-center">
+        <div class="bg-white w-full md:w-2/3 p-4 rounded-lg shadow-md">
+            <div class="flex flex-col items-center">
+                <a href="/profile/1">
+                    <img src="<%- user.profileImageURI %>" alt="User avatar"
+                        class="rounded-full object-cover w-32 h-32 -mt-16">
+                </a>
+                <div class="w-full mt-4">
+                    <div class="mt-20">
+                        <div class="flex flex-col md:flex-row justify-between items-start">
+                            <div>
+                                <h1 class="text-3xl font-bold">
+                                    <%- user.name %>
+                                </h1>
+                                <p>Some words to describe</p>
+                            </div>
+                            <% if (user && !currentUser) { %>
+                                <div class="flex flex-col space-y-2">
+                                    <div class="flex space-x-4">
+                                        <button id="followBtn"
+                                            class="rounded-2xl border border-[#878d26] px-3 py-1 m-1 text-base"
+                                            onclick="toggleFollow()">
+                                            <i id="followIcon"
+                                                class="fas fa-user-plus text-base text-[#878d26] mr-2"></i>
+                                            Follow
+                                        </button>
+                                        <button class="rounded-2xl border border-[#878d26] px-3 py-1 m-1 text-base">
+                                            <i class="fas fa-comment text-base text-[#878d26] mr-2"></i>
+                                            Message
+                                        </button>
+                                    </div>
+                                </div>
+                                <% } %>
+                        </div>
+                    </div>
+                    <div id="posts" class="mt-4">
+                        <div id="feedsContent">
+                        </div>
+                    </div>
+                    <div class="flex justify-center items-center mt-8">
+                        <h1 class="text-2xl font-bold">
+                            <% if (currentUser) { %>
+                                My Posts
+                                <% } else {%>
+                                    <%- user.name %>'s Posts
+                                        <% } %>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include("../partials/footer.ejs"); %>
 </body>
+
 </html>

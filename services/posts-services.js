@@ -28,6 +28,4 @@ const getRelatedPosts = async (category, postId) => {
     return relatedPosts;
 };
 
-
-
 module.exports = { getPost, getRelatedPosts };
