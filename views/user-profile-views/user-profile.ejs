@@ -6,27 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Page</title>
     <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
-    <!-- use tailwind cdn for development only -->
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <!-- use tailwind cdn for development only-->
     <link href="/output.css" rel="stylesheet" />
     <script defer src="../profile-front-end/profile.js"></script>
-    <script>
-        function toggleFollow() {
-            const followBtn = document.getElementById('followBtn');
-            const followIcon = document.getElementById('followIcon');
-            if (followBtn.innerText === 'Follow') {
-                followBtn.innerText = 'Followed';
-                followIcon.classList.remove('fa-user-plus');
-                followIcon.classList.add('fa-user-check');
-            } else {
-                followBtn.innerText = 'Follow';
-                followIcon.classList.remove('fa-user-check');
-                followIcon.classList.add('fa-user-plus');
-            }
-        }
-    </script>
 </head>
+
 
 <body class="bg-gray-100">
     <header class="p-10">
@@ -35,6 +18,7 @@
         <div class="bg-white w-full md:w-2/3 p-4 rounded-lg shadow-md">
             <div class="flex flex-col items-center">
                 <a href="/profile/1">
+    
                     <img src="<%- user.profileImageURI %>" alt="User avatar"
                         class="rounded-full object-cover w-32 h-32 -mt-16">
                 </a>
@@ -52,7 +36,8 @@
                                     <div class="flex space-x-4">
                                         <button id="followBtn"
                                             class="rounded-2xl border border-[#878d26] px-3 py-1 m-1 text-base"
-                                            onclick="toggleFollow()">
+                                            data-user-id="<%-user.id%>"
+                                            >
                                             <i id="followIcon"
                                                 class="fas fa-user-plus text-base text-[#878d26] mr-2"></i>
                                             Follow
@@ -79,11 +64,65 @@
                                         <% } %>
                         </h1>
                     </div>
-                </div>
+                </div>  
             </div>
         </div>
     </div>
     <%- include("../partials/footer.ejs"); %>
+
+    <script>
+        const followButton = document.getElementById('followBtn');
+        const userId = followButton.dataset.userId;
+
+        followButton.addEventListener('click', () => {
+            toggleFollow(userId);
+        });
+        
+        async function toggleFollow(userId) {
+            const followBtn = document.getElementById('followBtn');
+            const followIcon = document.getElementById('followIcon');
+    
+            try {
+                if (followBtn.innerText === 'Follow') {
+                    console.log({userId});
+                    await fetch(`/follow/${userId}`, { method: 'POST' }); // use actual userId
+                    followBtn.innerText = 'Followed';
+                    followIcon.classList.remove('fa-user-plus');
+                    followIcon.classList.add('fa-user-check');
+                } else {
+                    await fetch(`/unfollow/${userId}`, { method: 'POST' }); // use actual userId
+                    followBtn.innerText = 'Follow';
+                    followIcon.classList.remove('fa-user-check');
+                    followIcon.classList.add('fa-user-plus');
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function checkFollowStatus(userId) {
+    try {
+        const response = await fetch(`/is-following/${userId}`); // endpoint that checks if the current user is following the user with the given userId
+        const isFollowing = await response.json();
+
+        const followBtn = document.getElementById('followBtn');
+        const followIcon = document.getElementById('followIcon');
+
+        if (isFollowing) {
+            followBtn.innerText = 'Followed';
+            followIcon.classList.remove('fa-user-plus');
+            followIcon.classList.add('fa-user-check');
+        } else {
+            followBtn.innerText = 'Follow';
+            followIcon.classList.remove('fa-user-check');
+            followIcon.classList.add('fa-user-plus');
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+    </script>
 </body>
 
 </html>

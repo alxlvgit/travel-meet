@@ -12,8 +12,8 @@ router.get('/:id', async (req, res) => {
                   },
             });
             console.log(user);
-            const currentUser = req.session.user.id === user.id;
-            res.render('./user-profile-views/user-profile', { user: user, currentUser: currentUser });
+            const currentUserFollowBtn = req.session.user.id === user.id;
+            res.render('./user-profile-views/user-profile', { user: user, currentUser: currentUserFollowBtn });
       } catch (error) {
             console.log(error);
       }
@@ -29,9 +29,6 @@ router.get('/', async (req, res) => {
       });
       res.render('./user-profile-views/user-profile', { currentUser: true, user: user });
 });
-
-
-
 
 
 

@@ -8,3 +8,4 @@ window.addEventListener('load', () => {
     profileBtn.classList.add('text-[#878d26]');
 }
 );
+

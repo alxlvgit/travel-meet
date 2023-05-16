@@ -119,6 +119,41 @@ router.get('/posts/:id', async (req, res) => {
     }
 });
 
+// Follow user
+router.post('/follow/:id', async (req, res) => {
+    try {
+        const userToFollowId = Number(req.params.id);
+        const currentUser = req.session.user;
+
+        await prisma.user.update({
+            where: { id: currentUser.id },
+            data: { following: { connect: { id: userToFollowId } } }
+        });
+
+        res.status(200).json({ message: "Successfully followed" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "An error occurred while trying to follow the user" });
+    }
+});
+
+// Unfollow user
+router.post('/unfollow/:id', async (req, res) => {
+    try {
+        const userToUnfollowId = Number(req.params.id);
+        const currentUser = req.session.user;
+
+        await prisma.user.update({
+            where: { id: currentUser.id },
+            data: { following: { disconnect: { id: userToUnfollowId } } }
+        });
+
+        res.status(200).json({ message: "Successfully unfollowed" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "An error occurred while trying to unfollow the user" });
+    }
+});
 
 
 
