@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { ensureAuthenticated } = require('../passport-middleware/check-auth');
 
 // Import s3 bucket
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
@@ -16,31 +17,31 @@ const accessKey = process.env.ACCESS_KEY
 const secretAccessKey = process.env.SECRET_ACCESS_KEY
 
 const s3 = new S3Client({
-  credentials: { 
+  credentials: {
     accessKeyId: accessKey,
     secretAccessKey: secretAccessKey,
   },
-  region: bucketRegion, 
+  region: bucketRegion,
 });
 
 // Import Multer
 const multer = require('multer');
 
 // Set Multer storage
-const storage =  multer.memoryStorage();
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // Create middleware to upload image
-  // Can change to multiple photos later
+// Can change to multiple photos later
 // Get add post page
-router.get('/', (req, res) => {
-  res.render('add-post-views/post-create', { 
-    user: req.session.user
+router.get('/', ensureAuthenticated, (req, res) => {
+  res.render('add-post-views/post-create', {
+    user: req.user
   });
 });
 
 // Create a new post
-router.post('/', upload.single('image'), async (req, res) => {
+router.post('/', ensureAuthenticated, upload.single('image'), async (req, res) => {
   const { title, caption, location, category, authorMessage } = req.body;
   console.log(req.body);
   console.log(req.file);
@@ -53,9 +54,9 @@ router.post('/', upload.single('image'), async (req, res) => {
     ContentType: req.file.mimetype,
   };
 
-const command = new PutObjectCommand(params)
+  const command = new PutObjectCommand(params)
 
-await s3.send(command)
+  await s3.send(command)
 
   const post = await prisma.post.create({
     data: {
@@ -70,7 +71,7 @@ await s3.send(command)
 });
 
 // Delete a post
-router.delete('/:postId', async (req, res) => {
+router.delete('/:postId', ensureAuthenticated, async (req, res) => {
   const { postId } = req.params.postId;
   const deletePost = await prisma.post.delete({
     where: {
@@ -82,7 +83,7 @@ router.delete('/:postId', async (req, res) => {
 });
 
 // Update a post
-router.put('/:postId', async (req, res) => {
+router.put('/:postId', ensureAuthenticated, async (req, res) => {
   const { postId } = req.body;
   const updatePost = await prisma.post.update({
     where: {

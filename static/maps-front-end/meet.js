@@ -7,6 +7,11 @@ const pickedUser = document.getElementById('users');
 const markers = [];
 let currentTestUser = "1";
 let isSharingLocation = false;
+const mapContainer = document.getElementById('map');
+const userId = mapContainer.dataset.userid;
+console.log(userId, "user id from map container");
+
+
 
 // Initialize the map
 const initMap = async () => {

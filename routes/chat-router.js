@@ -1,6 +1,7 @@
 const router = require('express').Router();
+const { ensureAuthenticated } = require('../passport-middleware/check-auth');
 
-router.get('/', async (req, res) => {
+router.get('/', ensureAuthenticated, async (req, res) => {
     res.render('./chat-views/chat');
 });
 
