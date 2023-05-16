@@ -1,17 +1,16 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// Get post
 const getPost = async (postId) => {
-    const postData = await prisma.post.findUnique({
-        where: {
-            id: postId
-        },
-        include: {
-            author: true,
-        }
-    });
-    return postData;
+  const postData = await prisma.post.findUnique({
+      where: {
+          id: postId
+      },
+      include: {
+          author: true,
+      },
+  });
+  return postData;
 };
 
 // Get related posts

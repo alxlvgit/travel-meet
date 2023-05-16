@@ -8,23 +8,9 @@ const prisma = new PrismaClient();
 router.get('/', async (req, res) => {
     const users = await prisma.user.findMany();
     res.render('./explore-views/explore', { users: users });
+
 }
 );
-
-// Feeds post page
-router.get('/feeds/:id', async (req, res) => {
-    try {
-        const postId = req.params.id;
-        const postData = await prisma.post.findUnique({
-            where: {
-                id: postId
-            }
-        });
-        res.render('./explore-views/feeds-post', { post: postData });
-    } catch (error) {
-        console.log(error);
-    }
-});
 
 // Event page
 router.get('/event/:id', async (req, res) => {
@@ -107,16 +93,45 @@ router.get('/delete-group/:groupId/:eventId', async (req, res) => {
 }
 );
 
+const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+
+const bucketName = process.env.BUCKET_NAME
+const bucketRegion = process.env.BUCKET_REGION
+const accessKey = process.env.ACCESS_KEY
+const secretAccessKey = process.env.SECRET_ACCESS_KEY
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKey,
+    secretAccessKey: secretAccessKey,
+  },
+  region: bucketRegion,
+});
+
+// Feeds post page
 router.get('/posts/:id', async (req, res) => {
-    const postId = Number(req.params.id);
-    try {
-        const postData = await getPost(postId);
-        const relatedPosts = await getRelatedPosts(postData.category, postId);
-        res.render('./explore-views/feeds-post', { post: postData, relatedPosts: relatedPosts });
+  const posts = await prisma.post.findMany({ orderBy: [{ createdAt: 'desc' }] })
+  const postId = Number(req.params.id);
+  try {
+    const postData = await prisma.post.findUnique({
+      where: {
+        id: postId
+      }
+    });
+    // Add for loop here
+    const relatedPosts = await getRelatedPosts(postData.category, postId);
+    const getObjectParams = {
+      Bucket: bucketName,
+      Key: postData.image,
     }
-    catch (error) {
-        console.log(error);
-    }
+    const command = new GetObjectCommand(getObjectParams);
+    const url = await getSignedUrl(s3, command, { expiresIn: 60 });
+    postData.imageUrl = url
+    res.render('./explore-views/feeds-post', { post: postData, relatedPosts: relatedPosts });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 module.exports = router;

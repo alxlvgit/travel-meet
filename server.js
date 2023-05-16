@@ -8,7 +8,9 @@ const app = express();
 const exploreRouter = require('./routes/explore-router');
 const apiEventsRouter = require('./backend-api-routes/api-events');
 const apiPostsRouter = require('./backend-api-routes/api-feed-routes');
-const postCreateRouter = require('./routes/post-create-router');
+const postCreateRouter = require('./backend-api-routes/api-post-create-router');
+
+// Import prisma
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
