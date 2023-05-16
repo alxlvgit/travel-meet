@@ -39,7 +39,8 @@ if (groupRelatedPageOpen) {
 // Generate group member HTML
 function generateMemberHtml(member) {
     return `
-      <div class="swiper-slide w-auto">
+      <div class="swiper-slide w-auto relative">
+      <a href="/user-profile/${member.id}" class="absolute w-full h-full top-0 left-0 z-20"></a>
         <img class="w-16 h-16 object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2 m-1"
           src="${member.profileImageURI}" alt="Profile 1" />
       </div>
@@ -116,7 +117,7 @@ function handleJoinButton(joinButton) {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-            },
+            }
         });
         if (response.ok) {
             await renderGroupMembers();
@@ -131,12 +132,11 @@ function handleLeaveButton(leaveButton) {
     leaveButton.addEventListener('click', async (event) => {
         event.preventDefault();
         const groupId = leaveButton.dataset.groupid;
-        console.log(groupId);
         const response = await fetch(`/api-events/groups/${groupId}/leave`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-            },
+            }
         });
         if (response.ok) {
             await renderGroupMembers();

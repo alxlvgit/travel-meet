@@ -2,8 +2,8 @@ const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
 const { fetchSingleEvent, filterEventImages, getGroups, totalNumberOfPeopleForEvent } = require('../services/events-services');
 const { getPost, getRelatedPosts } = require('../services/posts-services');
-// Crashes without but the file is empty
 const prisma = new PrismaClient();
+const { ensureAuthenticated } = require('../passport-middleware/check-auth');
 
 router.get('/', async (req, res) => {
     const users = await prisma.user.findMany();
@@ -12,8 +12,23 @@ router.get('/', async (req, res) => {
 }
 );
 
+// Feeds post page
+router.get('/feeds/:id', ensureAuthenticated, async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const postData = await prisma.post.findUnique({
+            where: {
+                id: postId
+            }
+        });
+        res.render('./explore-views/feeds-post', { post: postData });
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 // Event page
-router.get('/event/:id', async (req, res) => {
+router.get('/event/:id', ensureAuthenticated, async (req, res) => {
     try {
         const eventData = await fetchSingleEvent(req.params.id);
         const eventImage = await filterEventImages(eventData.images);
@@ -33,7 +48,7 @@ router.get('/event/:id', async (req, res) => {
 );
 
 // Group page
-router.get('/event/:eventId/group/:groupId', async (req, res) => {
+router.get('/event/:eventId/group/:groupId', ensureAuthenticated, async (req, res) => {
     try {
         const eventData = await fetchSingleEvent(req.params.eventId);
         const eventImage = await filterEventImages(eventData.images);
@@ -61,7 +76,7 @@ router.get('/event/:eventId/group/:groupId', async (req, res) => {
 );
 
 // Create group page
-router.post('/create-group/:eventId', async (req, res) => {
+router.post('/create-group/:eventId', ensureAuthenticated, async (req, res) => {
     try {
         await prisma.group.create({
             data: {
@@ -79,7 +94,7 @@ router.post('/create-group/:eventId', async (req, res) => {
 );
 
 // Delete group
-router.get('/delete-group/:groupId/:eventId', async (req, res) => {
+router.get('/delete-group/:groupId/:eventId', ensureAuthenticated, async (req, res) => {
     try {
         await prisma.group.delete({
             where: {
@@ -110,7 +125,7 @@ const s3 = new S3Client({
 });
 
 // Feeds post page
-router.get('/posts/:id', async (req, res) => {
+router.get('/posts/:id', ensureAuthenticated, async (req, res) => {
   const posts = await prisma.post.findMany({ orderBy: [{ createdAt: 'desc' }] })
   const postId = Number(req.params.id);
   try {
@@ -120,6 +135,7 @@ router.get('/posts/:id', async (req, res) => {
       }
     });
     // Add for loop here
+        console.log(postData);
     const relatedPosts = await getRelatedPosts(postData.category, postId);
     const getObjectParams = {
       Bucket: bucketName,
@@ -133,5 +149,6 @@ router.get('/posts/:id', async (req, res) => {
     console.log(error);
   }
 });
+
 
 module.exports = router;

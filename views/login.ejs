@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="shortcut icon" type="image/x-icon" href="/secure-icon.png" />
+    <!-- Styles -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+    <!-- Icons CDN -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/761d42c757.js" crossorigin="anonymous"></script>
+    <title>NodeJS Auth App</title>
+</head>
+
+<body>
+    <div class="row mt-5">
+        <div class="col-md-6 m-auto">
+            <div class="card card-body text-center">
+                <h1 class="mb-3">
+                    <img src="/secure-icon.png" alt="icon" width="20%" />
+                </h1>
+                <h2>Login</h2>
+                <% if (errorMessage) { %>
+                    <p class="alert alert-danger">
+                        <%= errorMessage %>
+                    </p>
+                    <% } %>
+                        <form>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" class="form-control"
+                                    placeholder="Enter Email" />
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" name="password" class="form-control"
+                                    placeholder="Enter Password" />
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block" formaction="/auth/login"
+                                formmethod="post">Login</button>
+                        </form>
+                        <p class="mt-4">New User? <a href="/auth/register">Register</a></p>
+                        <p>Forgot Password? <a href="/auth/forgot">Reset</a></p>
+            </div>
+        </div>
+    </div>
+
+
+</body>

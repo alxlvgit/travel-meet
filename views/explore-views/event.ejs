@@ -9,15 +9,15 @@
 
 
   <!-- use tailwind cdn for development only -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
   <!-- use tailwind cdn for development only-->
 
   <script defer src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
   <link href="/output.css" rel="stylesheet" />
   <script defer src="/secret-keys.js"></script>
-  <script defer src="/event-group.js"></script>
-  <script defer src="/create-group.js"></script>
+  <script defer src="/explore-front-end/event-group.js"></script>
+  <script defer src="/explore-front-end/create-group.js"></script>
   <title>Event</title>
 </head>
 
@@ -57,8 +57,10 @@
                   <div class="swiper-wrapper w-full">
                     <% group.members.forEach(member=> { %>
                       <div class="swiper-slide w-auto mr-1">
-                        <img class="w-8 h-8 object-cover rounded-full border border-gray-100 shadow-md"
-                          src="<%- member.profileImageURI %>" alt="Profile 1" />
+                        <a href="/user-profile/<%- member.id %>">
+                          <img class="w-8 h-8 object-cover rounded-full border border-gray-100 shadow-md"
+                            src="<%- member.profileImageURI %>" alt="Profile 1" />
+                        </a>
                       </div>
                       <% }) %>
                   </div>
