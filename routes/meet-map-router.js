@@ -9,11 +9,11 @@ module.exports = (io) => {
     const usersInRoom = new Set();
 
     // For testing purposes only. Store shared test locations and icons in Redis
-    const storedLocations = [{ userId: "15", lat: 49.2689, lng: -123.0035, iconUrl: "https://indianmemetemplates.com/wp-content/uploads/fu-that-yao-ming.jpg" },
-    { userId: "16", lat: 49.3043, lng: -123.1443, iconUrl: "https://wallpaper.dog/large/10747737.jpg" },
-    { userId: "17", lat: 49.2768, lng: -123.1120, iconUrl: "https://www.shutterstock.com/image-vector/vector-guy-meme-face-any-260nw-491615011.jpg" },
-    { userId: "18", lat: 49.2827, lng: -123.1207, iconUrl: "https://rlv.zcache.com/awesome_face_rage_f7u12_funny_meme_classic_round_sticker-r35ccef514463441b9ace70325551f930_0ugmp_8byvr_307.jpg" },
-    { userId: "19", lat: 49.2024, lng: -123.1000, iconUrl: "https://static.vecteezy.com/system/resources/previews/000/439/863/original/vector-users-icon.jpg" }];
+    const storedLocations = [{ userId: "15", lat: 49.2689, lng: -123.0035, iconUrl: "icons/1.jpg" },
+    { userId: "16", lat: 49.3043, lng: -123.1443, iconUrl: "icons/2.jpg" },
+    { userId: "17", lat: 49.2768, lng: -123.1120, iconUrl: "icons/3.jpg" },
+    { userId: "18", lat: 49.2827, lng: -123.1207, iconUrl: "icons/4.webp" },
+    { userId: "19", lat: 49.2024, lng: -123.1000, iconUrl: "icons/5.jpg" }];
 
     // Store test locations in Redis
     storedLocations.forEach((location) => {
@@ -25,10 +25,10 @@ module.exports = (io) => {
         console.log('test location with icon added to redis', location);
     });
 
-    // Handle event for when a user requests all stored locations in the radius of 20km
+    // Handle event for when a user requests all shared locations in the radius of 20km
     const getStoredLocations = (socket, io) => {
-        socket.on('getStoredLocations', async ({ lat, lng, userId }) => {
-            await redis.georadius('locations', lng, lat, 20, 'km', 'WITHDIST', 'WITHCOORD', 'ASC', async (err, locations) => {
+        socket.on('getSharedLocations', async ({ lat, lng, userId }) => {
+            await redis.georadius('locations', lng, lat, 30, 'km', 'WITHDIST', 'WITHCOORD', 'ASC', async (err, locations) => {
                 if (err) {
                     console.log(err);
                 } else {
@@ -50,7 +50,7 @@ module.exports = (io) => {
                     };
                     const data = { userId, nearbyUsers, icons }
                     // console.log(data, "data");
-                    socket.emit('storedLocations', data);
+                    socket.emit('nearbySharedLocations', data);
                 }
             });
         });
@@ -132,7 +132,6 @@ module.exports = (io) => {
     };
 
     // Track user traversing on map to show them if someone is starting to share their location
-    // close to the position on the map they are currently viewing
     // This is for users that are not sharing their location themselves but are just viewing the map
     const addUserTraversingPosition = (socket, io) => {
         socket.on('userTraversingOnMap', async ({ userId, lat, lng }) => {
