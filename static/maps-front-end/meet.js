@@ -116,12 +116,12 @@ const getIcon = async (userId) => {
 };
 
 // Add marker when new user shares their location
-socket.on('newLocation', async ({ userId, lat, lng, iconUrl }) => {
+socket.on('addMarker', async ({ userId, lat, lng, iconUrl }) => {
     addMarkerToSource(map, userId, lat, lng, iconUrl);
 });
 
 // Remove marker when user stops sharing their location
-socket.on('removeLocation', ({ userId }) => {
+socket.on('removeMarker', ({ userId }) => {
     removeMarkerFromSource(map, userId);
 });
 
@@ -130,7 +130,7 @@ socket.on('nearbySharedLocations', async (data) => {
     let storedLocations = data.nearbyUsers;
     console.log(storedLocations, "stored locations from server");
     storedLocations = storedLocations.filter(location => location.userId !== currentUser);
-    console.log(data.icons, "icons from server");
+    // console.log(data.icons, "icons from server");
     await renderNearbyMarkers(map, storedLocations, data.icons);
 });
 
@@ -167,13 +167,13 @@ const renderNearbyMarkers = async (map, storedLocations, icons) => {
                 const el = document.createElement('div');
                 el.className = 'marker';
                 el.id = userId;
-                el.classList.add('marker', 'w-12', 'h-12', 'rounded-full', 'bg-no-repeat', 'bg-center', 'bg-cover');
+                el.classList.add('marker', 'w-16', 'h-16', 'rounded-full', 'bg-no-repeat', 'bg-center', 'bg-cover', 'border-2', 'border-white', 'shadow-lg');
                 el.style.backgroundImage = `url(${icons[feature.properties.userId]})`;
                 el.style.backgroundSize = '100%';
-                el.addEventListener('click', () => {
-                    window.alert(`User ${userId} is here!`);
-                });
-                marker = markers[feature.properties.userId] = new mapboxgl.Marker(el)
+                const link = document.createElement('a');
+                link.href = '/user-profile/' + feature.properties.userId;
+                link.appendChild(el);
+                marker = markers[feature.properties.userId] = new mapboxgl.Marker(link)
                     .setLngLat(feature.geometry.coordinates);
             }
             newMarkers[feature.properties.userId] = marker;
@@ -189,6 +189,10 @@ const renderNearbyMarkers = async (map, storedLocations, icons) => {
 
 // Add marker to the map when a new user shares their location
 const addMarkerToSource = (map, userId, lat, lng, iconUrl) => {
+    if (markersOnScreen[userId]) {
+        console.log("marker already on screen");
+        return;
+    }
     // Add new marker to the markers source
     const markersSource = map.getSource('markers');
     if (markersSource) {
@@ -211,13 +215,13 @@ const addMarkerToSource = (map, userId, lat, lng, iconUrl) => {
         const el = document.createElement('div');
         el.className = 'marker';
         el.id = userId;
-        el.classList.add('marker', 'w-12', 'h-12', 'rounded-full', 'bg-no-repeat', 'bg-center', 'bg-cover');
+        el.classList.add('marker', 'w-16', 'h-16', 'rounded-full', 'bg-no-repeat', 'bg-center', 'bg-cover', 'border-2', 'border-white', 'shadow-lg');
         el.style.backgroundImage = `url(${iconUrl})`;
         el.style.backgroundSize = '100%';
-        el.addEventListener('click', () => {
-            window.alert(`User ${userId} is here!`);
-        });
-        const marker = new mapboxgl.Marker(el).setLngLat([lng, lat]);
+        const link = document.createElement('a');
+        link.href = '/user-profile/' + userId;
+        link.appendChild(el);
+        const marker = new mapboxgl.Marker(link).setLngLat([lng, lat]);
         markersOnScreen[userId] = marker;
         markers[userId] = marker;
         marker.addTo(map);
@@ -247,6 +251,7 @@ const removeMarkerFromSource = (map, userId) => {
         // Remove the marker from the map
         const marker = markersOnScreen[userId];
         if (marker) {
+            console.log("removing marker from screen");
             marker.remove();
             delete markersOnScreen[userId];
             delete markers[userId];
@@ -255,20 +260,46 @@ const removeMarkerFromSource = (map, userId) => {
 };
 
 // Share location checkbox handler
-shareLocationCheckbox.addEventListener('click', async () => {
-    const isSharingLocation = shareLocationCheckbox.checked;
-    console.log(currentUser + "is sharing location: " + isSharingLocation);
+// shareLocationCheckbox.addEventListener('click', async () => {
+//     const isSharingLocation = shareLocationCheckbox.checked;
+//     console.log(currentUser + "is sharing location: " + isSharingLocation);
+//     try {
+//         const userLocation = await getCurrentUserLocation();
+//         // const { randomLat, randomLng } = await generateRandomLocationForTestUser(userLocation);
+//         if (isSharingLocation) {
+//             console.log("handling add new shared location for" + currentUser);
+//             const icon = await getIcon(currentUser);
+//             const iconUrl = icon.profileImageURI;
+//             socket.emit('addNewSharedLocation', { userId: currentUser, lat: userLocation.latitude, lng: userLocation.longitude, iconUrl });
+//         } else {
+//             console.log("handling remove shared location for" + currentUser);
+//             socket.emit('removeSharedLocation', { userId: currentUser, lat: userLocation.latitude, lng: userLocation.longitude });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//     }
+// });
+
+const toggleLocationButton = document.getElementById('toggleLocationButton');
+const toggleLocationButtonIcon = document.querySelector('.toggle-button i');
+toggleLocationButton.addEventListener('click', async () => {
+    const isSharingLocation = !toggleLocationButton.classList.contains('active');
+    toggleLocationButton.classList.toggle('active', isSharingLocation);
+    console.log(currentUser + ' is sharing location: ' + isSharingLocation);
     try {
         const userLocation = await getCurrentUserLocation();
-        const { randomLat, randomLng } = await generateRandomLocationForTestUser(userLocation);
         if (isSharingLocation) {
-            console.log("handling add new shared location for" + currentUser);
+            console.log('Handling add new shared location for ' + currentUser);
             const icon = await getIcon(currentUser);
             const iconUrl = icon.profileImageURI;
             socket.emit('addNewSharedLocation', { userId: currentUser, lat: userLocation.latitude, lng: userLocation.longitude, iconUrl });
+            toggleLocationButtonIcon.classList.remove('text-black');
+            toggleLocationButtonIcon.classList.add('text-[#ffffff]');
         } else {
-            console.log("handling remove shared location for" + currentUser);
+            console.log('Handling remove shared location for ' + currentUser);
             socket.emit('removeSharedLocation', { userId: currentUser, lat: userLocation.latitude, lng: userLocation.longitude });
+            toggleLocationButtonIcon.classList.remove('text-[#ffffff]');
+            toggleLocationButtonIcon.classList.add('text-black');
         }
     } catch (error) {
         console.error(error);
@@ -287,14 +318,6 @@ window.addEventListener('load', () => {
     meetBtn.classList.add('text-[#878d26]');
 }
 );
-
-// Leave the room when the window closes
-window.addEventListener('beforeunload', () => {
-    socket.emit('leave', { userId: currentUser });
-}
-);
-
-
 
 
 

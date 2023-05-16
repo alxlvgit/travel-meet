@@ -2,6 +2,7 @@ const { ensureAuthenticated } = require('../passport-middleware/check-auth');
 
 module.exports = (io) => {
     const router = require('express').Router();
+    let user = null;
 
     // Configure Redis
     const Redis = require('ioredis');
@@ -9,19 +10,19 @@ module.exports = (io) => {
     const usersInRoom = new Set();
 
     // For testing purposes only. Store shared test locations and icons in Redis
-    const storedLocations = [{ userId: "15", lat: 49.2689, lng: -123.0035, iconUrl: "icons/1.jpg" },
-    { userId: "16", lat: 49.3043, lng: -123.1443, iconUrl: "icons/2.jpg" },
-    { userId: "17", lat: 49.2768, lng: -123.1120, iconUrl: "icons/3.jpg" },
-    { userId: "18", lat: 49.2827, lng: -123.1207, iconUrl: "icons/4.webp" },
-    { userId: "19", lat: 49.2024, lng: -123.1000, iconUrl: "icons/5.jpg" }];
+    const storedLocations = [{ userId: "3", lat: 49.2689, lng: -123.0035, iconUrl: "/icons/1.jpeg" },
+    { userId: "4", lat: 49.3043, lng: -123.1443, iconUrl: "/icons/2.jpeg" },
+    { userId: "5", lat: 49.2768, lng: -123.1120, iconUrl: "/icons/3.jpeg" },
+    { userId: "6", lat: 49.2827, lng: -123.1207, iconUrl: "/icons/4.jpeg" },
+    { userId: "7", lat: 49.2024, lng: -123.1000, iconUrl: "/icons/5.jpeg" }];
 
     // Store test locations in Redis
     storedLocations.forEach((location) => {
         redis.geoadd('locations', location.lng, location.lat, location.userId);
         redis.hset('userIcons', location.userId, location.iconUrl);
         // to remove test shared locations and icons from redis:
-        // redis.zrem('locations', "2");
-        // redis.hdel('userIcons', "2");
+        // redis.zrem('locations', '15', '16', '17', '18', '19');
+        // redis.hdel('userIcons', '15', '16', '17', '18', '19');
         console.log('test location with icon added to redis', location);
     });
 
@@ -75,8 +76,8 @@ module.exports = (io) => {
                     nearbyUsers = nearbyUsers.filter((user) => user.userId !== userId);
                     console.log(nearbyUsers, `nearby users after adding new user ${userId} to Redis`);
                     nearbyUsers.forEach((user) => {
-                        console.log("emitting addLocation event to user " + user.userId + " from user " + userId + " that removed their location");
-                        io.to(`${user.userId}`).emit('newLocation', { userId: userId, lat, lng, iconUrl });
+                        console.log("emitting addLocation event to user " + user.userId + " from user " + userId + " that added their location");
+                        io.to(`${user.userId}`).emit('addMarker', { userId: userId, lat, lng, iconUrl });
                     });
                 }
             });
@@ -103,7 +104,7 @@ module.exports = (io) => {
                     console.log(nearbyUsers, `nearby users will receive the event that user ${userId} removed their location`);
                     nearbyUsers.forEach((user) => {
                         console.log("emitting removeLocation event to user" + user.userId + "from user" + userId + "that removed their location");
-                        io.to(`${user.userId}`).emit('removeLocation', { userId });
+                        io.to(`${user.userId}`).emit('removeMarker', { userId });
                     });
                 }
             });
@@ -113,22 +114,27 @@ module.exports = (io) => {
     // Handle join event for when a user opens the meet map. Add them to the room
     const handleUserThatOpenedMeetMap = (socket, io) => {
         socket.on('join', ({ userId, lat, lng }) => {
-            if (usersInRoom.has(userId)) {
-                console.log(`User ${userId} has already joined the room`);
-            } else {
-                socket.join(userId);
-                usersInRoom.add(userId);
-                console.log(usersInRoom, "usersInRoom after adding user");
-            }
+            // if (usersInRoom.has(userId)) {
+            //     console.log(`User ${userId} has already joined the room`);
+            // } else {
+            socket.request.user = userId;
+            socket.join(userId);
+            usersInRoom.add(userId);
+            console.log(usersInRoom, "usersInRoom after adding user");
+            // }
         });
     };
 
     // Handle leave event for when a user closes the meet map. Remove them from the room
     const handleUserThatClosedMeetMap = (socket, io) => {
-        socket.on('leave', ({ userId, lat, lng }) => {
-            console.log('leave event emitted. Removing user from room');
-            socket.leave(userId);
-        });
+        const userId = `${socket.request.user}`;
+        redis.zrem('locations', userId);
+        redis.hdel('userIcons', userId);
+        redis.zrem('traversingPositions', userId);
+        socket.leave(userId);
+        usersInRoom.delete(userId);
+        console.log(usersInRoom, "usersInRoom after removing user");
+        console.log(socket.request.user, "user disconnected");
     };
 
     // Track user traversing on map to show them if someone is starting to share their location
@@ -143,18 +149,18 @@ module.exports = (io) => {
     io.on('connection', (socket) => {
         console.log('user connected');
         handleUserThatOpenedMeetMap(socket, io);
-        handleUserThatClosedMeetMap(socket, io);
         getStoredLocations(socket, io);
         addUserTraversingPosition(socket, io);
         addUserToRedis(socket, io);
         removeUserFromRedis(socket, io);
         socket.on('disconnect', () => {
-            console.log('user disconnected');
+            handleUserThatClosedMeetMap(socket, io);
         });
     });
 
     // Meet map route
     router.get('/', ensureAuthenticated, (req, res) => {
+        user = req.user;
         res.render('./meet-map-views/meet-map', { user: req.user });
     });
 

@@ -33,11 +33,9 @@
         </div>
         <div class="mt-10 font-semibold text-lg text-white loading-status text-center">Getting your location...</div>
     </div>
-    <label class="flex items-center cursor-pointer">
-        <span class="mr-2">Share my location</span>
-        <input type="checkbox" id="share-location-checkbox"
-            class="form-checkbox h-4 w-4 text-green-600 transition duration-150 ease-in-out">
-    </label>
+    <button id="toggleLocationButton" class="toggle-button w-full text-center p-2 ">
+        <i class="fa-solid fa-tower-broadcast text-2xl text-black"></i>
+    </button>
     <div id="map" class="w-full h-full" data-userId="<%- user.id %>">
 
     </div>
