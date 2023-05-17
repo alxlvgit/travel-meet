@@ -120,11 +120,11 @@ router.get('/posts/:id', ensureAuthenticated, async (req, res) => {
     }
 });
 
-// Follow user
+//Follow user
 router.post('/follow/:id', async (req, res) => {
     try {
         const userToFollowId = Number(req.params.id);
-        const currentUser = req.session.user;
+        const currentUser = req.user;
 
         await prisma.user.update({
             where: { id: currentUser.id },
@@ -138,11 +138,11 @@ router.post('/follow/:id', async (req, res) => {
     }
 });
 
-// Unfollow user
+//Unfollow user
 router.post('/unfollow/:id', async (req, res) => {
     try {
         const userToUnfollowId = Number(req.params.id);
-        const currentUser = req.session.user;
+        const currentUser = req.user;
 
         await prisma.user.update({
             where: { id: currentUser.id },
