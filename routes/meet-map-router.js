@@ -27,7 +27,7 @@ module.exports = (io) => {
     });
 
     // Handle event for when a user requests all shared locations in the radius of 20km
-    const getStoredLocations = (socket, io) => {
+    const getStoredLocations = (socket) => {
         socket.on('getSharedLocations', async ({ lat, lng, userId }) => {
             await redis.georadius('locations', lng, lat, 30, 'km', 'WITHDIST', 'WITHCOORD', 'ASC', async (err, locations) => {
                 if (err) {
@@ -112,7 +112,7 @@ module.exports = (io) => {
     };
 
     // Handle join event for when a user opens the meet map. Add them to the room
-    const handleUserThatOpenedMeetMap = (socket, io) => {
+    const handleUserThatOpenedMeetMap = (socket) => {
         socket.on('join', ({ userId, lat, lng }) => {
             // if (usersInRoom.has(userId)) {
             //     console.log(`User ${userId} has already joined the room`);
@@ -126,7 +126,7 @@ module.exports = (io) => {
     };
 
     // Handle leave event for when a user closes the meet map. Remove them from the room
-    const handleUserThatClosedMeetMap = (socket, io) => {
+    const handleUserThatClosedMeetMap = (socket) => {
         const userId = `${socket.request.user}`;
         redis.zrem('locations', userId);
         redis.hdel('userIcons', userId);
@@ -139,7 +139,7 @@ module.exports = (io) => {
 
     // Track user traversing on map to show them if someone is starting to share their location
     // This is for users that are not sharing their location themselves but are just viewing the map
-    const addUserTraversingPosition = (socket, io) => {
+    const addUserTraversingPosition = (socket) => {
         socket.on('userTraversingOnMap', async ({ userId, lat, lng }) => {
             await redis.geoadd('traversingPositions', lng, lat, userId);
         });
@@ -148,13 +148,13 @@ module.exports = (io) => {
     // Set up event listeners for Socket.io connections
     io.on('connection', (socket) => {
         console.log('user connected');
-        handleUserThatOpenedMeetMap(socket, io);
-        getStoredLocations(socket, io);
-        addUserTraversingPosition(socket, io);
+        handleUserThatOpenedMeetMap(socket);
+        getStoredLocations(socket);
+        addUserTraversingPosition(socket);
         addUserToRedis(socket, io);
         removeUserFromRedis(socket, io);
         socket.on('disconnect', () => {
-            handleUserThatClosedMeetMap(socket, io);
+            handleUserThatClosedMeetMap(socket);
         });
     });
 

@@ -22,21 +22,47 @@
 
     <script defer src="../maps-front-end/user-location.js"></script>
     <script defer src="../secret-keys.js"></script>
-    <script defer src="../maps-front-end/meet.js"></script>
+    <script defer src="../maps-front-end/map-events.js"></script>
+    <script defer src="../maps-front-end/map-main.js"></script>
     <title>Map</title>
 </head>
 
 <body class="w-full h-full relative">
+    <div id="infoWindow"
+        class="fixed hidden top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded shadow-lg z-50">
+        <h2 class="text-xl font-semibold mb-2">Location Sharing</h2>
+        <p id="info-message" class="text-gray-600"></p>
+        <button id="closeInfoWindow"
+            class="mt-4 bg-gray-500 text-white px-3 py-2 rounded hover:bg-gray-300">Close</button>
+    </div>
+
     <div id="loading"
         class="fixed hidden top-0 left-0 w-full h-full bg-black bg-opacity-50 flex flex-col justify-center items-center z-50">
         <div class="spinner border-4 border-opacity-75 border-white border-t-0 rounded-full w-12 h-12 animate-spin">
         </div>
         <div class="mt-10 font-semibold text-lg text-white loading-status text-center">Getting your location...</div>
     </div>
-    <button id="toggleLocationButton" class="toggle-button w-full text-center p-2 ">
-        <i class="fa-solid fa-tower-broadcast text-2xl text-black"></i>
-    </button>
-    <div id="map" class="w-full h-full" data-userId="<%- user.id %>">
+
+    <div class="flex w-full h-12 justify-evenly align-middle items-center">
+        <select id="dropdown"
+            class="block bg-white border border-gray-300 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 w-24 h-3/4">
+            <option value="meet">Meet</option>
+            <option value="events">Events</option>
+        </select>
+        <button id="toggleLocationButton" class="toggle-button text-center p-2 w-24">
+            <i class="fa-solid fa-tower-broadcast text-2xl text-black"></i>
+        </button>
+        <select id="dropdown-events"
+            class="block bg-white border border-gray-300 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 w-24 hidden h-3/4">
+            <option value="all">All</option>
+            <option value="music">Music</option>
+            <option value="sports">Sports</option>
+            <option value="art">Art</option>
+            <option value="seminars">Seminars</option>
+        </select>
+    </div>
+
+    <div id="map" class="w-full h-full" data-userid="<%- user.id %>">
 
     </div>
     <%- include("../partials/footer.ejs"); %>
