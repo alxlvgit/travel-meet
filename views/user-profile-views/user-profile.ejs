@@ -10,7 +10,6 @@
     <script defer src="../profile-front-end/profile.js"></script>
 </head>
 
-
 <body class="bg-gray-100">
     <header class="p-10">
     </header>
@@ -51,24 +50,40 @@
                                 <% } %>
                         </div>
                     </div>
-                    <div id="posts" class="mt-4">
-                        <div id="feedsContent">
-                        </div>
-                    </div>
-                    <div class="flex justify-center items-center mt-8">
+                    <div class="flex justify-center">
                         <h1 class="text-2xl font-bold">
                             <% if (currentUser) { %>
                                 My Posts
-                                <% } else {%>
-                                    <%- user.name %>'s Posts
-                                        <% } %>
+                            <% } else {%>
+                                <%- user.name %>'s Posts
+                            <% } %>
                         </h1>
                     </div>
-                </div>  
-            </div>
-        </div>
-    </div>
-    <%- include("../partials/footer.ejs"); %>
+                    <div id="posts" class="mt-4 mb-20">
+                        <% posts.forEach(post => { %>
+                            <div class="w-full max-h-64 flex justify-center items-center mb-4">
+                                <img src="<%- post.imageURI %>" class="object-cover rounded-xl max-w-5/6 max-h-5/6 w-full h-auto" alt="<%- post.altText %>">
+                            </div>
+                            <div class='flex flex-col justify-evenly p-1 items-center w-full overflow-auto'>
+                                <h3 class='text-md font-semibold line-clamp-1 w-11/12 sm:text-xl text-center'><%= post.title %></h3>
+                                <div class="flex items-center justify-between h-1/4 w-full px-4 pb-2 mt-2">
+                                    <div class="flex items-center justify-center mr-2 relative" >
+                                        <a class= "absolute w-full h-full top-0 left-0 z-20" href="/user-profile/<%- user.id %>"></a>
+                                        <img src="<%- user.profileImageURI %>" class="w-4 h-4 sm:h-6 sm:w-6 rounded-full mr-1" alt="<%- user.name %>">
+                                        <p class='text-xs sm:text-sm text-center line-clamp-2'><%= user.name %></p>
+                                    </div>
+                                    <p class='text-xs sm:text-sm text-center mr-2 line-clamp-2'>
+                                        <i class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i><%= post.location %>
+                                    </p>
+                                    <p class='text-xs sm:text-sm text-center line-clamp-2'>
+                                        <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"></i>
+                                        <%= new Date(post.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %>
+                                    </p>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                    <%- include("../partials/footer.ejs"); %>                                       
 
     <script>
         const followButton = document.getElementById('followBtn');
