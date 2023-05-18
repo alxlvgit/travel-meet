@@ -156,6 +156,34 @@ router.post('/unfollow/:id', async (req, res) => {
     }
 });
 
+// Check if following user
+router.get('/is-following/:id', async (req, res) => {
+    try {
+        const userId = Number(req.params.id);
+        const currentUser = req.user;
+
+        const isFollowing = await prisma.user.findFirst({
+            where: { 
+                id: currentUser.id,
+                following: {
+                    some: {
+                        id: userId
+                    }
+                }
+            }
+        });
+
+        if (isFollowing) {
+            res.status(200).json({ isFollowing: true });
+        } else {
+            res.status(200).json({ isFollowing: false });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "An error occurred while checking follow status" });
+    }
+});
+
 
 
 module.exports = router;

@@ -92,6 +92,11 @@
         followButton.addEventListener('click', () => {
             toggleFollow(userId);
         });
+
+        // Call checkFollowStatus when the page loads
+    document.addEventListener('DOMContentLoaded', (event) => {
+        checkFollowStatus(userId);
+    });
         
         async function toggleFollow(userId) {
             const followBtn = document.getElementById('followBtn');
