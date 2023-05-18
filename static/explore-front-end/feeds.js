@@ -1,3 +1,4 @@
+
 const feedsButton = document.getElementById('feed-link');
 const feedsContainer = document.getElementById('feeds-container');
 const footerButtons = document.querySelectorAll('.footer-btn');
@@ -27,7 +28,7 @@ const getPosts = async (category) => {
 const createPostCard = async (post) => {
   const postLink = document.createElement('a');
   postLink.href = `/posts/${post.id}`;
-  postLink.classList.add('w-full', 'h-full', 'absolute', 'z-10');
+  postLink.classList.add('w-full', 'h-full', 'absolute', 'z-10');  
   const card = document.createElement('div');
   card.classList.add(
     'relative',
@@ -71,21 +72,21 @@ const renderPosts = async (category) => {
     for (const post of posts) {
       const { postLink, card } = await createPostCard(post);
       card.innerHTML = `
-    <div class="w-full h-3/4 flex justify-center items-center">
-    <img src="${post.imageURI}" class="object-cover rounded-xl h-full w-full max-w-full" alt="${post.altText}">
-  </div>
-  <div class='flex flex-col justify-evenly p-1 items-center w-full overflow-hidden'>
-    <h3 class='text-md font-semibold line-clamp-1 w-11/12 sm:text-xl text-center'>${post.title}</h3>
-    <div class="flex items-center justify-between h-1/4 w-full px-4 pb-2 mt-2">
-      <div class="flex items-center justify-center mr-2 relative" > 
-      <a class= "absolute w-full h-full top-0 left-0 z-20" href="/user-profile/${post.author.id}">
-      </a>
-      <img src="${post.author.profileImageURI}" class="w-4 h-4 sm:h-6 sm:w-6 rounded-full mr-1" alt="${post.author.name}">
-      <p class='text-xs sm:text-sm text-center line-clamp-2'>
+      <div class="w-full h-3/4 flex justify-center items-center">
+      <img src="${post.imageUrl}" class="object-cover rounded-xl h-full w-full max-w-full" alt="${post.caption}">
+    </div>
+    <div class='flex flex-col justify-evenly p-1 items-center w-full overflow-hidden'>
+      <h3 class='text-md font-semibold line-clamp-1 w-11/12 sm:text-xl text-center'>${post.title}</h3>
+      <div class="flex items-center justify-between h-1/4 w-full px-4 pb-2 mt-2">
+        <div class="flex items-center justify-center mr-2 relative" > 
+        <a class= "absolute w-full h-full top-0 left-0 z-20" href="/user-profile/${post.author.id}">
+        </a>
+        <img src="${post.author.profileImageURI}" class="w-4 h-4 sm:h-6 sm:w-6 rounded-full mr-1" alt="${post.author.name}">
+        <p class='text-xs sm:text-sm text-center line-clamp-2'>
       ${post.author.name}
       </p>
       </div>
-      <p class='text-xs sm:text-sm text-center mr-2 line-clamp-2'>
+      <p class='text-xs sm:text-sm text-center mr-2'>
         <i class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i>${post.location}
       </p>
       <p class='text-xs sm:text-sm text-center line-clamp-2'>

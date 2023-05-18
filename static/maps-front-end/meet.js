@@ -1,3 +1,4 @@
+
 const socket = io();
 let map = null;
 const footerButtons = document.querySelectorAll('.footer-btn');
@@ -10,7 +11,6 @@ let isSharingLocation = false;
 const mapContainer = document.getElementById('map');
 const userId = mapContainer.dataset.userid;
 console.log(userId, "user id from map container");
-
 
 
 // Initialize the map

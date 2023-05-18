@@ -2,6 +2,24 @@ const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const { url } = require('inspector');
+
+const bucketName = process.env.BUCKET_NAME
+const bucketRegion = process.env.BUCKET_REGION
+const accessKey = process.env.ACCESS_KEY
+const secretAccessKey = process.env.SECRET_ACCESS_KEY
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKey,
+    secretAccessKey: secretAccessKey,
+  },
+  region: bucketRegion,
+});
+
+// Gets all posts for feed
 router.get('/posts', async (req, res) => {
   const { limit, category } = req.query;
   const where = category ? { category } : {};
@@ -10,36 +28,24 @@ router.get('/posts', async (req, res) => {
     where: where,
     include: {
       author: true,
+    },
+    orderBy: {
+      // Orders posts by newest posts first
+      createdAt: 'desc'
     }
   });
-  // console.log(posts);
+
+  for(const post of posts) {
+    const getObjectParams = {
+      Bucket: bucketName,
+      Key: post.image,
+    }
+    const command = new GetObjectCommand(getObjectParams);
+    const url = await getSignedUrl(s3, command, { expiresIn: 60 });
+    post.imageUrl = url
+  }
+
   res.json({ posts: posts });
 });
-
-// Handle form submission
-router
-  .route("/post-create")
-  .get((req, res) => {
-    res.render("add-post-views/post-create")
-  })
-  .post(async (req, res) => {
-    try {
-      // Create a new post object with the data from the form
-      const newPost = await prisma.post.create({
-        data: {
-          title: req.body.title,
-          description: req.body.description,
-          location: req.body.location,
-          category: req.body.category,
-          image: req.body.image
-        }
-      });
-      // Redirect to the homepage
-      res.redirect('/');
-    } catch (error) {
-      console.error(error);
-      res.render('error', { error });
-    }
-  });
 
 module.exports = router;

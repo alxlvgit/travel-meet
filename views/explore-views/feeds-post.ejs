@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page Title</title>
+  <title>Posts</title>
   <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
@@ -17,6 +17,7 @@
 
   <script defer src="../explore-front-end/post.js"></script>
 </head>
+
 <body class="w-full h-full">
   <a href="/" class="absolute top-5 left-2 text-white font-bold text-sm sm:text-base z-10 back-link">
     <i class="fa-solid fa-angle-left fa-2xl"></i>
@@ -25,7 +26,7 @@
   <div class="flex flex-col m-auto w-full h-full box-border relative">
     <!-- top section start-->
     <div class="transition-all ease-in-out duration-500 flex-col w-full relative h-1/4" id="top-section">
-      <img src="<%- post.imageURI %>" alt="<%- post.caption %>"
+      <img src="<%- post.imageUrl %>" alt="<%- post.caption %>"
         class="w-full h-full object-cover absolute top-0 left-0 z-0" />
       <div class="w-full h-full flex flex-col justify-end relative">
         <div class="absolute h-12 w-full opacity-50 bg-black bottom-0" id="bottom-tint">
@@ -56,11 +57,11 @@
         </button>
       </div>
       <div class="creator-container flex  w-full items-center">
-        <a href="/user-profile/<%- post.author.id %>">
-            <img src="<%- post.author.profileImageURI %>"
-              class="w-10 h-10  object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2" alt="<%- post.author.name %>">
-        </a>
-        <div class="flex flex-col ml-3 justify-start flex-1 creator-info">    
+        <a href=""></a>
+        <img src="<%- post.author.profileImageURI %>"
+          class="w-10 h-10  object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2"
+          alt="<%- post.caption %>">
+        <div class="flex flex-col ml-3 justify-start flex-1 creator-info">
           <h1 class="text-base font-semibold text-left w-1/2">
             <%- post.author.name %>
           </h1>
@@ -74,11 +75,10 @@
         </button>
       </div>
       <div class="creator-message mt-2">
-        <p class="font-semibold text-base">Message from <%- post.author.name.split(" ")[0] %>
+        <p class="font-semibold text-base">Message from <%- post.author.name %>
         </p>
-                <p class=" mb-8">
-            <%- post.authorMessage %>
-        </p>
+        <p class=" mb-8">
+          <%- post.authorMessage %></p>
       </div>
       <div class="related-feeds flex-col flex w-auto relative">
         <% if (relatedPosts.length> 0) { %>
@@ -91,7 +91,7 @@
                   class="swiper-slide w-auto mr-2 flex flex-col justify-center relative hover:brightness-75 transition-all ease-in-out duration-500">
                   <a href="/posts/<%- post.id %>" class="absolute top-0 left-0 w-full h-full"></a>
                   <img class="w-24 h-24 object-cover rounded-xl border border-gray-100 shadow-md sm:w-32 sm:h-32"
-                    src="<%- post.imageURI %>" alt="Post Image" />
+                    src="<%- post.imageUrl %>" alt="<%- post.caption %>" />
                   <p class="text-center max-w-full text-xs mt-1 sm:text-sm">
                     <i class="fas fa-map-marker-alt text-center w-3 h-3 text-black">
                     </i>
@@ -108,5 +108,7 @@
   </div>
   <!-- Main container end -->
 </body>
+
+</html>
 
 </html>
