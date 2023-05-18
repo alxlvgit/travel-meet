@@ -28,6 +28,7 @@ router.get("/logout", ensureAuthenticated, (req, res) => {
     req.logout((err) => {
         if (err) console.log(err);
     });
+    console.log("user logged out");
     res.redirect("/auth/login");
 });
 
