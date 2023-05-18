@@ -73,7 +73,7 @@ const renderPosts = async (category) => {
       const { postLink, card } = await createPostCard(post);
       card.innerHTML = `
       <div class="w-full h-3/4 flex justify-center items-center">
-      <img src="${post.imageURI}" class="object-cover rounded-xl h-full w-full max-w-full" alt="${post.altText}">
+      <img src="${post.imageUrl}" class="object-cover rounded-xl h-full w-full max-w-full" alt="${post.caption}">
     </div>
     <div class='flex flex-col justify-evenly p-1 items-center w-full overflow-hidden'>
       <h3 class='text-md font-semibold line-clamp-1 w-11/12 sm:text-xl text-center'>${post.title}</h3>
@@ -126,7 +126,7 @@ const feedsButtonHandler = async () => {
   await filterFeedsByCategories(defaultSortBtn);
 }
 
-feedsButton.addEventListener('click', () => {
+feedsButton.addEventListener('click', async () => {
   await feedsButtonHandler();
 });
 

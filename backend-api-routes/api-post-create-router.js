@@ -42,15 +42,20 @@ const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex'
 
 // Get add post page
 router.get('/', async (req, res) => {
+  const user = {
+    username: req.user,
+    email: req.user.email,
+    profileImage: req.user.profileImageURI,
+  };
   // shows post create page(user inputs)
-  res.render('add-post-views/post-create')
+  res.render('add-post-views/post-create', { user })
 });
 
 // Create a new post
 router.post('/', upload.single('image'), async (req, res) => {
   const { title, caption, location, category, authorMessage } = req.body;
-  console.log(req.body);
-  console.log(req.file);
+  // console.log(req.body);
+  // console.log(req.file);
 
   // Resize image
   const buffer = await sharp(req.file.buffer).resize({ width: 1080, height: 1920, fit: "contain" }).toBuffer()
@@ -66,6 +71,9 @@ router.post('/', upload.single('image'), async (req, res) => {
   const command = new PutObjectCommand(params)
   await s3.send(command)
 
+  // Access the user's information from req.user
+  const user = req.user;
+
   const post = await prisma.post.create({
     data: {
       image: imageName,
@@ -74,9 +82,15 @@ router.post('/', upload.single('image'), async (req, res) => {
       location: location,
       category: category,
       authorMessage: authorMessage,
+      author: {
+        connect: {
+          id: user.id
+        }
+      }
     }
   });
-  res.send({ post });
+  console.log(post)
+  res.redirect("/");
 });
 
 // Delete a post

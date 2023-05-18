@@ -43,17 +43,17 @@ passportMiddleware(app);
 
 
 // For testing purposes only
-app.use((req, res, next) => {
-    console.log(`User details are: `);
-    console.log(req.user);
+// app.use((req, res, next) => {
+//     console.log(`User details are: `);
+//     console.log(req.user);
 
-    console.log("Entire session object:");
-    console.log(req.session);
+//     console.log("Entire session object:");
+//     console.log(req.session);
 
-    console.log(`Session details are: `);
-    console.log((req.session).passport);
-    next();
-});
+//     console.log(`Session details are: `);
+//     console.log((req.session).passport);
+//     next();
+// });
 
 // For testing purposes only
 // Test middleware to store user location in session
