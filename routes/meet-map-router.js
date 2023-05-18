@@ -3,10 +3,10 @@ const { ensureAuthenticated } = require('../passport-middleware/check-auth');
 module.exports = (io) => {
     const router = require('express').Router();
 
-    // Configure Redis
-    const Redis = require('ioredis');
-    const redis = new Redis({ host: `${process.env.REDIS_HOST}`, port: `${process.env.REDIS_PORT}`, password: `${process.env.REDIS_PASSWORD}` });
-    const usersInRoom = new Set();
+    // // Configure Redis
+    // const Redis = require('ioredis');
+    // const redis = new Redis({ host: `${process.env.REDIS_HOST}`, port: `${process.env.REDIS_PORT}`, password: `${process.env.REDIS_PASSWORD}` });
+    // const usersInRoom = new Set();
 
     // For testing purposes only. Store test locations in Redis
     const storedLocations = [{ userId: 5, lat: 49.2689, lng: -123.0035, iconUrl: "https://indianmemetemplates.com/wp-content/uploads/fu-that-yao-ming.jpg" },
@@ -139,19 +139,33 @@ module.exports = (io) => {
         });
     };
 
-    // Set up event listeners for Socket.io connections
-    io.on('connection', (socket) => {
-        console.log('user connected');
-        handleUserThatOpenedMeetMap(socket, io);
-        handleUserThatClosedMeetMap(socket, io);
-        getStoredLocations(socket, io);
-        addUserTraversingPosition(socket, io);
-        addUserToRedis(socket, io);
-        removeUserFromRedis(socket, io);
-        socket.on('disconnect', () => {
-            console.log('user disconnected');
-        });
-    });
+
+    // // Handle event for when a user is traversing on the map
+    // const addUserTraversingPosition = (socket, io) => {
+    //     socket.on('userTraversingOnMap', ({ userId, lat, lng }) => {
+    //         // console.log('user traversing on map event emitted. Adding user and location to Redis');
+    //         // console.log(userId, "userId", lat, "lat", lng, "lng", "user's position on map");
+    //         redis.geoadd('traversingPositions', lng, lat, userId);
+    //         redis.expire('traversingPositions', 600, function (err, reply) {
+    //             if (err) throw err;
+    //             // console.log(reply, "reply"); // output: 1
+    //         });
+    //     });
+    // };
+
+    // // Set up event listeners for Socket.io connections
+    // io.on('connection', (socket) => {
+    //     console.log('user connected');
+    //     handleUserThatOpenedMeetMap(socket, io);
+    //     handleUserThatClosedMeetMap(socket, io);
+    //     getStoredLocations(socket, io);
+    //     addUserTraversingPosition(socket, io);
+    //     addUserToRedis(socket, io);
+    //     removeUserFromRedis(socket, io);
+    //     socket.on('disconnect', () => {
+    //         console.log('user disconnected');
+    //     });
+    // });
 
     // Meet map route
     router.get('/', ensureAuthenticated, (req, res) => {
