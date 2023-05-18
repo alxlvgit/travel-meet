@@ -21,10 +21,9 @@ const s3 = new S3Client({
 router.get('/:id', ensureAuthenticated, async (req, res) => {
   try {
     const userId = Number(req.params.id);
-    // console.log(userId);
     const user = await prisma.user.findUnique({
       where: {
-        id: 1,
+        id: userId,
       },
       include: {
         posts: true, // Fetches the posts associated with the user
