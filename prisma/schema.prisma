@@ -29,11 +29,10 @@ model User {
 
 model Post {
   id        Int      @id @default(autoincrement())
+  image     String
   title     String
   createdAt DateTime @default(now())
   caption   String
-  imageURI  String?
-  altText   String?
   location  String
   category  String
   author    User?    @relation(fields: [authorId], references: [id])

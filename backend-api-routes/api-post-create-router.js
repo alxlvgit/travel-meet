@@ -1,11 +1,19 @@
 const express = require('express');
 const router = express.Router();
+
+// Import crypto library
+const crypto = require('crypto');
+// Import Multer
+const multer = require('multer');
+// Import sharp(Image resizing)
+const sharp = require('sharp');
+
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const { ensureAuthenticated } = require('../passport-middleware/check-auth');
 
 // Import s3 bucket
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 // Import dotenv
 const dotenv = require('dotenv');
@@ -24,54 +32,69 @@ const s3 = new S3Client({
   region: bucketRegion,
 });
 
-// Import Multer
-const multer = require('multer');
-
 // Set Multer storage
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Create middleware to upload image
-// Can change to multiple photos later
+// Generate random image name(Avoid overwriting image of same name)
+// Uses crypto to create random bytes and creates random image name
+const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
+
 // Get add post page
-router.get('/', ensureAuthenticated, (req, res) => {
-  res.render('add-post-views/post-create', {
-    user: req.user
-  });
+router.get('/', async (req, res) => {
+  const user = {
+    username: req.user,
+    email: req.user.email,
+    profileImage: req.user.profileImageURI,
+  };
+  // shows post create page(user inputs)
+  res.render('add-post-views/post-create', { user })
 });
 
 // Create a new post
-router.post('/', ensureAuthenticated, upload.single('image'), async (req, res) => {
+router.post('/', upload.single('image'), async (req, res) => {
   const { title, caption, location, category, authorMessage } = req.body;
-  console.log(req.body);
-  console.log(req.file);
-  req.file.buffer
+  // console.log(req.body);
+  // console.log(req.file);
 
+  // Resize image
+  const buffer = await sharp(req.file.buffer).resize({ width: 1080, height: 1920, fit: "contain" }).toBuffer()
+
+  const imageName = randomImageName();
   const params = {
     Bucket: bucketName,
-    Key: req.file.originalname,
-    Body: req.file.buffer,
+    Key: imageName,
+    Body: buffer,
     ContentType: req.file.mimetype,
   };
 
   const command = new PutObjectCommand(params)
-
   await s3.send(command)
+
+  // Access the user's information from req.user
+  const user = req.user;
 
   const post = await prisma.post.create({
     data: {
+      image: imageName,
       title: title,
       caption: caption,
       location: location,
       category: category,
       authorMessage: authorMessage,
+      author: {
+        connect: {
+          id: user.id
+        }
+      }
     }
   });
-  res.json(post);
+  console.log(post)
+  res.redirect("/");
 });
 
 // Delete a post
-router.delete('/:postId', ensureAuthenticated, async (req, res) => {
+router.delete('/:postId', async (req, res) => {
   const { postId } = req.params.postId;
   const deletePost = await prisma.post.delete({
     where: {
@@ -83,7 +106,7 @@ router.delete('/:postId', ensureAuthenticated, async (req, res) => {
 });
 
 // Update a post
-router.put('/:postId', ensureAuthenticated, async (req, res) => {
+router.put('/:postId', async (req, res) => {
   const { postId } = req.body;
   const updatePost = await prisma.post.update({
     where: {
