@@ -4,6 +4,22 @@ const { fetchSingleEvent, filterEventImages, getGroups, totalNumberOfPeopleForEv
 const { getPost, getRelatedPosts } = require('../services/posts-services');
 const prisma = new PrismaClient();
 const { ensureAuthenticated } = require('../passport-middleware/check-auth');
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+
+
+const bucketName = process.env.BUCKET_NAME
+const bucketRegion = process.env.BUCKET_REGION
+const accessKey = process.env.ACCESS_KEY
+const secretAccessKey = process.env.SECRET_ACCESS_KEY
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKey,
+    secretAccessKey: secretAccessKey,
+  },
+  region: bucketRegion,
+});
 
 router.get('/', ensureAuthenticated, async (req, res) => {
   const users = await prisma.user.findMany();
@@ -12,23 +28,23 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 );
 
 // Feeds post page
-router.get('/feeds/:id', ensureAuthenticated, async (req, res) => {
-  try {
-    const postId = req.params.id;
-    const postData = await prisma.post.findUnique({
-      where: {
-        id: postId
-      }
-    });
-    res.render('./explore-views/feeds-post', {
-      post: postData,
-      author: author.name,
-      profileImageURI: author.profileImageURI,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-});
+// router.get('/feeds/:id', ensureAuthenticated, async (req, res) => {
+//   try {
+//     const postId = req.params.id;
+//     const postData = await prisma.post.findUnique({
+//       where: {
+//         id: postId
+//       }
+//     });
+//     res.render('./explore-views/feeds-post', {
+//       post: postData,
+//       author: author.name,
+//       profileImageURI: author.profileImageURI,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
 
 // Event page
 router.get('/event/:id', ensureAuthenticated, async (req, res) => {
@@ -111,25 +127,9 @@ router.get('/delete-group/:groupId/:eventId', ensureAuthenticated, async (req, r
 }
 );
 
-const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
-const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
-
-const bucketName = process.env.BUCKET_NAME
-const bucketRegion = process.env.BUCKET_REGION
-const accessKey = process.env.ACCESS_KEY
-const secretAccessKey = process.env.SECRET_ACCESS_KEY
-
-const s3 = new S3Client({
-  credentials: {
-    accessKeyId: accessKey,
-    secretAccessKey: secretAccessKey,
-  },
-  region: bucketRegion,
-});
 
 // Feeds post page
 router.get('/posts/:id', ensureAuthenticated, async (req, res) => {
-
   const postId = Number(req.params.id);
   try {
     const postData = await prisma.post.findUnique({
@@ -142,10 +142,8 @@ router.get('/posts/:id', ensureAuthenticated, async (req, res) => {
     });
 
     const relatedPosts = await getRelatedPosts(postData.category, postId);
-    console.log(relatedPosts);
-
     relatedPosts.push(postData);
-  
+
     for (const rPost of relatedPosts) {
       const getObjectParams = {
         Bucket: bucketName,

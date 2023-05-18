@@ -35,16 +35,17 @@ router.get('/posts', async (req, res) => {
     }
   });
 
-  for(const post of posts) {
-    const getObjectParams = {
-      Bucket: bucketName,
-      Key: post.image,
+  if (posts.length && posts[0].image) {
+    for (const post of posts) {
+      const getObjectParams = {
+        Bucket: bucketName,
+        Key: post.image,
+      }
+      const command = new GetObjectCommand(getObjectParams);
+      const url = await getSignedUrl(s3, command, { expiresIn: 60 });
+      post.imageUrl = url
     }
-    const command = new GetObjectCommand(getObjectParams);
-    const url = await getSignedUrl(s3, command, { expiresIn: 60 });
-    post.imageUrl = url
   }
-
   res.json({ posts: posts });
 });
 

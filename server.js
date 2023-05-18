@@ -14,7 +14,7 @@ const chatRouter = require('./routes/chat-router');
 const authRouter = require('./routes/auth-route');
 const passportMiddleware = require('./passport-middleware/passport-middleware');
 const session = require('express-session');
-const { forwardAuthenticated } = require('./passport-middleware/check-auth');
+// const { forwardAuthenticated } = require('./passport-middleware/check-auth');
 
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, { cors: { origin: "*" } });
