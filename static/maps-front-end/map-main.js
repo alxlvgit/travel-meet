@@ -216,9 +216,12 @@ const createUserMarker = (icon, feature, userId) => {
     const el = document.createElement('div');
     el.className = 'marker';
     el.id = userId;
-    el.classList.add('marker', 'w-16', 'h-16', 'rounded-full', 'bg-no-repeat', 'bg-center', 'bg-cover', 'border-2', 'border-white', 'shadow-lg');
-    el.style.backgroundImage = `url(${icon})`;
     el.style.backgroundSize = '100%';
+    el.style.backgroundRepeat = 'no-repeat';
+    el.style.backgroundPosition = 'center';
+    el.style.backgroundSize = 'cover';
+    el.classList.add('marker', 'w-8', 'h-8', 'rounded-full', 'border-2', 'border-white', 'shadow-lg');
+    el.style.backgroundImage = `url(${icon})`;
     const link = document.createElement('a');
     link.href = '/user-profile/' + feature.properties.userId;
     link.target = '_blank';
@@ -238,13 +241,10 @@ const addUserMarkersToMap = async (map, storedLocations, icons) => {
     // For each cluster on the screen, create an HTML marker for it (if didn't create yet),and add it to the map if it's not there already
     const markersSource = map.getSource('markers');
     if (markersSource) {
-        console.log("markers source exists");
         markersSource.setData({ type: 'FeatureCollection', features: markersData });
         const features = map.querySourceFeatures('markers');
-        console.log(features, "features from map");
         features.forEach(feature => {
             if (!feature.properties.cluster) {
-                console.log("feature is not a cluster", feature.properties.userId);
                 let marker = markers[feature.properties.userId];
                 if (!marker) {
                     const icon = icons[feature.properties.userId];
