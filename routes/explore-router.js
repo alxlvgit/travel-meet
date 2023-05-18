@@ -142,9 +142,10 @@ router.get('/posts/:id', ensureAuthenticated, async (req, res) => {
     });
 
     const relatedPosts = await getRelatedPosts(postData.category, postId);
+    console.log(relatedPosts);
 
     relatedPosts.push(postData);
-
+  
     for (const rPost of relatedPosts) {
       const getObjectParams = {
         Bucket: bucketName,
@@ -155,6 +156,8 @@ router.get('/posts/:id', ensureAuthenticated, async (req, res) => {
       const url = await getSignedUrl(s3, command, { expiresIn: 60 });
       rPost.imageUrl = url;
     }
+
+    relatedPosts.pop();
 
     const post = postData; // post is the post that we want to render
     res.render('./explore-views/feeds-post', { post: post, relatedPosts: relatedPosts });
