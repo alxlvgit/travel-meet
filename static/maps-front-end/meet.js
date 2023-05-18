@@ -180,7 +180,6 @@ const generateRandomLocationForTestUser = async (userLocation) => {
 //     socket.emit('join', { userId: currentTestUser });
 // });
 
-
 // Share location
 // shareLocationCheckbox.addEventListener('click', async () => {
 //     isSharingLocation = shareLocationCheckbox.checked;
