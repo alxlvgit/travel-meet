@@ -21,8 +21,8 @@ module.exports = (io) => {
         redis.geoadd('locations', location.lng, location.lat, location.userId);
         redis.hset('userIcons', location.userId, location.iconUrl);
         // to remove test shared locations and icons from redis:
-        // redis.zrem('locations', '15', '16', '17', '18', '19');
-        // redis.hdel('userIcons', '15', '16', '17', '18', '19');
+        // redis.zrem('locations', '8', '9');
+        // redis.hdel('userIcons', '8', '9');
         console.log('test location with icon added to redis', location);
     });
 
@@ -158,7 +158,7 @@ module.exports = (io) => {
         });
     });
 
-//     // Meet map route
+    //     // Meet map route
     router.get('/', ensureAuthenticated, (req, res) => {
         user = req.user;
         res.render('./meet-map-views/meet-map', { user: req.user });

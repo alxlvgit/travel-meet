@@ -1,5 +1,6 @@
 const footerButtons = document.querySelectorAll('.footer-btn');
 const addPostBtn = document.getElementById('add-post-btn');
+const savePost = document.getElementById('save-post');
 
 
 window.addEventListener('load', () => {
@@ -9,3 +10,9 @@ window.addEventListener('load', () => {
     addPostBtn.classList.add('text-[#878d26]');
 }
 );
+
+// Temporary disable savePost button
+savePost.addEventListener('click', async (event) => {
+    event.preventDefault();
+    return;
+});

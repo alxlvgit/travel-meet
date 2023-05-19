@@ -13,7 +13,7 @@ const shareLocationCheckbox = document.getElementById('share-location-checkbox')
 const mapContainer = document.getElementById('map');
 const infoWindow = document.getElementById('infoWindow');
 const closeInfoWindow = document.getElementById('closeInfoWindow');
-const infoWindowContent = document.getElementById('info-message');
+const infoButton = document.querySelector('.info-button');
 const dropdown = document.getElementById('dropdown');
 const toggleLocationButton = document.getElementById('toggleLocationButton');
 const toggleLocationButtonIcon = document.querySelector('.toggle-button i');
@@ -146,10 +146,6 @@ const initMap = async () => {
     });
     map.addControl(new mapboxgl.NavigationControl());
 
-    map.on('load', () => {
-        addLayers(map);
-    });
-
     // Set the debounce timeout to 1000ms
     // const debounceTimeout = 1000;
     // Initialize the debounce timer variable
@@ -169,6 +165,18 @@ const initMap = async () => {
         } catch (error) {
             console.error(error);
         }
+    });
+
+    map.on('load', async () => {
+        addLayers(map);
+        const userLocation = await getCurrentUserLocation();
+        map.flyTo({
+            center: [userLocation.longitude, userLocation.latitude],
+            zoom: 10,
+            speed: 1,
+            curve: 1.5,
+        });
+        map.fire('moveend');
     });
 };
 
@@ -331,11 +339,10 @@ const getIcon = async (userId) => {
 
 // Toggle sharing location
 toggleLocationButton.addEventListener('click', async () => {
-    infoWindow.classList.toggle('hidden');
     const isSharingLocation = !toggleLocationButton.classList.contains('active-sharing');
-    const sharingLocationMessage = "Your current location is shared with other users. As a tracking protection measure, next time your location will update on a map only when you disable and re-enable location sharing.";
-    isSharingLocation ? infoWindowContent.innerHTML = sharingLocationMessage : infoWindowContent.innerHTML = 'Location sharing is disabled';
     toggleLocationButton.classList.toggle('active-sharing', isSharingLocation);
+    const iconTower = toggleLocationButton.querySelector('i');
+    iconTower.classList.toggle('animate-pulse');
     try {
         const userLocation = await getCurrentUserLocation();
         if (isSharingLocation) {
@@ -356,6 +363,11 @@ toggleLocationButton.addEventListener('click', async () => {
     }
 });
 
+// Info button 
+infoButton.addEventListener('click', () => {
+    infoWindow.classList.toggle('hidden');
+});
+
 // Close info window
 closeInfoWindow.addEventListener('click', () => {
     infoWindow.classList.add('hidden');
@@ -365,6 +377,7 @@ closeInfoWindow.addEventListener('click', () => {
 dropdown.addEventListener('change', async () => {
     const selectedOption = dropdown.value;
     if (selectedOption === 'meet') {
+        infoButton.classList.remove('hidden');
         dropDownEvents.classList.add('hidden');
         toggleLocationButton.classList.remove('hidden');
         switchToEvents = false;
@@ -378,6 +391,7 @@ dropdown.addEventListener('change', async () => {
         map.fire('moveend');
         map.flyTo({ center: mapCenter, zoom: mapZoom });
     } else if (selectedOption === 'events') {
+        infoButton.classList.add('hidden');
         dropDownEvents.classList.remove('hidden');
         switchToEvents = true;
         const markersSource = map.getSource('markers');
@@ -387,7 +401,6 @@ dropdown.addEventListener('change', async () => {
             markersSource.setData(currentData);
         }
         toggleLocationButton.classList.add('hidden');
-        map.fire('moveend');
         const mapCenter = map.getCenter();
         const mapZoom = map.getZoom();
         map.fire('moveend');
