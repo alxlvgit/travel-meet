@@ -60,13 +60,13 @@ router.post('/', upload.single('image'), async (req, res) => {
 
   // Resize image
   // Change file size to fit our site eventually
-  // const buffer = await sharp(req.file.buffer).resize({ fit: "contain" }).toBuffer()
+  const buffer = await sharp(req.file.buffer).resize({ fit: "contain" }).toBuffer()
 
   const imageName = randomImageName();
   const params = {
     Bucket: bucketName,
     Key: imageName,
-    // Body: buffer,
+    Body: buffer,
     ContentType: req.file.mimetype,
   };
 
