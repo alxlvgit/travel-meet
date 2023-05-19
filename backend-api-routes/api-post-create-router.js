@@ -55,14 +55,13 @@ router.get('/', async (req, res) => {
 // Create a new post
 router.post('/', upload.single('image'), async (req, res) => {
   const { title, caption, location, category, authorMessage } = req.body;
-  // console.log(req.body);
-  // console.log(req.file);
-
-  // Resize image
-  // Change file size to fit our site eventually
-  const buffer = await sharp(req.file.buffer).resize({ fit: "contain" }).toBuffer()
 
   const imageName = randomImageName();
+  if (!req.file) {
+    res.status(400).send('No image uploaded.');
+    return;
+  }
+  const buffer = await sharp(req.file.buffer).resize({ fit: "contain" }).toBuffer()
   const params = {
     Bucket: bucketName,
     Key: imageName,
