@@ -146,17 +146,6 @@ const initMap = async () => {
     });
     map.addControl(new mapboxgl.NavigationControl());
 
-    map.on('load', async () => {
-        addLayers(map);
-        const userLocation = await getCurrentUserLocation();
-        map.flyTo({
-            center: [userLocation.longitude, userLocation.latitude],
-            zoom: 10,
-            speed: 1,
-            curve: 1.5,
-        });
-    });
-
     // Set the debounce timeout to 1000ms
     // const debounceTimeout = 1000;
     // Initialize the debounce timer variable
@@ -176,6 +165,18 @@ const initMap = async () => {
         } catch (error) {
             console.error(error);
         }
+    });
+
+    map.on('load', async () => {
+        addLayers(map);
+        const userLocation = await getCurrentUserLocation();
+        map.flyTo({
+            center: [userLocation.longitude, userLocation.latitude],
+            zoom: 10,
+            speed: 1,
+            curve: 1.5,
+        });
+        map.fire('moveend');
     });
 };
 
@@ -400,7 +401,6 @@ dropdown.addEventListener('change', async () => {
             markersSource.setData(currentData);
         }
         toggleLocationButton.classList.add('hidden');
-        map.fire('moveend');
         const mapCenter = map.getCenter();
         const mapZoom = map.getZoom();
         map.fire('moveend');

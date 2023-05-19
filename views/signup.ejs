@@ -22,7 +22,7 @@
                 <h1 class="mb-3">
                     <img src="/logo.png" alt="icon" width="80%" />
                 </h1>
-                <h4>Login</h4>
+                <h4>Register</h4>
                 <% if (errorMessage) { %>
                     <p class="alert alert-danger">
                         <%= errorMessage %>
@@ -30,23 +30,29 @@
                     <% } %>
                         <form>
                             <div class="form-group">
+                                <label for="name">Username</label>
+                                <input required type="text" id="name" name="name" class="form-control"
+                                    placeholder="Enter Username" />
+                            </div>
+                            <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" id="email" name="email" class="form-control"
+                                <input required type="email" id="email" name="email" class="form-control"
                                     placeholder="Enter Email" />
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
-                                <input type="password" id="password" name="password" class="form-control"
+                                <input required type="password" id="password" name="password" class="form-control"
                                     placeholder="Enter Password" />
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block" formaction="/auth/login"
-                                formmethod="post">Login</button>
+                            <div class="form-group">
+                                <label for="icon-url">Profile image URL</label>
+                                <input required type="text" id="icon-url" name="icon" class="form-control"
+                                    placeholder="Enter Profile image URL" />
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block" formaction="/auth/signup"
+                                formmethod="post">Signup</button>
                         </form>
-                        <p class="mt-4">New User? <a href="/auth/signup">Register</a></p>
-                        <!-- <p>Forgot Password? <a href="/auth/forgot">Reset</a></p> -->
             </div>
         </div>
     </div>
-
-
 </body>
