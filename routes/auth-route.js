@@ -45,7 +45,7 @@ router.get("/signup", forwardAuthenticated, (req, res) => {
     }
 });
 
-router.post("/signup", async (req, res) => {
+router.post("/signup", forwardAuthenticated, async (req, res) => {
     const userData = req.body;
     console.log(userData);
     try {

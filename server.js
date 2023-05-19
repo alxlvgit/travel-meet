@@ -3,18 +3,18 @@ require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 3000;
 const exploreRouter = require('./routes/explore-router');
+const userProfileRouter = require('./routes/userProfileRouter');
+const postCreateRouter = require('./routes/post-create-router');
 const apiEventsRouter = require('./backend-api-routes/api-events');
 const apiPostsRouter = require('./backend-api-routes/api-feed-routes');
 const apiUserRouter = require('./backend-api-routes/api-user-routes');
-const userProfileRouter = require('./routes/userProfileRouter');
-const postCreateRouter = require('./backend-api-routes/api-post-create-router');
+
 
 // Import prisma
 const chatRouter = require('./routes/chat-router');
 const authRouter = require('./routes/auth-route');
 const passportMiddleware = require('./passport-middleware/passport-middleware');
 const session = require('express-session');
-// const { forwardAuthenticated } = require('./passport-middleware/check-auth');
 
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, { cors: { origin: "*" } });
@@ -43,17 +43,17 @@ passportMiddleware(app);
 
 
 // For testing purposes only
-app.use((req, res, next) => {
-    console.log(`User details are: `);
-    console.log(req.user);
+// app.use((req, res, next) => {
+//     console.log(`User details are: `);
+//     console.log(req.user);
 
-    console.log("Entire session object:");
-    console.log(req.session);
+//     console.log("Entire session object:");
+//     console.log(req.session);
 
-    console.log(`Session details are: `);
-    console.log((req.session).passport);
-    next();
-});
+//     console.log(`Session details are: `);
+//     console.log((req.session).passport);
+//     next();
+// });
 
 // For testing purposes only
 // Test middleware to store user location in session
@@ -84,7 +84,6 @@ app.get("/secretKeys", (req, res) => {
     }
     res.status(200).json(JSON.stringify(secrets));
 });
-
 
 
 app.use('/auth', authRouter);

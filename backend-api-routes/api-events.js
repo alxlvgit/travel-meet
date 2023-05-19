@@ -2,7 +2,8 @@
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const { totalNumberOfPeopleForEvent } = require('../services/events-services');
+const { totalNumberOfPeopleForEvent } = require('../helper-functions/events-helpers');
+const { ensureAuthenticated } = require('../passport-middleware/check-auth');
 
 // Get groups for event
 router.get('/groups/:eventId', async (req, res) => {
@@ -34,7 +35,7 @@ router.get('/group/:groupId', async (req, res) => {
 );
 
 
-router.put(`/groups/:groupId/join`, async (req, res) => {
+router.put(`/groups/:groupId/join`, ensureAuthenticated, async (req, res) => {
     const groupId = req.params.groupId;
     const userId = req.user.id;
     try {
@@ -59,7 +60,7 @@ router.put(`/groups/:groupId/join`, async (req, res) => {
 );
 
 
-router.put(`/groups/:groupId/leave`, async (req, res) => {
+router.put(`/groups/:groupId/leave`, ensureAuthenticated, async (req, res) => {
     const groupId = req.params.groupId;
     const userId = req.user.id;
     try {

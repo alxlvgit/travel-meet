@@ -1,11 +1,9 @@
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { url } = require('inspector');
-
 const bucketName = process.env.BUCKET_NAME
 const bucketRegion = process.env.BUCKET_REGION
 const accessKey = process.env.ACCESS_KEY
@@ -22,7 +20,6 @@ const s3 = new S3Client({
 // Gets all posts for feed
 router.get('/posts', async (req, res) => {
   try {
-
     const { limit, category } = req.query;
     const where = category ? { category } : {};
     const posts = await prisma.post.findMany({
@@ -36,9 +33,7 @@ router.get('/posts', async (req, res) => {
         createdAt: 'desc'
       }
 
-    })
-
-    // if (posts.length > 0) {
+    });
     for (const post of posts) {
       const getObjectParams = {
         Bucket: bucketName,
@@ -48,7 +43,6 @@ router.get('/posts', async (req, res) => {
       const url = await getSignedUrl(s3, command, { expiresIn: 60 });
       post.imageUrl = url
     }
-    // }
     res.json({ posts: posts });
   }
   catch (err) {
