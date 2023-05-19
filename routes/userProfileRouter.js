@@ -24,7 +24,7 @@ router.get('/:id', ensureAuthenticated, async (req, res) => {
     // console.log(userId);
     const user = await prisma.user.findUnique({
       where: {
-        id: 1,
+        id: userId,
       },
       include: {
         posts: true, // Fetches the posts associated with the user

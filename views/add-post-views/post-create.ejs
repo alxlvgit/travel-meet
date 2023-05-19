@@ -14,17 +14,17 @@
 
 <body class="bg-white">
   <main>
-    <div class="flex justify-center items-center p-4 bg-gray-50 mb-10">
+    <div class="flex justify-center items-center shadow-md bg-gray-50 p-4">
       <!-- Form including image -->
-      <form id="addPostContainer" action="/post-create" method="POST" class="w-full max-w-sm"
+      <form id="addPostContainer" action="/post-create" method="POST" class="w-full max-w-sm p-4 rounded-lg border border-gray-400"
         enctype="multipart/form-data">
 
-        <div class="bg-white rounded-md shadow-md flex justify-center items-center w-full h-40 relative">
+        <div class="bg-white flex justify-center items-center w-full h-40 relative z-10">
 
-          <div class="flex justify-center items-center p-4 bg-gray-50 mt-10 mb-10">
+          <div class="flex justify-center items-center rounded-lg w-full p-4 bg-gray-50 mt-10 mb-10">
             <!-- Image upload -->
             <label for="image"
-              class="relative flex rounded-lg cursor-pointer hover:bg-gray-300 pointer-events-auto w-full h-40"
+              class="flex rounded-lg cursor-pointer hover:bg-gray-300 pointer-events-auto justify-center w-full h-full"
               style="line-height: 40px;">
               <i class="fa-regular fa-images fa-5x p-8" style="color: #000000;"></i>
             </label>
@@ -34,14 +34,14 @@
 
         </div>
         <!-- Creator and creator image -->
-        <div class="items-center justify-center mt-2 w-full">
+        <div class="flex items-center justify-center mt-2 w-full">
           <!-- Creator and creator image -->
           <div class="items-center justify-center mt-2 w-full">
-            <h1 class="text-xl mb-2">
-              <%- user.username %>'s Post
+            <h1 class="flex justify-center text-xl mb-2">
+              <%- user.username.name %>'s Post
             </h1>
 
-            <div class="h-20 w-20 max-w-20 object-center mb-4 flex items-center justify-center">
+            <div class="m-auto h-20 w-20 max-w-20 object-center mb-4 flex justify-center items-center">
               <!-- Needs to be logged in users image -->
               <img class="rounded-full h-full w-full" src="<%- user.profileImage %>" alt="Circular image">
             </div>
@@ -60,7 +60,7 @@
                 id="location" placeholder="Location" required>
             </div>
             <div class="mb-4">
-              <select class="border border-gray-400 rounded-lg py-2 px-4 w-full" name="category" id="category"
+              <select class="border border-gray-400 rounded-lg py-2 px-4 w-full text-gray-400" name="category" id="category"
                 placeholder="Category" required>
                 <option value="" disabled selected hidden>Choose Category</option>
                 <option value="art">Art</option>
@@ -94,7 +94,6 @@
   <footer class="mt-12 text-center">
     <%- include("../partials/footer.ejs"); %>
   </footer>
-
 
 </body>
 
