@@ -21,20 +21,24 @@ const s3 = new S3Client({
 
 // Gets all posts for feed
 router.get('/posts', async (req, res) => {
-  const { limit, category } = req.query;
-  const where = category ? { category } : {};
-  const posts = await prisma.post.findMany({
-    take: parseInt(limit),
-    where: where,
-    include: {
-      author: true,
-    },
-    orderBy: {
-      // Orders posts by newest posts first
-      createdAt: 'desc'
-    }
-  });
-  if (posts.length && posts[0].image) {
+  try {
+
+    const { limit, category } = req.query;
+    const where = category ? { category } : {};
+    const posts = await prisma.post.findMany({
+      take: parseInt(limit),
+      where: where,
+      include: {
+        author: true,
+      },
+      orderBy: {
+        // Orders posts by newest posts first
+        createdAt: 'desc'
+      }
+
+    })
+
+    // if (posts.length > 0) {
     for (const post of posts) {
       const getObjectParams = {
         Bucket: bucketName,
@@ -44,8 +48,13 @@ router.get('/posts', async (req, res) => {
       const url = await getSignedUrl(s3, command, { expiresIn: 60 });
       post.imageUrl = url
     }
+    // }
+    res.json({ posts: posts });
   }
-  res.json({ posts: posts });
-});
+  catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err });
+  }
+})
 
 module.exports = router;

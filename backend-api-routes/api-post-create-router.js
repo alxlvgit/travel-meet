@@ -47,6 +47,7 @@ router.get('/', async (req, res) => {
     email: req.user.email,
     profileImage: req.user.profileImageURI,
   };
+  console.log(user);
   // shows post create page(user inputs)
   res.render('add-post-views/post-create', { user })
 });
@@ -58,7 +59,8 @@ router.post('/', upload.single('image'), async (req, res) => {
   // console.log(req.file);
 
   // Resize image
-  const buffer = await sharp(req.file.buffer).resize({ width: 1080, height: 1920, fit: "contain" }).toBuffer()
+  // Change file size to fit our site eventually
+  const buffer = await sharp(req.file.buffer).resize({ fit: "contain" }).toBuffer()
 
   const imageName = randomImageName();
   const params = {

@@ -12,6 +12,7 @@
 
 </head>
 
+
 <body class="bg-white w-full h-full">
   <main class="w-full h-full overflow-auto">
     <div class="flex justify-center items-center p-6 sm:p-10 mb-10 sm:w-full sm:h-full sm:mb-20">
@@ -25,7 +26,7 @@
           <div class="flex justify-center items-center p-4 bg-gray-50 rounded-md shadow-md">
             <!-- Image upload -->
             <label for="image"
-              class="relative flex rounded-lg cursor-pointer hover:bg-gray-300 pointer-events-auto w-full h-40"
+              class="flex rounded-lg cursor-pointer hover:bg-gray-300 pointer-events-auto justify-center w-full h-full"
               style="line-height: 40px;">
               <i class="fa-regular fa-images fa-5x p-8" style="color: #000000;"></i>
             </label>
@@ -42,7 +43,6 @@
               <%- user.username %>
             </h1>
           </div>
-
           <div class="h-20 w-20 max-w-20 object-center mb-8 flex items-center justify-center">
             <!-- Needs to be logged in users image -->
             <img class="rounded-full object-cover h-full w-full" src="<%- user.profileImage %>" alt="Circular image">
@@ -71,7 +71,6 @@
               <option value="outdoors">Outdoors</option>
             </select>
           </div>
-
           <div class="sticky bottom-0 w-full text-md mb-10 sm:mb-0">
             <div class="bg-white py-2 px-4 flex justify-between items-center">
               <button id="save-post" type="submit" class="flex items-center mr-2">
