@@ -29,14 +29,14 @@ router.get('/group/:groupId', async (req, res) => {
             members: true,
         },
     });
-    res.json({ group: group, userId: req.session.user.id });
+    res.json({ group: group, userId: req.user.id });
 }
 );
 
 
 router.put(`/groups/:groupId/join`, async (req, res) => {
     const groupId = req.params.groupId;
-    const userId = req.session.user.id;
+    const userId = req.user.id;
     try {
         const updatedGroup = await prisma.group.update({
             where: {
@@ -61,7 +61,7 @@ router.put(`/groups/:groupId/join`, async (req, res) => {
 
 router.put(`/groups/:groupId/leave`, async (req, res) => {
     const groupId = req.params.groupId;
-    const userId = req.session.user.id;
+    const userId = req.user.id;
     try {
         const updatedGroup = await prisma.group.update({
             where: {

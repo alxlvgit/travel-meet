@@ -74,7 +74,6 @@ router.post('/', upload.single('image'), async (req, res) => {
 
   // Access the user's information from req.user
   const user = req.user;
-
   const post = await prisma.post.create({
     data: {
       image: imageName,
