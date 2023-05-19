@@ -34,7 +34,6 @@ router.get('/posts', async (req, res) => {
       createdAt: 'desc'
     }
   });
-
   if (posts.length && posts[0].image) {
     for (const post of posts) {
       const getObjectParams = {

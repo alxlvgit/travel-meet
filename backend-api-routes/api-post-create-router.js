@@ -43,7 +43,7 @@ const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex'
 // Get add post page
 router.get('/', async (req, res) => {
   const user = {
-    username: req.user,
+    username: req.user.name,
     email: req.user.email,
     profileImage: req.user.profileImageURI,
   };

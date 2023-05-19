@@ -18,7 +18,9 @@
         <p class="text-xs text-center event-date text-white line-clamp-2 mr-4 sm:text-sm">
             <i class="fa-solid fa-calendar mr-1"></i>
             <%- event.dates.start.localDate %>
-                <%- event.dates.start.localTime.split(':')[0] %>:<%- event.dates.start.localTime.split(':')[1] %>
+                <% if (!event.dates.start.noSpecificTime) { %>
+                    <%- event.dates.start.localTime.split(':')[0] %>:<%- event.dates.start.localTime.split(':')[1] %>
+                            <% } %>
         </p>
         <p
             class="text-xs text-center flex people-number text-white bg-[#878d26] rounded-full px-2 py-1 align-middle sm:text-sm justify-center items-center max-w-2/6">

@@ -26,10 +26,20 @@ router.get('/:id', ensureAuthenticated, async (req, res) => {
         id: userId,
       },
       include: {
-        posts: true, // Fetches the posts associated with the user
+        posts: {
+          include: {
+            author: true, // Fetches the author object from each post
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        },
       },
     });
-    const posts = user.posts;
+    let posts = [];
+    if (user.posts) {
+      posts = user.posts;
+    }
     for (const post of posts) {
       const params = {
         Bucket: bucketName,
@@ -54,9 +64,29 @@ router.get('/', ensureAuthenticated, async (req, res) => {
       id: Number(currentUser.id),
     },
     include: {
-      posts: true, // Fetches the posts associated with the user
+      posts: {
+        include: {
+          author: true, // Fetches the author object from each post
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      },
     },
   });
+  let posts = [];
+  if (user.posts) {
+    posts = user.posts;
+  }
+  for (const post of posts) {
+    const params = {
+      Bucket: bucketName,
+      Key: post.image,
+    };
+    const command = new GetObjectCommand(params);
+    const url = await getSignedUrl(s3, command, { expiresIn: 60 });
+    post.imageUrl = url;
+  };
   res.render('./user-profile-views/user-profile', { currentUser: true, user: user, posts: user.posts });
 });
 

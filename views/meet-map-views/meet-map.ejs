@@ -17,7 +17,7 @@
     <link href="/output.css" rel="stylesheet" />
 
     <!-- use cdn for development only -->
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- use cdn for development only-->
 
     <script defer src="../maps-front-end/user-location.js"></script>
@@ -31,7 +31,9 @@
     <div id="infoWindow"
         class="fixed hidden top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded shadow-lg z-50">
         <h2 class="text-xl font-semibold mb-2">Location Sharing</h2>
-        <p id="info-message" class="text-gray-600"></p>
+        <p id="info-message" class="text-gray-600">By clicking on the signal tower icon, you will share your current
+            location with other users on the map. As a tracking protection measure, the position of your location marker
+            will update on a map only when you disable and re-enable the sharing again.</p>
         <button id="closeInfoWindow"
             class="mt-4 bg-gray-500 text-white px-3 py-2 rounded hover:bg-gray-300">Close</button>
     </div>
@@ -49,9 +51,16 @@
             <option value="meet">Meet</option>
             <option value="events">Events</option>
         </select>
-        <button id="toggleLocationButton" class="toggle-button text-center p-2 w-24">
-            <i class="fa-solid fa-tower-broadcast text-2xl text-black"></i>
-        </button>
+        <div class="toggle-location-container flex justify-around items-end">
+            <button id="toggleLocationButton" class="toggle-button text-center p-2">
+                <i class="fa-solid fa-tower-broadcast text-2xl text-black"></i>
+            </button>
+            <button class="info-button">
+                <i class="fa-solid fa-info-circle text-xl text-black"></i>
+            </button>
+        </div>
+
+
         <select id="dropdown-events"
             class="block bg-white border border-gray-300 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 w-24 hidden h-3/4">
             <option value="all">All</option>

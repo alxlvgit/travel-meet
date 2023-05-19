@@ -123,6 +123,7 @@ const renderEvents = async () => {
     for (const event of filteredEvents) {
       const { totalNumberOfPeople } = await getPeopleFromAllGroups(event.id, abortController.signal);
       const { eventCard, eventLink, eventImage, eventPriceRange } = await createEventCard(event);
+      const eventTime = event.dates.start.noSpecificTime ? "N/A" : event.dates.start.localTime.split(":").slice(0, 2).join(":");
       eventCard.innerHTML = `
         <div class="event-image h-full justify-center items-center flex w-1/2 sm:justify-start">
           <img src="${eventImage[0].url}" class="rounded-xl h-4/5 object-cover sm:h-full w-11/12" alt="${event.name}">
@@ -136,7 +137,7 @@ const renderEvents = async () => {
             <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"> </i>${new Date(event.dates.start.localDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </p>
           <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
-            <i class="far fa-clock w-4 h-4 text-center mr-1 text-black"></i>${new Date(event.dates.start.dateTime).toLocaleTimeString('en-US', { hour: "2-digit", minute: "2-digit" })}
+            <i class="far fa-clock w-4 h-4 text-center mr-1 text-black"></i>${eventTime}
           </p>
           <p class='text-xs mb-1 text-gray-500 align-middle sm:text-sm'>
             <i class="fas fa-dollar-sign text-center w-4 h-4 mr-1 text-black"></i>${eventPriceRange}
