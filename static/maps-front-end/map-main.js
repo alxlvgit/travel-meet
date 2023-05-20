@@ -131,7 +131,7 @@ const initMap = async () => {
     mapboxgl.accessToken = apiKey;
     map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
+        style: 'mapbox://styles/mapbox/light-v11',
         center: [-123.3656, 54.0913],
         zoom: 1
     });
@@ -181,7 +181,8 @@ const initMap = async () => {
             speed: 1,
             curve: 1.5,
         });
-        map.fire('moveend');
+        socket.emit('userTraversingOnMap', { lat: userLocation.latitude, lng: userLocation.longitude, userId: currentUser });
+        socket.emit('getSharedLocations', { lat: userLocation.latitude, lng: userLocation.longitude, userId: currentUser });
     });
 };
 
