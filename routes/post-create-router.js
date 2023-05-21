@@ -32,6 +32,25 @@ const upload = multer({ storage: storage });
 // Uses crypto to create random bytes and creates random image name
 const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
 
+// Get geocode location
+const geocodeLocation = async (location) => {
+  const geoCoder = googleMaps.createClient({
+    key: 'GOOGLEMAPS_API_KEY', // Replace with your actual API key
+  });
+
+  return new Promise((resolve, reject) => {
+    geoCoder.geocode({ address: location }, (err, response) => {
+      if (!err) {
+        const locationName = response.json.results[0].formatted_address;
+        resolve(locationName);
+      } else {
+        console.error('Error predicting location:', err);
+        reject(err);
+      }
+    });
+  });
+};
+
 // Get add post page
 router.get('/', ensureAuthenticated, async (req, res) => {
     const user = {
@@ -51,6 +70,16 @@ router.post('/', ensureAuthenticated, upload.single('image'), async (req, res) =
         res.status(400).send('No image uploaded. Please upload an image before creating the post.');
         return;
     }
+
+    let locationName;
+    if (location === 'current') {
+      // Retrieve the user's current location name
+      locationName = req.user.locationName;
+    } else {
+      // Perform geocoding for the provided location
+      locationName = await geocodeLocation(location);
+    }
+
     const buffer = await sharp(req.file.buffer).resize({ fit: "contain" }).toBuffer()
     const params = {
         Bucket: bucketName,
@@ -67,7 +96,7 @@ router.post('/', ensureAuthenticated, upload.single('image'), async (req, res) =
             image: imageName,
             title: title,
             caption: caption,
-            location: location,
+            locationName: locationName,
             category: category,
             authorMessage: authorMessage,
             author: {
