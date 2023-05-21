@@ -1,27 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="w-full h-full">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Post</title>
-  <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="/output.css" rel="stylesheet" />
   <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
+  <script defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7T7zXCu6Fh2cpnuYRP3ioJQZnq_EJhmY&libraries=places"></script>
+
   <script defer src="../add-post-front-end/add-post.js"></script>
 
 </head>
 
-<body class="bg-white">
-  <main>
-    <div class="flex justify-center items-center shadow-md bg-gray-50 p-4">
+
+<body class="bg-white w-full h-full">
+  <main class="w-full h-full overflow-auto">
+    <div class="flex justify-center items-center p-6 sm:p-10 mb-10 sm:w-full sm:h-full sm:mb-20">
       <!-- Form including image -->
-      <form id="addPostContainer" action="/post-create" method="POST" class="w-full max-w-sm p-4 rounded-lg border border-gray-400"
+      <form id="addPostContainer" action="/post-create" method="POST"
+        class="w-full max-w-sm sm:max-w-lg sm:border sm:border-gray-200 sm:rounded-lg sm:h-fit sm:p-10 sm:shadow-md"
         enctype="multipart/form-data">
 
-        <div class="bg-white flex justify-center items-center w-full h-40 relative z-10">
+        <div class="bg-white rounded-md shadow-md flex justify-center items-center w-full mb-10  h-40 relative">
 
-          <div class="flex justify-center items-center rounded-lg w-full p-4 bg-gray-50 mt-10 mb-10">
           <div class="flex justify-center items-center rounded-lg w-full p-4 bg-gray-50 mt-10 mb-10">
             <!-- Image upload -->
             <label for="image"
@@ -31,12 +35,10 @@
             </label>
             <input id="image" type="file" name="image" accept="image/*" class="absolute w-full opacity-0 cursor-pointer"
               style="z-index: 999; line-height: 40px;" />
-            <input id="image" type="file" name="image" accept="image/*" class="absolute w-full opacity-0 cursor-pointer"
-              style="z-index: 999; line-height: 40px;" />
           </div>
         </div>
         <!-- Creator and creator image -->
-        <div class="flex items-center justify-center mt-2 w-full">
+        <div class="items-center justify-center w-full">
           <!-- Creator and creator image -->
           <div class="items-center justify-center mt-2 w-full">
             <h1 class="flex justify-center text-xl mb-2">
@@ -54,11 +56,11 @@
           </div>
           <div class="mb-4">
             <textarea class="border border-gray-400 rounded-lg py-2 px-4 w-full" name="caption" id="caption"
-              placeholder="Add Caption" required></textarea>
+              placeholder="Add Message" required></textarea>
           </div>
           <div class="mb-4">
-            <input class="border border-gray-400 rounded-lg py-2 px-4 w-full" type="text" name="location" id="location"
-              placeholder="Location" required>
+            <input class="border border-gray-400 rounded-lg py-2 px-4 w-full" type="text" name="location"
+              id="location-input" placeholder="Location" required>
           </div>
           <div class="mb-4">
             <select class="border border-gray-400 rounded-lg py-2 px-4 w-full text-gray-400" name="category"
@@ -89,14 +91,10 @@
 
     </div>
     </div>
-
   </main>
-
   <footer class="mt-12 text-center">
     <%- include("../partials/footer.ejs"); %>
   </footer>
-
 </body>
-
 
 </html>

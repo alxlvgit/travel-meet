@@ -32,25 +32,6 @@ const upload = multer({ storage: storage });
 // Uses crypto to create random bytes and creates random image name
 const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
 
-// Get geocode location
-const geocodeLocation = async (location) => {
-  const geoCoder = googleMaps.createClient({
-    key: 'GOOGLEMAPS_API_KEY', // Replace with your actual API key
-  });
-
-  return new Promise((resolve, reject) => {
-    geoCoder.geocode({ address: location }, (err, response) => {
-      if (!err) {
-        const locationName = response.json.results[0].formatted_address;
-        resolve(locationName);
-      } else {
-        console.error('Error predicting location:', err);
-        reject(err);
-      }
-    });
-  });
-};
-
 // Get add post page
 router.get('/', ensureAuthenticated, async (req, res) => {
     const user = {
@@ -64,22 +45,14 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 
 // Create a new post
 router.post('/', ensureAuthenticated, upload.single('image'), async (req, res) => {
-    const { title, caption, location, category, authorMessage } = req.body;
+    const { title, caption, category } = req.body;
     const imageName = randomImageName();
+      // Retrieve the selected location from the input field
+  const locationInput = req.body.location;
     if (!req.file) {
         res.status(400).send('No image uploaded. Please upload an image before creating the post.');
         return;
     }
-
-    let locationName;
-    if (location === 'current') {
-      // Retrieve the user's current location name
-      locationName = req.user.locationName;
-    } else {
-      // Perform geocoding for the provided location
-      locationName = await geocodeLocation(location);
-    }
-
     const buffer = await sharp(req.file.buffer).resize({ fit: "contain" }).toBuffer()
     const params = {
         Bucket: bucketName,
@@ -96,9 +69,8 @@ router.post('/', ensureAuthenticated, upload.single('image'), async (req, res) =
             image: imageName,
             title: title,
             caption: caption,
-            locationName: locationName,
+            location: locationInput,
             category: category,
-            authorMessage: authorMessage,
             author: {
                 connect: {
                     id: user.id
@@ -134,7 +106,6 @@ router.put('/:postId', ensureAuthenticated, async (req, res) => {
             caption: caption,
             location: location,
             category: category,
-            authorMessage: authorMessage,
         }
     });
     res.json(updatePost);
