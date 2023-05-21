@@ -31,7 +31,6 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 router.get('/event/:id', ensureAuthenticated, async (req, res) => {
   try {
     const eventData = await fetchSingleEvent(req.params.id);
-    console.log(eventData, 'eventData');
     const eventImage = await filterEventImages(eventData.images);
     const groups = await getGroups(req.params.id);
     const totalNumberOfPeople = await totalNumberOfPeopleForEvent(groups);

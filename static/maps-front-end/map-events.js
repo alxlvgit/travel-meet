@@ -2,8 +2,8 @@
 const dropDownEvents = document.getElementById('dropdown-events');
 
 // Cache the locations of events to apply offsets to events with same location
-const eventLocationCache = {};
-const offsets = {};
+const eventsMarkersLocationCache = {};
+const eventMarkersOffsets = {};
 
 // Fetch events from ticketmaster API
 const getEvents = async (userLocation) => {
@@ -11,7 +11,7 @@ const getEvents = async (userLocation) => {
     let { TICKETMASTER_API_KEY } = API_KEYS;
     let locationQuery = "";
     // If user location is available, use it to get events within 30km radius
-    userLocation ? locationQuery = `latlong=${userLocation.latitude},${userLocation.longitude}&unit=km&radius=30&sort=date,asc&size=50` : locationQuery = "countryCode=CA&sort=random&size=50";
+    userLocation ? locationQuery = `latlong=${userLocation.latitude},${userLocation.longitude}&unit=km&radius=50&sort=date,asc&size=100` : locationQuery = "countryCode=CA&sort=random&size=50";
     // If user has searched for a specific category for event, use that query param to get events
     // const querySearchParam = apiKeySearchQueryParam ? `classificationName=${apiKeySearchQueryParam}` : "classificationName=art, music, sport, seminar";
     const API_URL = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${TICKETMASTER_API_KEY}&${locationQuery}`;
@@ -53,12 +53,6 @@ const filterEventImages = async (event) => {
     return eventImage[0].url;
 }
 
-// Get random offset for events with same location
-const getOffset = () => {
-    const offset = Math.floor(Math.random() * 201);
-    return offset;
-}
-
 // Get icons for events based on category
 const getIconsByCategory = (event) => {
     const category = event.classifications[0].segment.name;
@@ -72,37 +66,43 @@ const getIconsByCategory = (event) => {
     return icons[category];
 }
 
-// Apply offset to events with same location
-const applyOffset = (event) => {
-    const eventVenue = event._embedded.venues[0];
-    const longitude = Number(eventVenue.location.longitude).toFixed(3);
-    const latitude = Number(eventVenue.location.latitude).toFixed(3);
+const applyOffsetToMarker = (lng, lat, markerId, locationsCache, offsetsStorage) => {
+    const longitude = Number(lng).toFixed(3);
+    const latitude = Number(lat).toFixed(3);
     const locationKey = `${longitude},${latitude}`;
-    if (Object.keys(eventLocationCache).includes(locationKey) && !offsets[event.id]) {
-        eventLocationCache[locationKey] = event.id;
-        const offset = getOffset();
-        const offset2 = getOffset();
-        offsets[event.id] = [offset, offset2];
-    } else if (!Object.keys(eventLocationCache).includes(locationKey) && !offsets[event.id]) {
-        eventLocationCache[locationKey] = event.id;
-        offsets[event.id] = [0, 0];
-    } else if (offsets[event.id]) {
-        console.log("offset exists");
-    }
-}
+    if (Object.keys(locationsCache).includes(locationKey) && !offsetsStorage[markerId]) {
+        locationsCache[locationKey] = markerId;
+        const offsetDistance = 150;
+        const point = turf.point([lng, lat]);
 
-// Make geoJSON object from events
+        // Generate a random bearing between 0 and 360 degrees
+        const bearing = Math.random() * 360;
+
+        const offsetPoint = turf.destination(point, offsetDistance, bearing, { units: 'meters' });
+        const offsetLng = offsetPoint.geometry.coordinates[0];
+        const offsetLat = offsetPoint.geometry.coordinates[1];
+        offsetsStorage[markerId] = [offsetLng, offsetLat];
+    } else if (!Object.keys(locationsCache).includes(locationKey) && !offsetsStorage[markerId]) {
+        locationsCache[locationKey] = markerId;
+        offsetsStorage[markerId] = [];
+    }
+};
+
+
+// Make features for events
 const makeFeatures = async (eventsObject) => {
     const filteredEvents = await filterEvents(eventsObject);
     const features = [];
     for (const event of filteredEvents) {
-        applyOffset(event);
+        const eventVenue = event._embedded.venues[0];
+        const { longitude, latitude } = eventVenue.location;
+        applyOffsetToMarker(longitude, latitude, event.id, eventsMarkersLocationCache, eventMarkersOffsets);
         const eventImage = await filterEventImages(event);
         const eventGeoJSON = {
-            type: "Feature",
+            type: 'Feature',
             geometry: {
-                type: "Point",
-                coordinates: [event._embedded.venues[0].location.longitude, event._embedded.venues[0].location.latitude]
+                type: 'Point',
+                coordinates: eventMarkersOffsets[event.id].length > 0 ? eventMarkersOffsets[event.id] : [longitude, latitude]
             },
             properties: {
                 title: event.name,
@@ -110,13 +110,13 @@ const makeFeatures = async (eventsObject) => {
                 url: event.url,
                 image: eventImage,
                 icon: getIconsByCategory(event),
-            }
-        }
+            },
+        };
+
         features.push(eventGeoJSON);
     }
     return features;
-}
-
+};
 
 // Create events marker
 const createEventsMarker = (feature) => {
@@ -156,10 +156,8 @@ const addEventsToMap = async (map) => {
                 let marker = markers[feature.properties.id];
                 if (!marker) {
                     const eventsMarkerElement = createEventsMarker(feature);
-                    const offset = offsets[feature.properties.id];
                     marker = markers[feature.properties.id] = new mapboxgl.Marker(eventsMarkerElement)
                         .setLngLat(feature.geometry.coordinates)
-                        .setOffset(offset ? offset : [0, 0])
                 }
                 newMarkers[feature.properties.id] = marker;
                 if (!markersOnScreen[feature.properties.id]) {

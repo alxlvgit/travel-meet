@@ -7,8 +7,8 @@ let markers = {};
 let markersOnScreen = {};
 
 // Cache the shared locations to apply offsets to markers with the same location
-const usersLocationsCache = {};
-const locationsOffsets = {};
+const locationsCache = {};
+const offsetsStorage = {};
 
 // DOM elements
 const footerButtons = document.querySelectorAll('.footer-btn');
@@ -212,6 +212,7 @@ socket.on('nearbySharedLocations', async (data) => {
 
 // Create user marker feature
 const createUserMarkerFeature = (userId, lat, lng, icon) => {
+    applyOffsetToMarker(lng, lat, userId, locationsCache, offsetsStorage);
     return {
         type: 'Feature',
         geometry: {
@@ -243,28 +244,6 @@ const createUserMarker = (icon, feature, userId) => {
     return link;
 };
 
-// Get random offset for events with same location
-const getLocationOffset = () => {
-    const offset = Math.floor(Math.random() * 101);
-    return offset;
-}
-
-// Apply offset to user markers with the same location
-const applyOffsetToUserMarker = (lng, lat, userId) => {
-    const longitude = Number(lng).toFixed(3);
-    const latitude = Number(lat).toFixed(3);
-    const locationKey = `${longitude},${latitude}`;
-    if (Object.keys(usersLocationsCache).includes(locationKey) && !locationsOffsets[userId]) {
-        usersLocationsCache[locationKey] = userId;
-        const offset = getLocationOffset();
-        const offset2 = getLocationOffset();
-        locationsOffsets[userId] = [offset, offset2];
-    } else if (!Object.keys(usersLocationsCache).includes(locationKey) && !locationsOffsets[userId]) {
-        usersLocationsCache[locationKey] = userId;
-        locationsOffsets[userId] = [0, 0];
-    }
-}
-
 // Render clusters and markers on the map
 const addUserMarkersToMap = async (map, storedLocations, icons) => {
     const newMarkers = {};
@@ -272,7 +251,6 @@ const addUserMarkersToMap = async (map, storedLocations, icons) => {
     storedLocations = storedLocations.filter(location => location.userId !== userId);
     // Create an array of GeoJSON feature collections for each point
     const markersData = storedLocations.map(location => {
-        applyOffsetToUserMarker(location.lng, location.lat, location.userId);
         return createUserMarkerFeature(location.userId, location.lat, location.lng, icons[location.userId]);
     });
     // For each cluster on the screen, create an HTML marker for it (if didn't create yet),and add it to the map if it's not there already
@@ -286,10 +264,8 @@ const addUserMarkersToMap = async (map, storedLocations, icons) => {
                 if (!marker) {
                     const icon = icons[feature.properties.userId];
                     const markerElement = createUserMarker(icon, feature, feature.properties.userId);
-                    const offset = locationsOffsets[feature.properties.userId];
                     marker = markers[feature.properties.userId] = new mapboxgl.Marker(markerElement)
                         .setLngLat(feature.geometry.coordinates)
-                        .setOffset(offset)
                 }
                 newMarkers[feature.properties.userId] = marker;
                 if (!markersOnScreen[feature.properties.userId]) marker.addTo(map);
