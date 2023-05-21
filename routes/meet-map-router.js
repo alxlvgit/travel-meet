@@ -60,7 +60,7 @@ module.exports = (io) => {
     // Handle event for when a user shares their location
     const addUserToRedis = async (socket, io) => {
         socket.on('addNewSharedLocation', async ({ userId, lat, lng, iconUrl }) => {
-            console.log(`Add user. Adding new user ${userId} to Redis`);
+            // console.log(`Add user. Adding new user ${userId} to Redis`);
             await redis.geoadd('locations', lng, lat, userId);
             await redis.hset('userIcons', userId, iconUrl);
             await redis.georadius('traversingPositions', lng, lat, 50, 'km', 'WITHDIST', 'WITHCOORD', 'ASC', (err, locations) => {
@@ -74,9 +74,9 @@ module.exports = (io) => {
                         lat: result[2][1],
                     }));
                     nearbyUsers = nearbyUsers.filter((user) => user.userId !== userId);
-                    console.log(nearbyUsers, `nearby users after adding new user ${userId} to Redis`);
+                    // console.log(nearbyUsers, `nearby users after adding new user ${userId} to Redis`);
                     nearbyUsers.forEach((user) => {
-                        console.log("emitting addLocation event to user " + user.userId + " from user " + userId + " that added their location");
+                        // console.log("emitting addLocation event to user " + user.userId + " from user " + userId + " that added their location");
                         io.to(`${user.userId}`).emit('addMarker', { userId: userId, lat, lng, iconUrl });
                     });
                 }
@@ -87,7 +87,7 @@ module.exports = (io) => {
     // Handle event for when a user removes their location
     const removeUserFromRedis = (socket, io) => {
         socket.on('removeSharedLocation', async ({ userId, lat, lng }) => {
-            console.log(`remove shared location event emitted.Removing user ${userId} location from Redis`);
+            // console.log(`remove shared location event emitted.Removing user ${userId} location from Redis`);
             await redis.zrem('locations', userId);
             await redis.hdel('userIcons', userId);
             await redis.georadius('traversingPositions', lng, lat, 50, 'km', 'WITHDIST', 'WITHCOORD', 'ASC', (err, locations) => {
@@ -101,9 +101,9 @@ module.exports = (io) => {
                         lat: result[2][1],
                     }));
                     nearbyUsers = nearbyUsers.filter((user) => user.userId !== userId);
-                    console.log(nearbyUsers, `nearby users will receive the event that user ${userId} removed their location`);
+                    // console.log(nearbyUsers, `nearby users will receive the event that user ${userId} removed their location`);
                     nearbyUsers.forEach((user) => {
-                        console.log("emitting removeLocation event to user" + user.userId + "from user" + userId + "that removed their location");
+                        // console.log("emitting removeLocation event to user" + user.userId + "from user" + userId + "that removed their location");
                         io.to(`${user.userId}`).emit('removeMarker', { userId });
                     });
                 }
@@ -120,7 +120,7 @@ module.exports = (io) => {
             socket.request.user = userId;
             socket.join(userId);
             usersInRoom.add(userId);
-            console.log(usersInRoom, "usersInRoom after adding user");
+            // console.log(usersInRoom, "usersInRoom after adding user");
             // }
         });
     };
@@ -133,7 +133,6 @@ module.exports = (io) => {
         redis.zrem('traversingPositions', userId);
         socket.leave(userId);
         usersInRoom.delete(userId);
-        console.log(usersInRoom, "usersInRoom after removing user");
         console.log(socket.request.user, "user disconnected");
     };
 

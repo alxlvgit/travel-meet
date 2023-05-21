@@ -174,6 +174,7 @@ const initMap = async () => {
     map.on('load', async () => {
         addLayers(map);
         const userLocation = await getCurrentUserLocation();
+        if (!userLocation) return;
         map.flyTo({
             center: [userLocation.longitude, userLocation.latitude],
             zoom: 10,
@@ -202,9 +203,9 @@ socket.on('removeMarker', ({ userId }) => {
 // Get stored locations from the server
 socket.on('nearbySharedLocations', async (data) => {
     let storedLocations = data.nearbyUsers;
-    console.log(storedLocations, "stored locations from server");
+    console.log(storedLocations, "all shared locations from server");
     storedLocations = storedLocations.filter(location => location.userId !== currentUser);
-    console.log(data.icons, "icons from server");
+    // console.log(data.icons, "icons from server");
     addUserMarkersToMap(map, storedLocations, data.icons);
 });
 
@@ -260,8 +261,6 @@ const applyOffsetToUserMarker = (lng, lat, userId) => {
     } else if (!Object.keys(usersLocationsCache).includes(locationKey) && !locationsOffsets[userId]) {
         usersLocationsCache[locationKey] = userId;
         locationsOffsets[userId] = [0, 0];
-    } else if (locationsOffsets[userId]) {
-        console.log("offset exists");
     }
 }
 
@@ -280,7 +279,6 @@ const addUserMarkersToMap = async (map, storedLocations, icons) => {
     if (markersSource) {
         markersSource.setData({ type: 'FeatureCollection', features: markersData });
         const features = map.querySourceFeatures('markers');
-        console.log(locationsOffsets, "locations offsets");
         features.forEach(feature => {
             if (!feature.properties.cluster) {
                 let marker = markers[feature.properties.userId];
@@ -378,15 +376,19 @@ toggleLocationButton.addEventListener('click', async () => {
     iconTower.classList.toggle('animate-pulse');
     try {
         const userLocation = await getCurrentUserLocation();
+        if (!userLocation) {
+            toggleLocationButton.classList.remove('active-sharing');
+            iconTower.classList.remove('animate-pulse');
+            console.log("user location not found");
+            return;
+        }
         if (isSharingLocation) {
-            console.log('Handling add new shared location for ' + currentUser);
             const icon = await getIcon(currentUser);
             const iconUrl = icon.profileImageURI;
             socket.emit('addNewSharedLocation', { userId: currentUser, lat: userLocation.latitude, lng: userLocation.longitude, iconUrl });
             toggleLocationButtonIcon.classList.remove('text-black');
             toggleLocationButtonIcon.classList.add('text-[#878d26]');
         } else {
-            console.log('Handling remove shared location for ' + currentUser);
             socket.emit('removeSharedLocation', { userId: currentUser, lat: userLocation.latitude, lng: userLocation.longitude });
             toggleLocationButtonIcon.classList.remove('text-[#878d26]');
             toggleLocationButtonIcon.classList.add('text-black');

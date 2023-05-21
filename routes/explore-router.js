@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
-const { fetchSingleEvent, filterEventImages, getGroups, totalNumberOfPeopleForEvent } = require('../services/events-services');
-const { getPost, getRelatedPosts } = require('../services/posts-services');
+const { fetchSingleEvent, filterEventImages, getGroups, totalNumberOfPeopleForEvent } = require('../helper-functions/events-helpers');
+const { getPost, getRelatedPosts } = require('../helper-functions/posts-helpers');
 const prisma = new PrismaClient();
 const { ensureAuthenticated } = require('../passport-middleware/check-auth');
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
@@ -26,25 +26,6 @@ router.get('/', ensureAuthenticated, async (req, res) => {
   res.render('./explore-views/explore', { users: users });
 }
 );
-
-// Feeds post page
-// router.get('/feeds/:id', ensureAuthenticated, async (req, res) => {
-//   try {
-//     const postId = req.params.id;
-//     const postData = await prisma.post.findUnique({
-//       where: {
-//         id: postId
-//       }
-//     });
-//     res.render('./explore-views/feeds-post', {
-//       post: postData,
-//       author: author.name,
-//       profileImageURI: author.profileImageURI,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// });
 
 // Event page
 router.get('/event/:id', ensureAuthenticated, async (req, res) => {
@@ -141,22 +122,19 @@ router.get('/posts/:id', ensureAuthenticated, async (req, res) => {
         author: true
       }
     });
-
     const relatedPosts = await getRelatedPosts(postData.category, postId);
     relatedPosts.push(postData);
-
     for (const rPost of relatedPosts) {
       const getObjectParams = {
         Bucket: bucketName,
         Key: rPost.image,
       };
-
       const command = new GetObjectCommand(getObjectParams);
       const url = await getSignedUrl(s3, command, { expiresIn: 60 });
       rPost.imageUrl = url;
     }
     relatedPosts.pop();
-    const post = postData; // post is the post that we want to render
+    const post = postData;
     res.render('./explore-views/feeds-post', { post: post, relatedPosts: relatedPosts });
   } catch (error) {
     console.log(error);
@@ -168,12 +146,10 @@ router.post('/follow/:id', async (req, res) => {
   try {
     const userToFollowId = Number(req.params.id);
     const currentUser = req.user;
-
     await prisma.user.update({
       where: { id: currentUser.id },
       data: { following: { connect: { id: userToFollowId } } }
     });
-
     res.status(200).json({ message: "Successfully followed" });
   } catch (error) {
     console.log(error);
@@ -186,12 +162,10 @@ router.post('/unfollow/:id', async (req, res) => {
   try {
     const userToUnfollowId = Number(req.params.id);
     const currentUser = req.user;
-
     await prisma.user.update({
       where: { id: currentUser.id },
       data: { following: { disconnect: { id: userToUnfollowId } } }
     });
-
     res.status(200).json({ message: "Successfully unfollowed" });
   } catch (error) {
     console.log(error);
@@ -204,7 +178,6 @@ router.get('/is-following/:id', async (req, res) => {
   try {
     const userId = Number(req.params.id);
     const currentUser = req.user;
-
     const isFollowing = await prisma.user.findFirst({
       where: {
         id: currentUser.id,
@@ -215,7 +188,6 @@ router.get('/is-following/:id', async (req, res) => {
         }
       }
     });
-
     if (isFollowing) {
       res.status(200).json({ isFollowing: true });
     } else {

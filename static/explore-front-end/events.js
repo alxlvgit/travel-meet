@@ -87,7 +87,9 @@ const eventPricing = (event) => {
     const min = event.priceRanges[0].min;
     const max = event.priceRanges[0].max;
     const currency = event.priceRanges[0].currency;
-    if (min == 0 && max == 0) {
+    if (!min || !max || !currency) {
+      return `N/A`;
+    } else if (min == 0 && max == 0) {
       return `N/A`;
     } else if (min == max) {
       return `${min} ${currency}`;
