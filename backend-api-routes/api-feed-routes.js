@@ -4,6 +4,8 @@ const prisma = new PrismaClient();
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { url } = require('inspector');
+const { ensureAuthenticated } = require('../passport-middleware/check-auth');
+
 const bucketName = process.env.BUCKET_NAME
 const bucketRegion = process.env.BUCKET_REGION
 const accessKey = process.env.ACCESS_KEY
@@ -18,22 +20,25 @@ const s3 = new S3Client({
 });
 
 // Gets all posts for feed
-router.get('/posts', async (req, res) => {
+router.get('/posts', ensureAuthenticated, async (req, res) => {
   try {
     const { limit, category } = req.query;
     const where = category ? { category } : {};
+    const userId = req.user.id; // Get the current user's ID
     const posts = await prisma.post.findMany({
       take: parseInt(limit),
       where: where,
       include: {
         author: true,
-        likes: true,
+        likes: {
+          where: {
+            id: userId // Filter likes by current user's ID
+          }
+        },
       },
       orderBy: {
-        // Orders posts by newest posts first
         createdAt: 'desc'
       }
-
     });
     for (const post of posts) {
       const getObjectParams = {
@@ -45,11 +50,10 @@ router.get('/posts', async (req, res) => {
       post.imageUrl = url
     }
     res.json({ posts: posts });
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
     res.status(500).json({ error: err });
   }
-})
+});
 
 module.exports = router;
