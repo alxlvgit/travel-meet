@@ -1,3 +1,4 @@
+// Global variables
 const socket = io();
 let map = null;
 let switchToEvents = false;
@@ -6,9 +7,13 @@ let switchToEvents = false;
 let markers = {};
 let markersOnScreen = {};
 
-// Cache the shared locations to apply offsets to markers with the same location
-const locationsCache = {};
-const offsetsStorage = {};
+// Cache the shared users' locations to apply offsets to markers with the same location
+const usersLocationsCache = new Set();
+const usersOffsets = {};
+
+// Cache the locations of events to apply offsets to events with same location
+const eventsMarkersLocationCache = new Set();
+const eventsOffsets = {};
 
 // DOM elements
 const footerButtons = document.querySelectorAll('.footer-btn');
@@ -21,113 +26,18 @@ const infoButton = document.querySelector('.info-button');
 const dropdown = document.getElementById('dropdown');
 const toggleLocationButton = document.getElementById('toggleLocationButton');
 const toggleLocationButtonIcon = document.querySelector('.toggle-button i');
+const searchButton = document.getElementById('searchButton');
+const dropDownEvents = document.getElementById('dropdown-events');
 
 // Global user id variable
 const currentUser = mapContainer.dataset.userid;
 console.log(currentUser, "current test user" + typeof currentUser);
 
-// Add layers to the map
-const addLayers = (map) => {
-    map.addSource('markers', {
-        type: 'geojson',
-        data: { type: 'FeatureCollection', features: [] },
-        cluster: true,
-        clusterMaxZoom: 14,
-        clusterRadius: 50
-    });
-
-    map.addLayer({
-        id: 'clusters',
-        type: 'circle',
-        source: 'markers',
-        filter: ['has', 'point_count'],
-        paint: {
-            'circle-color': [
-                'step',
-                ['get', 'point_count'],
-                '#51bbd6',
-                100,
-                '#f1f075',
-                750,
-                '#f28cb1'
-            ],
-            'circle-radius': [
-                'step',
-                ['get', 'point_count'],
-                20,
-                100,
-                30,
-                750,
-                40
-            ]
-        }
-    });
-
-    map.addLayer({
-        id: 'cluster-count',
-        type: 'symbol',
-        source: 'markers',
-        filter: ['has', 'point_count'],
-        layout: {
-            'text-field': '{point_count_abbreviated}',
-            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-            'text-size': 14
-        }
-    });
-
-    map.addSource('events', {
-        type: 'geojson',
-        data: { type: 'FeatureCollection', features: [] },
-        cluster: true,
-        clusterMaxZoom: 14,
-        clusterRadius: 50
-    });
-
-    map.addLayer({
-        id: 'events-clusters',
-        type: 'circle',
-        source: 'events',
-        filter: ['has', 'point_count'],
-        paint: {
-            'circle-color': [
-                'step',
-                ['get', 'point_count'],
-                '#51bbd6',
-                100,
-                '#f1f075',
-                750,
-                '#f28cb1'
-            ],
-            'circle-radius': [
-                'step',
-                ['get', 'point_count'],
-                20,
-                100,
-                30,
-                750,
-                40
-            ]
-        }
-    });
-
-    map.addLayer({
-        id: 'events-cluster-count',
-        type: 'symbol',
-        source: 'events',
-        filter: ['has', 'point_count'],
-        layout: {
-            'text-field': '{point_count_abbreviated}',
-            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-            'text-size': 14
-        }
-    });
-};
-
-
 // Initialize the map
 const initMap = async () => {
     const secretKeys = await getSecretKeys();
     const apiKey = secretKeys.MAPBOX_API_KEY;
+    let loadEventsTriggered = false;
     mapboxgl.accessToken = apiKey;
     map = new mapboxgl.Map({
         container: 'map',
@@ -144,35 +54,16 @@ const initMap = async () => {
         showUserHeading: true
     });
     map.addControl(geolocateControl);
+
     geolocateControl.on('geolocate', async function (event) {
         const userLocation = { latitude: event.coords.latitude, longitude: event.coords.longitude };
         await updateUserLocationOnServer(userLocation);
     });
     map.addControl(new mapboxgl.NavigationControl());
 
-    // Set the debounce timeout to 1000ms
-    // const debounceTimeout = 1000;
-    // Initialize the debounce timer variable
-    // let debounceTimer;
-    map.on('moveend', async () => {
-        try {
-            if (switchToEvents) {
-                addEventsToMap(map);
-            } else {
-                // clearTimeout(debounceTimer);s
-                // debounceTimer = setTimeout(() => {
-                const mapCenter = map.getCenter();
-                socket.emit('userTraversingOnMap', { lat: mapCenter.lat, lng: mapCenter.lng, userId: currentUser });
-                socket.emit('getSharedLocations', { lat: mapCenter.lat, lng: mapCenter.lng, userId: currentUser });
-                // }, debounceTimeout);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    });
-
     map.on('load', async () => {
         addLayers(map);
+        searchButton.addEventListener('click', handleSearch);
         const userLocation = await getCurrentUserLocation();
         if (!userLocation) return;
         map.flyTo({
@@ -181,8 +72,32 @@ const initMap = async () => {
             speed: 1,
             curve: 1.5,
         });
-        socket.emit('userTraversingOnMap', { lat: userLocation.latitude, lng: userLocation.longitude, userId: currentUser });
-        socket.emit('getSharedLocations', { lat: userLocation.latitude, lng: userLocation.longitude, userId: currentUser });
+    });
+    // Set the debounce timeout to 1000ms
+    // const debounceTimeout = 1000;
+    // Initialize the debounce timer variable
+    // let debounceTimer;
+    map.on('moveend', async () => {
+        const mapCenter = map.getCenter();
+        // clearTimeout(debounceTimer);
+        // debounceTimer = setTimeout(() => {
+        socket.emit('userTraversingOnMap', { lat: mapCenter.lat, lng: mapCenter.lng, userId: currentUser });
+        // }, debounceTimeout);
+    });
+
+    map.on('zoomend', async () => {
+        if (loadEventsTriggered) {
+            searchButton.classList.remove('hidden');
+            return;
+        }
+        if (switchToEvents) {
+            addEventsToMap(map);
+        } else {
+            const mapCenter = map.getCenter();
+            socket.emit('userTraversingOnMap', { lat: mapCenter.lat, lng: mapCenter.lng, userId: currentUser });
+            socket.emit('getSharedLocations', { lat: mapCenter.lat, lng: mapCenter.lng, userId: currentUser });
+        }
+        loadEventsTriggered = true;
     });
 };
 
@@ -192,35 +107,37 @@ initMap();
 // Add marker when new user shares their location
 socket.on('addMarker', async ({ userId, lat, lng, iconUrl }) => {
     if (switchToEvents) return;
-    addMarkerToSource(map, userId, lat, lng, iconUrl);
+    addUserMarker(map, userId, lat, lng, iconUrl);
 });
 
 // Remove marker when user stops sharing their location
 socket.on('removeMarker', ({ userId }) => {
     if (switchToEvents) return;
-    removeMarkerFromSource(map, userId);
+    removeUserMarker(map, userId);
+    const mapCenter = map.getCenter();
+    socket.emit('getSharedLocations', { lat: mapCenter.lat, lng: mapCenter.lng, userId: currentUser });
 });
 
 // Get stored locations from the server
 socket.on('nearbySharedLocations', async (data) => {
     let storedLocations = data.nearbyUsers;
-    console.log(storedLocations, "all shared locations from server");
+    console.log(storedLocations, "all nearby shared locations from server");
     storedLocations = storedLocations.filter(location => location.userId !== currentUser);
     // console.log(data.icons, "icons from server");
-    addUserMarkersToMap(map, storedLocations, data.icons);
+    addNearbyUsersMarkersToMap(map, storedLocations, data.icons);
 });
 
 // Create user marker feature
 const createUserMarkerFeature = (userId, lat, lng, icon) => {
-    applyOffsetToMarker(lng, lat, userId, locationsCache, offsetsStorage);
+    applyOffsetToMarker(lng, lat, userId, usersLocationsCache, usersOffsets);
     return {
         type: 'Feature',
         geometry: {
             type: 'Point',
-            coordinates: [lng, lat]
+            coordinates: usersOffsets[userId].length > 0 ? usersOffsets[userId] : [lng, lat]
         },
         properties: {
-            userId: userId,
+            id: userId,
             icon: icon,
         }
     };
@@ -235,52 +152,33 @@ const createUserMarker = (icon, feature, userId) => {
     el.style.backgroundRepeat = 'no-repeat';
     el.style.backgroundPosition = 'center';
     el.style.backgroundSize = 'cover';
-    el.classList.add('marker', 'w-8', 'h-8', 'rounded-full', 'border-2', 'border-white', 'shadow-lg');
+    el.classList.add('marker', 'w-8', 'h-8', 'rounded-full', 'border-2', 'border-[#878d26]', 'shadow-lg');
     el.style.backgroundImage = `url(${icon})`;
     const link = document.createElement('a');
-    link.href = '/user-profile/' + feature.properties.userId;
+    link.href = '/user-profile/' + feature.properties.id;
     link.target = '_blank';
     link.appendChild(el);
     return link;
 };
 
 // Render clusters and markers on the map
-const addUserMarkersToMap = async (map, storedLocations, icons) => {
-    const newMarkers = {};
+const addNearbyUsersMarkersToMap = async (map, storedLocations, icons) => {
     const userId = currentUser;
     storedLocations = storedLocations.filter(location => location.userId !== userId);
     // Create an array of GeoJSON feature collections for each point
-    const markersData = storedLocations.map(location => {
+    const featuresData = storedLocations.map(location => {
         return createUserMarkerFeature(location.userId, location.lat, location.lng, icons[location.userId]);
     });
     // For each cluster on the screen, create an HTML marker for it (if didn't create yet),and add it to the map if it's not there already
     const markersSource = map.getSource('markers');
-    if (markersSource) {
-        markersSource.setData({ type: 'FeatureCollection', features: markersData });
-        const features = map.querySourceFeatures('markers');
-        features.forEach(feature => {
-            if (!feature.properties.cluster) {
-                let marker = markers[feature.properties.userId];
-                if (!marker) {
-                    const icon = icons[feature.properties.userId];
-                    const markerElement = createUserMarker(icon, feature, feature.properties.userId);
-                    marker = markers[feature.properties.userId] = new mapboxgl.Marker(markerElement)
-                        .setLngLat(feature.geometry.coordinates)
-                }
-                newMarkers[feature.properties.userId] = marker;
-                if (!markersOnScreen[feature.properties.userId]) marker.addTo(map);
-            };
-        });
-        // For each marker added previously, remove those that are no longer visible
-        for (const userId in markersOnScreen) {
-            if (!newMarkers[userId]) markersOnScreen[userId].remove();
-        }
-        markersOnScreen = newMarkers;
-    };
+    markersSource.setData({ type: 'FeatureCollection', features: featuresData });
+    map.on('render', () => {
+        handleUnclusteredMarkers(map, "markers", icons);
+    });
 };
 
 // Add marker to the map when a new user shares their location
-const addMarkerToSource = (map, userId, lat, lng, iconUrl) => {
+const addUserMarker = (map, userId, lat, lng, iconUrl) => {
     if (markersOnScreen[userId]) {
         console.log("marker already on screen");
         return;
@@ -292,14 +190,12 @@ const addMarkerToSource = (map, userId, lat, lng, iconUrl) => {
         const markerData = createUserMarkerFeature(userId, lat, lng, iconUrl);
         currentData.features.push(markerData);
         markersSource.setData(currentData);
-        // Create the HTML marker element and add it to the map
         const userMarkerElement = createUserMarker(iconUrl, markerData, userId);
         const marker = new mapboxgl.Marker(userMarkerElement)
-            .setLngLat([lng, lat])
+            .setLngLat(markerData.geometry.coordinates);
         markersOnScreen[userId] = marker;
         markers[userId] = marker;
         marker.addTo(map);
-        // Update the cluster layer's source data
         const clusterSource = map.getSource('clusters');
         if (clusterSource) {
             const clusterData = clusterSource._data;
@@ -310,12 +206,12 @@ const addMarkerToSource = (map, userId, lat, lng, iconUrl) => {
 };
 
 // Remove marker from the map when a user stops sharing their location
-const removeMarkerFromSource = (map, userId) => {
+const removeUserMarker = (map, userId) => {
     const markersSource = map.getSource('markers');
     if (markersSource) {
         const currentData = markersSource._data;
         const filteredFeatures = currentData.features.filter(
-            feature => feature.properties.userId !== userId
+            feature => feature.properties.id !== userId
         );
         currentData.features = filteredFeatures;
         markersSource.setData(currentData);
@@ -323,6 +219,8 @@ const removeMarkerFromSource = (map, userId) => {
         const marker = markersOnScreen[userId];
         if (marker) {
             console.log("removing marker from screen");
+            usersLocationsCache.delete(userId);
+            delete usersOffsets[userId];
             marker.remove();
             delete markersOnScreen[userId];
             delete markers[userId];
@@ -330,20 +228,20 @@ const removeMarkerFromSource = (map, userId) => {
     }
 };
 
-// Fetch user profile icon from the server
-const getIcon = async (userId) => {
-    try {
-        const response = await fetch(`/api-user/${userId}/icon`);
-        const icon = await response.json();
-        return icon;
-    } catch (error) {
-        console.error(error);
-    }
-};
-
 //------------------------------------------------------------------------------------------------------------//
 // DOM events
 //------------------------------------------------------------------------------------------------------------//
+
+// Handle "search in the area" button click
+const handleSearch = async () => {
+    searchButton.classList.add('hidden');
+    if (switchToEvents) {
+        await addEventsToMap(map);
+        return;
+    }
+    const mapCenter = map.getCenter();
+    socket.emit('getSharedLocations', { lat: mapCenter.lat, lng: mapCenter.lng, userId: currentUser });
+};
 
 // Toggle sharing location
 toggleLocationButton.addEventListener('click', async () => {
@@ -399,9 +297,7 @@ dropdown.addEventListener('change', async () => {
             map.getSource('events').setData(currentData);
         }
         const mapCenter = map.getCenter();
-        const mapZoom = map.getZoom();
-        map.fire('moveend');
-        map.flyTo({ center: mapCenter, zoom: mapZoom });
+        socket.emit('getSharedLocations', { lat: mapCenter.lat, lng: mapCenter.lng, userId: currentUser });
     } else if (selectedOption === 'events') {
         infoButton.classList.add('hidden');
         dropDownEvents.classList.remove('hidden');
@@ -413,11 +309,30 @@ dropdown.addEventListener('change', async () => {
             markersSource.setData(currentData);
         }
         toggleLocationButton.classList.add('hidden');
-        const mapCenter = map.getCenter();
-        const mapZoom = map.getZoom();
-        map.fire('moveend');
-        map.flyTo({ center: mapCenter, zoom: mapZoom });
+        await addEventsToMap(map);
     }
+});
+
+// Dropdown for switching between events categories
+dropDownEvents.addEventListener('change', async (e) => {
+    switch (e.target.value) {
+        case "art":
+            apiKeySearchQueryParam = "Arts & Theatre";
+            break;
+        case "music":
+            apiKeySearchQueryParam = "Music";
+            break;
+        case "sports":
+            apiKeySearchQueryParam = "Sports";
+            break;
+        case "seminars":
+            apiKeySearchQueryParam = "Seminar";
+            break;
+        default:
+            apiKeySearchQueryParam = "";
+            break;
+    }
+    addEventsToMap(map);
 });
 
 // Join the room when the window loads
