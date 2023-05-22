@@ -200,4 +200,63 @@ router.get('/is-following/:id', async (req, res) => {
 });
 
 
+// Like post
+router.post('/like-post/:id', ensureAuthenticated, async (req, res) => {
+  try {
+    const postId = Number(req.params.id);
+    const currentUser = req.user;
+    await prisma.post.update({
+      where: { id: postId },
+      data: { likes: { connect: { id: currentUser.id } } }
+    });
+    res.status(200).json({ message: "Post liked successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An error occurred while trying to like the post" });
+  }
+});
+
+// Unlike post
+router.post('/unlike-post/:id', ensureAuthenticated, async (req, res) => {
+  try {
+    const postId = Number(req.params.id);
+    const currentUser = req.user;
+    await prisma.post.update({
+      where: { id: postId },
+      data: { likes: { disconnect: { id: currentUser.id } } }
+    });
+    res.status(200).json({ message: "Post unliked successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An error occurred while trying to unlike the post" });
+  }
+});
+
+// Check if user has liked post
+router.get('/has-liked-post/:id', ensureAuthenticated, async (req, res) => {
+  try {
+    const postId = Number(req.params.id);
+    const currentUser = req.user;
+    const hasLiked = await prisma.post.findFirst({
+      where: {
+        id: postId,
+        likes: {
+          some: {
+            id: currentUser.id
+          }
+        }
+      }
+    });
+    if (hasLiked) {
+      res.status(200).json({ hasLiked: true });
+    } else {
+      res.status(200).json({ hasLiked: false });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An error occurred while checking like status" });
+  }
+});
+
+
 module.exports = router;
