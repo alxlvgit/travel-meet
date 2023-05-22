@@ -27,6 +27,7 @@ router.get('/posts', async (req, res) => {
       where: where,
       include: {
         author: true,
+        likes: true,
       },
       orderBy: {
         // Orders posts by newest posts first
