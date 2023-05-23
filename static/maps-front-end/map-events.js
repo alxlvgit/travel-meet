@@ -74,6 +74,7 @@ const makeEventsFeatures = async (eventsObject) => {
         const { longitude, latitude } = eventVenue.location;
         applyOffsetToMarker(longitude, latitude, event.id, eventsMarkersLocationCache, eventsOffsets);
         const eventImage = await filterEventImages(event);
+        const eventInfo = event.info ? event.info : "No info available";
         const eventGeoJSON = {
             type: 'Feature',
             geometry: {
@@ -86,6 +87,14 @@ const makeEventsFeatures = async (eventsObject) => {
                 url: event.url,
                 image: eventImage,
                 icon: getIconsByCategory(event),
+                popupHTML: ` <div class="flex flex-col justify-center items-center">
+                                <img src="${eventImage}" class="w-32 h-24 rounded-md shadow-lg mb-2">
+                                <h3 class="text-sm font-semibold text-center">${event.name}</h3>
+                                <div class = "flex flex-row justify-center items-center space-x-2">
+                                <a href="${event.url}" target="_blank" class="text-xs text-center text-[#878d26] hover:text-[#a3a82c]">Buy Tickets</a>
+                                <a href="/event/${event.id}" target="_blank" class="text-xs text-center text-[#878d26] hover:text-[#a3a82c]">Groups</a>
+                                </div>
+                            </div>`,
             },
         };
 
@@ -96,6 +105,8 @@ const makeEventsFeatures = async (eventsObject) => {
 
 // Create events marker
 const createEventsMarker = (feature) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'w-full h-full bg-black/25 absolute rounded-full absolute top-0 left-0'
     const el = document.createElement('div');
     el.style.backgroundSize = '100%';
     el.style.backgroundRepeat = 'no-repeat';
@@ -104,14 +115,11 @@ const createEventsMarker = (feature) => {
     el.className = 'marker w-8 h-8 rounded-full border-2 border-[#878d26] shadow-lg cursor-pointer';
     const icon = document.createElement('i');
     icon.className = feature.properties.icon;
-    icon.classList.add('text-sm', 'text-white', 'absolute', 'top-1/2', 'left-1/2', 'transform', '-translate-x-1/2', '-translate-y-1/2');
+    icon.classList.add('text-sm', 'text-white', 'absolute', 'top-1/2', 'left-1/2', 'transform', '-translate-x-1/2', '-translate-y-1/2', 'z-10');
     el.appendChild(icon);
+    el.appendChild(overlay);
     el.style.backgroundImage = `url(${feature.properties.image})`;
-    const link = document.createElement('a');
-    link.href = '/event/' + feature.properties.id;
-    link.target = '_blank';
-    link.appendChild(el);
-    return link;
+    return el;
 }
 
 // Add events to the map
@@ -127,7 +135,9 @@ const addEventsToMap = async (map) => {
     if (eventsSource) {
         eventsSource.setData({ type: 'FeatureCollection', features: eventFeatures });
         map.on("render", () => {
-            handleUnclusteredMarkers(map, "events");
+            if (switchToEvents) {
+                handleUnclusteredMarkers(map, "events");
+            }
         });
     } else {
         console.log("no events source");
