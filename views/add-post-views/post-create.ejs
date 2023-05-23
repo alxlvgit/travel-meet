@@ -8,6 +8,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="/output.css" rel="stylesheet" />
   <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
+  <script defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7T7zXCu6Fh2cpnuYRP3ioJQZnq_EJhmY&libraries=places"></script>
+
   <script defer src="../add-post-front-end/add-post.js"></script>
 
 </head>
@@ -53,11 +56,11 @@
           </div>
           <div class="mb-4">
             <textarea class="border border-gray-400 rounded-lg py-2 px-4 w-full" name="caption" id="caption"
-              placeholder="Add Caption" required></textarea>
+              placeholder="Add Message" required></textarea>
           </div>
           <div class="mb-4">
-            <input class="border border-gray-400 rounded-lg py-2 px-4 w-full" type="text" name="location" id="location"
-              placeholder="Location" required>
+            <input class="border border-gray-400 rounded-lg py-2 px-4 w-full" type="text" name="location"
+              id="location-input" placeholder="Location" required>
           </div>
           <div class="mb-4">
             <select class="border border-gray-400 rounded-lg py-2 px-4 w-full text-gray-400" name="category"

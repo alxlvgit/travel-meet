@@ -45,8 +45,10 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 
 // Create a new post
 router.post('/', ensureAuthenticated, upload.single('image'), async (req, res) => {
-    const { title, caption, location, category, authorMessage } = req.body;
+    const { title, caption, category } = req.body;
     const imageName = randomImageName();
+      // Retrieve the selected location from the input field
+  const locationInput = req.body.location;
     if (!req.file) {
         res.status(400).send('No image uploaded. Please upload an image before creating the post.');
         return;
@@ -67,9 +69,8 @@ router.post('/', ensureAuthenticated, upload.single('image'), async (req, res) =
             image: imageName,
             title: title,
             caption: caption,
-            location: location,
+            location: locationInput,
             category: category,
-            authorMessage: authorMessage,
             author: {
                 connect: {
                     id: user.id
@@ -105,7 +106,6 @@ router.put('/:postId', ensureAuthenticated, async (req, res) => {
             caption: caption,
             location: location,
             category: category,
-            authorMessage: authorMessage,
         }
     });
     res.json(updatePost);
