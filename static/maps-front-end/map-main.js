@@ -199,7 +199,9 @@ const addUserMarker = (map, userId, lat, lng, iconUrl, username) => {
         markersSource.setData(currentData);
         const userMarkerElement = createUserMarker(iconUrl, userId);
         const marker = new mapboxgl.Marker(userMarkerElement)
-            .setLngLat(markerData.geometry.coordinates);
+            .setLngLat(markerData.geometry.coordinates)
+            .setPopup(new mapboxgl.Popup({ offset: 25 }).addClassName('z-50')
+                .setHTML(markerData.properties.popupHTML));
         markersOnScreen[userId] = marker;
         markers[userId] = marker;
         marker.addTo(map);
