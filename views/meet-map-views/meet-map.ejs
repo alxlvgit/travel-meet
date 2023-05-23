@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
         integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
         crossorigin="anonymous"></script>
@@ -22,12 +22,13 @@
 
     <script defer src="../maps-front-end/user-location.js"></script>
     <script defer src="../secret-keys.js"></script>
+    <script defer src="../maps-front-end/map-helpers.js"></script>
     <script defer src="../maps-front-end/map-events.js"></script>
     <script defer src="../maps-front-end/map-main.js"></script>
     <title>Map</title>
 </head>
 
-<body class="w-full h-full relative">
+<body class="w-full h-full relative flex flex-col justify-center items-center">
     <div id="infoWindow"
         class="fixed hidden top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded shadow-lg z-50">
         <h2 class="text-xl font-semibold mb-2">Location Sharing</h2>
@@ -70,6 +71,10 @@
             <option value="seminars">Seminars</option>
         </select>
     </div>
+    <button id="searchButton"
+        class="absolute top-14 px-3 py-1 shadow-lg bg-white border-[#878d26] border text-black rounded-full z-50 text-sm hidden">
+        Search this area
+    </button>
 
     <div id="map" class="w-full h-full" data-userid="<%- user.id %>">
 
