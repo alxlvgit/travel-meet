@@ -34,23 +34,37 @@ const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex'
 
 // Get add post page
 router.get('/', ensureAuthenticated, async (req, res) => {
+    const errorMessages = (req.session).messages;
     const user = {
         username: req.user.name,
         email: req.user.email,
         profileImage: req.user.profileImageURI,
     };
-    console.log(user);
-    res.render('add-post-views/post-create', { user })
+    const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+    if (errorMessages && errorMessages.length > 0) {
+        const mostRecentErrorMessage = errorMessages[errorMessages.length - 1];
+        if (mostRecentErrorMessage === "No image uploaded. Please upload an image before creating the post.") {
+            req.session.messages = [];
+            res.render('add-post-views/post-create', { errorMessage: mostRecentErrorMessage, user, GOOGLE_API_KEY });
+        } else {
+            req.session.messages = [];
+            res.render('add-post-views/post-create', { errorMessage: null, user, GOOGLE_API_KEY });
+        }
+    } else {
+        res.render('add-post-views/post-create', { user, GOOGLE_API_KEY, errorMessage: null })
+    }
 });
 
 // Create a new post
 router.post('/', ensureAuthenticated, upload.single('image'), async (req, res) => {
     const { title, caption, category } = req.body;
     const imageName = randomImageName();
-      // Retrieve the selected location from the input field
-  const locationInput = req.body.location;
+    const locationInput = req.body.location;
+    const message = "No image uploaded. Please upload an image before creating the post.";
     if (!req.file) {
-        res.status(400).send('No image uploaded. Please upload an image before creating the post.');
+        console.log(message);
+        req.session.messages = [message];
+        res.redirect('/post-create');
         return;
     }
     const buffer = await sharp(req.file.buffer).resize({ fit: "contain" }).toBuffer()

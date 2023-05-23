@@ -120,6 +120,8 @@ const handleUnclusteredMarkers = (map, sourceName, icons) => {
                     }
                     marker = markers[feature.properties.id] = new mapboxgl.Marker(markerElement)
                         .setLngLat(feature.geometry.coordinates)
+                        .setPopup(new mapboxgl.Popup({ offset: 25 }).addClassName('z-50')
+                            .setHTML(feature.properties.popupHTML))
                 }
                 newMarkers[feature.properties.id] = marker;
                 if (!markersOnScreen[feature.properties.id]) marker.addTo(map);

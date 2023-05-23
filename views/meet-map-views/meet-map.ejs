@@ -10,11 +10,10 @@
         integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
         crossorigin="anonymous"></script>
 
-
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
     <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
-    <link href="/output.css" rel="stylesheet" />
+    <!-- <link href="/output.css" rel="stylesheet" /> -->
 
     <!-- use cdn for development only -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -75,8 +74,7 @@
         class="absolute top-14 px-3 py-1 shadow-lg bg-white border-[#878d26] border text-black rounded-full z-50 text-sm hidden">
         Search this area
     </button>
-
-    <div id="map" class="w-full h-full" data-userid="<%- user.id %>">
+    <div id="map" class="w-full h-full" data-userid="<%- user.id %>" data-username="<%- user.name %>">
 
     </div>
     <%- include("../partials/footer.ejs"); %>

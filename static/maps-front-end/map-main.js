@@ -29,9 +29,10 @@ const toggleLocationButtonIcon = document.querySelector('.toggle-button i');
 const searchButton = document.getElementById('searchButton');
 const dropDownEvents = document.getElementById('dropdown-events');
 
-// Global user id variable
+// Global variables
 const currentUser = mapContainer.dataset.userid;
-console.log(currentUser, "current test user" + typeof currentUser);
+const currentUserName = mapContainer.dataset.username;
+console.log(currentUser, "current test user" + currentUser + currentUserName);
 
 // Initialize the map
 const initMap = async () => {
@@ -99,15 +100,16 @@ const initMap = async () => {
         }
         loadEventsTriggered = true;
     });
+
 };
 
 // Initialize the map
 initMap();
 
 // Add marker when new user shares their location
-socket.on('addMarker', async ({ userId, lat, lng, iconUrl }) => {
+socket.on('addMarker', async ({ userId, lat, lng, iconUrl, username }) => {
     if (switchToEvents) return;
-    addUserMarker(map, userId, lat, lng, iconUrl);
+    addUserMarker(map, userId, lat, lng, iconUrl, username);
 });
 
 // Remove marker when user stops sharing their location
@@ -121,14 +123,16 @@ socket.on('removeMarker', ({ userId }) => {
 // Get stored locations from the server
 socket.on('nearbySharedLocations', async (data) => {
     let storedLocations = data.nearbyUsers;
-    console.log(storedLocations, "all nearby shared locations from server");
+    const usernames = data.usernames;
+    const icons = data.icons;
+    console.log(data, "all nearby shared locations from server");
     storedLocations = storedLocations.filter(location => location.userId !== currentUser);
     // console.log(data.icons, "icons from server");
-    addNearbyUsersMarkersToMap(map, storedLocations, data.icons);
+    addNearbyUsersMarkersToMap(map, storedLocations, icons, usernames);
 });
 
 // Create user marker feature
-const createUserMarkerFeature = (userId, lat, lng, icon) => {
+const createUserMarkerFeature = (userId, lat, lng, icon, username) => {
     applyOffsetToMarker(lng, lat, userId, usersLocationsCache, usersOffsets);
     return {
         type: 'Feature',
@@ -139,12 +143,20 @@ const createUserMarkerFeature = (userId, lat, lng, icon) => {
         properties: {
             id: userId,
             icon: icon,
+            popupHTML: `<div class="flex flex-col items-center justify-center">
+            <div class="flex items-center justify-center">
+                <img src="${icon}" class="w-16 h-16 rounded-full border border-[#FFFFFF] outline-[#878d26] outline outline-2 shadow-lg" />
+            </div>
+            <div class="flex items-center justify-center">
+                <a href="/user-profile/${userId}" target="_blank" class="text-[#878d26] font-semibold text-lg hover:text-black outline-none">${username}</a>
+            </div>
+        </div>`
         }
     };
 };
 
 // Create a marker for a user
-const createUserMarker = (icon, feature, userId) => {
+const createUserMarker = (icon, userId) => {
     const el = document.createElement('div');
     el.className = 'marker';
     el.id = userId;
@@ -152,33 +164,28 @@ const createUserMarker = (icon, feature, userId) => {
     el.style.backgroundRepeat = 'no-repeat';
     el.style.backgroundPosition = 'center';
     el.style.backgroundSize = 'cover';
-    el.classList.add('marker', 'w-8', 'h-8', 'rounded-full', 'border-2', 'border-[#878d26]', 'shadow-lg');
+    el.classList.add('marker', 'w-8', 'h-8', 'rounded-full', 'shadow-lg', 'border-[#FFFFFF]', 'border', 'outline-[#878d26]', 'outline', 'outline-2');
     el.style.backgroundImage = `url(${icon})`;
-    const link = document.createElement('a');
-    link.href = '/user-profile/' + feature.properties.id;
-    link.target = '_blank';
-    link.appendChild(el);
-    return link;
+    return el;
 };
 
 // Render clusters and markers on the map
-const addNearbyUsersMarkersToMap = async (map, storedLocations, icons) => {
-    const userId = currentUser;
-    storedLocations = storedLocations.filter(location => location.userId !== userId);
+const addNearbyUsersMarkersToMap = async (map, storedLocations, icons, usernames) => {
     // Create an array of GeoJSON feature collections for each point
     const featuresData = storedLocations.map(location => {
-        return createUserMarkerFeature(location.userId, location.lat, location.lng, icons[location.userId]);
+        return createUserMarkerFeature(location.userId, location.lat, location.lng, icons[location.userId], usernames[location.userId]);
     });
     // For each cluster on the screen, create an HTML marker for it (if didn't create yet),and add it to the map if it's not there already
     const markersSource = map.getSource('markers');
     markersSource.setData({ type: 'FeatureCollection', features: featuresData });
     map.on('render', () => {
+        if (switchToEvents) return;
         handleUnclusteredMarkers(map, "markers", icons);
     });
 };
 
 // Add marker to the map when a new user shares their location
-const addUserMarker = (map, userId, lat, lng, iconUrl) => {
+const addUserMarker = (map, userId, lat, lng, iconUrl, username) => {
     if (markersOnScreen[userId]) {
         console.log("marker already on screen");
         return;
@@ -187,10 +194,10 @@ const addUserMarker = (map, userId, lat, lng, iconUrl) => {
     const markersSource = map.getSource('markers');
     if (markersSource) {
         const currentData = markersSource._data;
-        const markerData = createUserMarkerFeature(userId, lat, lng, iconUrl);
+        const markerData = createUserMarkerFeature(userId, lat, lng, iconUrl, username);
         currentData.features.push(markerData);
         markersSource.setData(currentData);
-        const userMarkerElement = createUserMarker(iconUrl, markerData, userId);
+        const userMarkerElement = createUserMarker(iconUrl, userId);
         const marker = new mapboxgl.Marker(userMarkerElement)
             .setLngLat(markerData.geometry.coordinates);
         markersOnScreen[userId] = marker;
@@ -260,7 +267,7 @@ toggleLocationButton.addEventListener('click', async () => {
         if (isSharingLocation) {
             const icon = await getIcon(currentUser);
             const iconUrl = icon.profileImageURI;
-            socket.emit('addNewSharedLocation', { userId: currentUser, lat: userLocation.latitude, lng: userLocation.longitude, iconUrl });
+            socket.emit('addNewSharedLocation', { userId: currentUser, lat: userLocation.latitude, lng: userLocation.longitude, iconUrl, username: currentUserName });
             toggleLocationButtonIcon.classList.remove('text-black');
             toggleLocationButtonIcon.classList.add('text-[#878d26]');
         } else {
