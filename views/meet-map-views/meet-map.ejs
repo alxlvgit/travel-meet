@@ -29,7 +29,7 @@
 
 <body class="w-full h-full relative flex flex-col justify-center items-center">
     <div id="infoWindow"
-        class="fixed hidden top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded shadow-lg z-50">
+        class="fixed hidden top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-gray-400 p-4 rounded shadow-lg z-50 w-5/6 sm:w-3/4 md:w-1/2">
         <h2 class="text-xl font-semibold mb-2">Location Sharing</h2>
         <p id="info-message" class="text-gray-600">By clicking on the signal tower icon, you will share your current
             location with other users on the map. As a tracking protection measure, the position of your location marker
@@ -45,37 +45,40 @@
         <div class="mt-10 font-semibold text-lg text-white loading-status text-center">Getting your location...</div>
     </div>
 
-    <div class="flex w-full h-12 justify-evenly align-middle items-center">
+    <div
+        class="flex w-full h-12 justify-center align-middle items-center shadow-md z-50 sm:justify-start sm:pl-8 bg-gray-50  absolute top-0 left-0">
         <select id="dropdown"
-            class="block bg-white border border-gray-300 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 w-24 h-3/4">
-            <option value="meet">Meet</option>
+            class="block px-2 rounded-lg leading-tight border-gray-200 border  h-9 w-24 focus:outline-none mr-16 bg-white">
+            <option value="meet">
+                Meet
+            </option>
             <option value="events">Events</option>
         </select>
-        <div class="toggle-location-container flex justify-around items-end">
-            <button id="toggleLocationButton" class="toggle-button text-center p-2">
+        <div class="toggle-location-container flex justify-center align-middle items-center w-24 h-12">
+            <button id="toggleLocationButton" class="toggle-button text-center mr-1">
                 <i class="fa-solid fa-tower-broadcast text-2xl text-black"></i>
             </button>
             <button class="info-button">
-                <i class="fa-solid fa-info-circle text-xl text-black"></i>
+                <i class="fa-solid fa-info-circle text-xl text-[#878d26] mt-3"></i>
             </button>
         </div>
 
 
         <select id="dropdown-events"
-            class="block bg-white border border-gray-300 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 w-24 hidden h-3/4">
+            class="block bg-white rounded-lg leading-tight border-gray-200 border focus:outline-non w-24 h-9 hidden">
             <option value="all">All</option>
             <option value="music">Music</option>
-            <option value="sports">Sports</option>
+            <option value="sports">Sport</option>
             <option value="art">Art</option>
-            <option value="seminars">Seminars</option>
+            <option value="seminars">Seminar</option>
         </select>
     </div>
     <button id="searchButton"
         class="absolute top-14 px-3 py-1 shadow-lg bg-white border-[#878d26] border text-black rounded-full z-50 text-sm hidden">
         Search this area
     </button>
-    <div id="map" class="w-full h-full" data-userid="<%- user.id %>" data-username="<%- user.name %>">
-
+    <div id="map" class="w-full h-full absolute top-12 left-0" data-userid="<%- user.id %>"
+        data-username="<%- user.name %>">
     </div>
     <%- include("../partials/footer.ejs"); %>
 </body>

@@ -25,6 +25,7 @@ const closeInfoWindow = document.getElementById('closeInfoWindow');
 const infoButton = document.querySelector('.info-button');
 const dropdown = document.getElementById('dropdown');
 const toggleLocationButton = document.getElementById('toggleLocationButton');
+const toggleLocationContainer = document.querySelector('.toggle-location-container');
 const toggleLocationButtonIcon = document.querySelector('.toggle-button i');
 const searchButton = document.getElementById('searchButton');
 const dropDownEvents = document.getElementById('dropdown-events');
@@ -149,7 +150,7 @@ const createUserMarkerFeature = (userId, lat, lng, icon, username) => {
             <div class="flex items-center justify-center">
                 <img src="${icon}" class="w-16 h-16 rounded-full object-cover border border-[#FFFFFF] outline-[#878d26] outline outline-2 shadow-lg" />
             </div>
-            <div class="flex items-center justify-center">
+            <div class="flex items-center justify-center mt-2">
                 <a href="/user-profile/${userId}" target="_blank" class="text-[#878d26] font-semibold text-lg hover:text-black outline-none">${username}</a>
             </div>
         </div>`
@@ -303,6 +304,7 @@ dropdown.addEventListener('change', async () => {
         infoButton.classList.remove('hidden');
         dropDownEvents.classList.add('hidden');
         toggleLocationButton.classList.remove('hidden');
+        toggleLocationContainer.classList.remove('hidden');
         switchToEvents = false;
         if (map.getSource('events')) {
             const currentData = map.getSource('events')._data;
@@ -322,6 +324,7 @@ dropdown.addEventListener('change', async () => {
             markersSource.setData(currentData);
         }
         toggleLocationButton.classList.add('hidden');
+        toggleLocationContainer.classList.add('hidden');
         await addEventsToMap(map);
     }
 });
