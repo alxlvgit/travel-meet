@@ -1,26 +1,58 @@
 <!DOCTYPE html>
-<html lang="en" class="w-full h-full">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
-    <link href="/output.css" rel="stylesheet" />
-    <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
-    <!-- use cdn for development only -->
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <!-- use cdn for development only-->
-    <script defer src="../chat-front-end/chat.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One-to-One Chats</title>
+  <!-- Include necessary CSS and JavaScript dependencies -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+  <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.1.2.min.js"></script>
+  <script>
+    // Fetch chat data and generate HTML dynamically
+    window.addEventListener('DOMContentLoaded', () => {
+      const userId = req.user.id;
+      const pubnub = new PubNub({
+        publishKey: 'pub-c-18d873b6-9abe-4534-b598-a074bad28107',
+        subscribeKey: 'sub-c-cf46ec4f-8557-4d91-aa71-215d76ae7c3a',
+      });
+
+      // Fetch chat data from PubNub's storage
+      pubnub.history({
+        channel: `chat_channel_${userId}`,
+        count: 50, // Specify the number of messages to retrieve
+        reverse: true, // Set to true to fetch the messages in reverse order (newest to oldest)
+      }, (status, response) => {
+        if (status.error) {
+          console.error('Error fetching chat data:', status.errorData);
+          return;
+        }
+
+        const messages = response.messages;
+        // Sort the messages by newest first
+        messages.sort((a, b) => new Date(b.entry.timetoken) - new Date(a.entry.timetoken));
+
+        const chatsContainer = document.getElementById('chats-container');
+        // Iterate over message data and create chat elements
+        messages.forEach(message => {
+          const chatElement = document.createElement('div');
+          chatElement.classList.add('chat');
+          chatElement.textContent = message.entry.message;
+          chatElement.addEventListener('click', () => {
+            // Navigate to the respective one-to-one chat
+            window.location.href = `/chat.ejs?chatId=${message.entry.chatId}`;
+          });
+          chatsContainer.appendChild(chatElement);
+        });
+      });
+    });
+  </script>
+
 </head>
 
-<body class="w-screen h-screen">
-    <h1 class="text-center">Chat will appear here later. Sorry</h1>
-    <div class="w-full h-full">
-        <img class=" w-full h-full object-contain"
-            src="https://thumbs.dreamstime.com/b/page-not-found-error-screaming-head-vector-layout-template-art-86865411.jpg"
-            alt="">
-    </div>
-    <%- include("../partials/footer.ejs"); %>
+<body>
+  <h1><%- user.name %>'s Messages</h1>
+  <div id="chats-container"></div>
 </body>
+
 </html>

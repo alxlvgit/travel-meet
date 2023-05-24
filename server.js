@@ -2,19 +2,26 @@ const express = require('express');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 3000;
-const exploreRouter = require('./routes/explore-router');
-const userProfileRouter = require('./routes/userProfileRouter');
-const postCreateRouter = require('./routes/post-create-router');
+
+// Import backend routers
 const apiEventsRouter = require('./backend-api-routes/api-events');
 const apiPostsRouter = require('./backend-api-routes/api-feed-routes');
 const apiUserRouter = require('./backend-api-routes/api-user-routes');
+// const apiChatRouter = require('./backend-api-routes/api-chat-router');
 
-
-// Import prisma
+// Import frontend routers
+const exploreRouter = require('./routes/explore-router');
+const userProfileRouter = require('./routes/userProfileRouter');
+const postCreateRouter = require('./routes/post-create-router');
 const chatRouter = require('./routes/chat-router');
 const authRouter = require('./routes/auth-route');
+
+// Import prisma
 const passportMiddleware = require('./passport-middleware/passport-middleware');
 const session = require('express-session');
+
+// Import PubNub
+const PubNub = require('pubnub');
 
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, { cors: { origin: "*" } });
@@ -23,7 +30,6 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/static"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 // Session middleware with cookie expiration of 15 minutes
 app.use(
@@ -40,7 +46,6 @@ app.use(
 );
 
 passportMiddleware(app);
-
 
 // For testing purposes only
 // app.use((req, res, next) => {
@@ -85,7 +90,6 @@ app.get("/secretKeys", (req, res) => {
     res.status(200).json(JSON.stringify(secrets));
 });
 
-
 app.use('/auth', authRouter);
 app.use('/', exploreRouter);
 app.use('/meet', mapRouter);
@@ -95,7 +99,7 @@ app.use('/api-user', apiUserRouter);
 app.use('/user-profile', userProfileRouter);
 app.use('/post-create', postCreateRouter);
 app.use('/chat', chatRouter);
-
+// app.use('/api-chat-router', apiChatRouter);
 
 server.listen(port, function () {
     console.log(`Listening on port ${port}`);

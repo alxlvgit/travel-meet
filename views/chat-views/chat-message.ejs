@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
+  <link href="/output.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css">
+  <title>JavaScript Chat</title>
+</head>
+
+<body id="getuser" data-id="<%- user.id %>" data-username="<%- user.name %>">
+  <div class="msg-group" id="messages-area"></div>
+
+  <div class="input-group justify-center fixed bottom-0 left-0 w-full mb-8">
+    <textarea id="input-box" class="w-full rounded-lg shadow-xl border border-gray-900 p-2 mb-2"></textarea>
+    <div class="input-group-append flex justify-center">
+      <button id="send-button" class="btn btn-primary input-btn bg-black hover:bg-slate-400 border mb-10" type="button">Send Message</button>
+    </div>
+  </div>
+  
+
+  <span class="badge bg-primary online-users-label"><span id="online-users-count">NA</span></span>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.1.2.min.js"></script>
+  <script>
+    (function () {
+
+      // Get username
+      var username = document.getElementById('getuser').dataset.username;
+      var userid = document.getElementById('getuser').dataset.id;
+
+      var pubnub = new PubNub({ // Set your PubNub keys here 
+        publishKey: 'pub-c-18d873b6-9abe-4534-b598-a074bad28107',
+        subscribeKey: 'sub-c-cf46ec4f-8557-4d91-aa71-215d76ae7c3a',
+        uuid: username,
+      });
+
+      var messagesArea = document.getElementById('messages-area'),
+        input = document.getElementById('input-box'),
+        sendButton = document.getElementById('send-button'),
+        saveButton = document.getElementById('saveOptionsButton'),
+        nameInput = document.getElementById('nameInput'),
+        channel = 'chat-channel';
+      usernames = [];
+
+      class chatControl { // Formats messages and scrolls into view.
+        publishMessage(uuid, msg) {
+            messagesArea.innerHTML = messagesArea.innerHTML + this.msg(uuid, "You", msg, 'start', 'primary');
+            messagesArea.scrollIntoView(true);
+        }
+        receiveMessage(uuid, msg) {
+          if (msg == uuid) {
+            pubnub.objects.getUUIDMetadata({ // Recheck metadata for new username and update previous messages.
+              uuid: uuid,
+            },
+              function (status, response) {
+                if (response) {
+                  usernames[uuid] = response.data.name; // Set username from metadata.
+                  for (var i = 0; i < document.getElementsByClassName('display-' + response.data.id).length; i++) {
+                    document.getElementsByClassName('display-' + response.data.id)[i].innerText = response.data.name;
+                  }
+                }
+              }
+            );
+          } else {
+            if (!usernames[uuid]) { // Get the username if not stored.
+              usernames[uuid] = uuid; // If username not set then set to the UUID.
+              pubnub.objects.getUUIDMetadata({
+                uuid: uuid,
+              },
+                function (status, response) {
+                  if (response) {
+                    usernames[uuid] = response.data.name; // Set username from metadata.
+                    for (var i = 0; i < document.getElementsByClassName('display-' + response.data.id).length; i++) {
+                      document.getElementsByClassName('display-' + response.data.id)[i].innerText = response.data.name;
+                    }
+                  }
+                }
+              );
+            }
+            messagesArea.innerHTML = messagesArea.innerHTML + this.msg(uuid, usernames[uuid], msg, 'end', 'secondary');
+            messagesArea.scrollIntoView(true);
+          }
+        }
+        msg(uuid, name, msg, side, style) {
+          var msgTemp = `
+          <div class="card text-white bg-${style}">
+  <div class="card-body">
+    <h6 class="card-subtitle mb-2 text-${side}">
+      <span class="display-${uuid}">${name}</span>
+    </h6>
+    <div class="overflow-auto" style="max-height: 200px;">
+      <p class="card-text float-${side}">${msg}</p>
+    </div>
+  </div>
+</div>
+
+                            `;
+          return msgTemp;
+        }
+      }
+      var chat = new chatControl();
+
+      pubnub.addListener({ // Get new messages.
+        message: function (msg) {
+          // console.log(msg);
+          if (msg.publisher == pubnub.getUUID()) { // Check who sent the message.
+            chat.publishMessage('You', msg.message);
+          } else {
+            chat.receiveMessage(msg.publisher, msg.message);
+          }
+        },
+        presence: (presenceEvent) => {  // Update the number of online members.
+          document.getElementById("online-users-count").innerHTML = presenceEvent.occupancy;
+        },
+      });
+      pubnub.subscribe({ // Subscribe to wait for messages
+        channels: [channel]
+      });
+
+      function publishMessage() { // Send messages with PubNub.
+        var msg = input.value.trim().replace(/(?:\r\n|\r|\n)/g, '<br>'); // Format message.
+        input.value = '';
+        if (msg != '') {
+          var publishConfig = {
+            channel: channel,
+            message: msg
+          };
+          pubnub.publish(publishConfig, function (status, response) { // Publish message to current channel.
+            // console.log(status, response);
+          });
+        }
+      };
+      sendButton.addEventListener("click", function (e) {
+        publishMessage();
+      });
+      input.addEventListener('keyup', function (e) {
+        if ((e.keyCode || e.charCode) === 13) {
+          publishMessage();
+        }
+      });
+
+      pubnub.hereNow({ // Update the number of online members.
+        channels: [channel],
+      }).then((response) => {
+        document.getElementById("online-users-count").innerHTML = `Online Users: ${response.totalOccupancy + 1}`;
+      }).catch((error) => {
+        console.log(error)
+      });
+
+      pubnub.fetchMessages( // Get the last 10 messages sent in the chat.
+        {
+          channels: [channel],
+          count: 10,
+        },
+        function (status, response) {
+          if (response.channels[channel] && channel in response.channels) {
+            response.channels[channel].forEach((message) => {
+              console.log(message);
+              if (message.uuid == pubnub.getUUID()) { // Check who sent the message.
+                chat.publishMessage('You', message.message);
+              } else {
+                chat.receiveMessage(message.uuid, message.message);
+              }
+            });
+          }
+        }
+      );
+
+      saveButton.addEventListener("click", function (e) { // Save new username 
+        username = nameInput.value.replace(/[^a-zA-Z0-9 ]/g, '').substring(0, 30);
+        pubnub.objects.setUUIDMetadata({
+          data: {
+            name: username
+          }
+        })
+          .then((resp) => {
+            alert("Your username has been updated.");
+            var publishConfig = { // Send a message to force username to update on other clients.
+              channel: channel,
+              message: pubnub.getUUID() + "NEWUSERNAME"
+            };
+            pubnub.publish(publishConfig, function (status, response) { // Publish message to current channel.
+              // console.log(status, response);
+            });
+            // console.log(resp);
+          })
+          .catch((error) => {
+            alert("Your username was not updated. See console for details.");
+            console.log(err);
+          });
+      });
+
+    })();
+  </script>
+  <footer>
+    <%- include("../partials/footer.ejs"); %>
+  </footer>
+</body>
+
+</html>
