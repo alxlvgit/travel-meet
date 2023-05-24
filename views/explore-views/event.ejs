@@ -9,7 +9,7 @@
 
 
   <!-- use tailwind cdn for development only -->
-  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <!-- use tailwind cdn for development only-->
 
   <script defer src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
@@ -22,9 +22,6 @@
 </head>
 
 <body class="w-full h-full">
-  <a href="/" class="absolute top-5 left-2 text-white font-bold text-sm sm:text-base z-10 back-link">
-    <i class="fa-solid fa-angle-left fa-2xl"></i>
-  </a>
   <%- include ("../partials/create-group-form.ejs") %>
     <div class="flex flex-col m-auto w-full h-full box-border relative">
       <!-- top section start-->
@@ -41,7 +38,7 @@
               <%- eventGroups.length %> groups will visit this event
             </p>
           </div>
-          <div class="grid grid-cols-2 event-groups w-full relative m-auto gap-5 px-5">
+          <div class="grid grid-cols-2 event-groups w-full sm:grid-cols-4 lg:grid-cols-6 relative m-auto gap-5 px-5">
             <% eventGroups.forEach(group=> { %>
               <div
                 class="group-card col-span-1 flex-col flex h-fit rounded-xl p-5 border-gray-100 shadow-md shadow-gray-300 mb-3 relative">

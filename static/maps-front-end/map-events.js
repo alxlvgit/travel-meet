@@ -99,7 +99,7 @@ const makeEventsFeatures = async (eventsObject) => {
                                 </div>
                                 <div class = "flex flex-row justify-center items-center space-x-3 mt-1">
                                 <a href="${event.url}" target="_blank" class="text-xs text-center text-[#878d26] hover:text-[#a3a82c]">Buy Tickets</a>
-                                <a href="/event/${event.id}" target="_blank" class="text-xs text-center text-[#878d26] hover:text-[#a3a82c]">Groups</a>
+                                <a href="/event/${event.id}" class="text-xs text-center text-[#878d26] hover:text-[#a3a82c]">Groups</a>
                                 </div>
                             </div>`,
             },

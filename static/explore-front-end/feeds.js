@@ -86,7 +86,7 @@ const renderPosts = async (category) => {
       ${post.author.name}
       </p>
       </div>
-      <p class='text-xs sm:text-sm text-center mr-2'>
+      <p class='text-xs sm:text-sm text-center mr-2 line-clamp-1'>
         <i class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i>${post.location}
       </p>
       <p class='text-xs sm:text-sm text-center line-clamp-2'>

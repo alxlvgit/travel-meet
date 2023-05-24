@@ -65,6 +65,7 @@ const initMap = async () => {
 
     map.on('load', async () => {
         addLayers(map);
+        dropdown.selectedIndex = 0;
         searchButton.addEventListener('click', handleSearch);
         const userLocation = await getCurrentUserLocation();
         if (!userLocation) {
@@ -151,7 +152,7 @@ const createUserMarkerFeature = (userId, lat, lng, icon, username) => {
                 <img src="${icon}" class="w-16 h-16 rounded-full object-cover border border-[#FFFFFF] outline-[#878d26] outline outline-2 shadow-lg" />
             </div>
             <div class="flex items-center justify-center mt-2">
-                <a href="/user-profile/${userId}" target="_blank" class="text-[#878d26] font-semibold text-lg hover:text-black outline-none">${username}</a>
+                <a href="/user-profile/${userId}" class="text-[#878d26] font-semibold text-lg hover:text-black outline-none">${username}</a>
             </div>
         </div>`
         }
