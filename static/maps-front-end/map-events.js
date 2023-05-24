@@ -74,7 +74,8 @@ const makeEventsFeatures = async (eventsObject) => {
         const { longitude, latitude } = eventVenue.location;
         applyOffsetToMarker(longitude, latitude, event.id, eventsMarkersLocationCache, eventsOffsets);
         const eventImage = await filterEventImages(event);
-        const eventInfo = event.info ? event.info : "No info available";
+        const eventDate = event.dates.start.localDate ? event.dates.start.localDate : "TBD";
+        const eventTime = event.dates.start.noSpecificTime ? "N/A" : event.dates.start.localTime.split(":").slice(0, 2).join(":");
         const eventGeoJSON = {
             type: 'Feature',
             geometry: {
@@ -90,7 +91,13 @@ const makeEventsFeatures = async (eventsObject) => {
                 popupHTML: ` <div class="flex flex-col justify-center items-center">
                                 <img src="${eventImage}" class="w-32 h-24 rounded-md shadow-lg mb-2">
                                 <h3 class="text-sm font-semibold text-center">${event.name}</h3>
-                                <div class = "flex flex-row justify-center items-center space-x-2">
+                                <div class="flex flex-row justify-center items-center space-x-2">
+                                <i class="far fa-calendar-alt"></i>
+                                <p class="text-xs text-center">${eventDate}</p>
+                                <i class="far fa-clock"></i>
+                                <p class="text-xs text-center">${eventTime}</p>
+                                </div>
+                                <div class = "flex flex-row justify-center items-center space-x-3 mt-1">
                                 <a href="${event.url}" target="_blank" class="text-xs text-center text-[#878d26] hover:text-[#a3a82c]">Buy Tickets</a>
                                 <a href="/event/${event.id}" target="_blank" class="text-xs text-center text-[#878d26] hover:text-[#a3a82c]">Groups</a>
                                 </div>
