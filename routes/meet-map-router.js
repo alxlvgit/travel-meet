@@ -25,7 +25,7 @@ module.exports = (io) => {
         // to remove test shared locations and icons from redis:
         // redis.zrem('locations', '8', '9');
         // redis.hdel('userIcons', '8', '9');
-        console.log('test location with icon added to redis', location);
+        // console.log('test location with icon added to redis', location);
     });
 
     // Handle event for when a user requests all shared locations in the radius of 20km

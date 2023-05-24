@@ -1,19 +1,24 @@
 const footerButtons = document.querySelectorAll('.footer-btn');
 const profileBtn = document.getElementById('profile-btn');
 const followButton = document.getElementById('followBtn');
+const profileImage = document.querySelector('.profile-image');
+const currentUser = profileImage.dataset.currentuser;
+const backButton = document.getElementById('back-button');
+const followers = document.getElementById('followers');
 
 window.addEventListener('load', () => {
-    footerButtons.forEach(btn => {
-        btn.classList.remove('text-[#878d26]');
-    });
-    profileBtn.classList.add('text-[#878d26]');
-}
-);
+    if (currentUser == 'true') {
+        footerButtons.forEach(btn => {
+            btn.classList.remove('text-[#878d26]');
+        });
+        profileBtn.classList.add('text-[#878d26]');
+    } else {
+        return;
+    }
+});
 
 if (followButton) {
     const userId = followButton.dataset.userId;
-
-
     followButton.addEventListener('click', () => {
         toggleFollow(userId);
     });
@@ -25,20 +30,18 @@ if (followButton) {
 
     async function toggleFollow(userId) {
         const followBtn = document.getElementById('followBtn');
-        const followIcon = document.getElementById('followIcon');
-
         try {
-            if (followBtn.innerText === 'Follow') {
+            if (followBtn.innerText.includes('Follow')) {
                 console.log({ userId });
-                await fetch(`/follow/${userId}`, { method: 'POST' }); // use actual userId
-                followBtn.innerText = 'Followed';
-                followIcon.classList.remove('fa-user-plus');
-                followIcon.classList.add('fa-user-check');
+                await fetch(`/api-user/follow/${userId}`, { method: 'POST' }); // use actual userId
+                followBtn.innerHTML = `<i id="followIcon" class="fas fa-user-check text-base text-[#878d26] mr-2"></i>
+               Unfollow`;
+                followers.innerText = Number(followers.innerText) + 1;
             } else {
-                await fetch(`/unfollow/${userId}`, { method: 'POST' }); // use actual userId
-                followBtn.innerText = 'Follow';
-                followIcon.classList.remove('fa-user-check');
-                followIcon.classList.add('fa-user-plus');
+                await fetch(`/api-user/unfollow/${userId}`, { method: 'POST' }); // use actual userId
+                followBtn.innerHTML = `<i id="followIcon" class="fas fa-user-plus text-base text-[#878d26] mr-2"></i>
+                Follow`;
+                followers.innerText = Number(followers.innerText) - 1;
             }
         } catch (error) {
             console.log(error);
@@ -47,20 +50,19 @@ if (followButton) {
 
     async function checkFollowStatus(userId) {
         try {
-            const response = await fetch(`/is-following/${userId}`); // endpoint that checks if the current user is following the user with the given userId
-            const isFollowing = await response.json();
-
-            const followBtn = document.getElementById('followBtn');
-            const followIcon = document.getElementById('followIcon');
-
-            if (isFollowing) {
-                followBtn.innerText = 'Followed';
-                followIcon.classList.remove('fa-user-plus');
-                followIcon.classList.add('fa-user-check');
-            } else {
-                followBtn.innerText = 'Follow';
-                followIcon.classList.remove('fa-user-check');
-                followIcon.classList.add('fa-user-plus');
+            const response = await fetch(`/api-user/is-following/${userId}`); // endpoint that checks if the current user is following the user with the given userId
+            const data = await response.json();
+            if (data.isFollowing) {
+                const isFollowing = data.isFollowing;
+                console.log(isFollowing, 'isFollowing');
+                const followBtn = document.getElementById('followBtn');
+                if (isFollowing) {
+                    followBtn.innerHTML = `<i id="followIcon" class="fas fa-user-check text-base text-[#878d26] mr-2"></i>
+               Unfollow`;
+                } else {
+                    followBtn.innerHTML = `<i id="followIcon" class="fas fa-user-plus text-base text-[#878d26] mr-2"></i>
+                Follow`;
+                }
             }
         } catch (error) {
             console.log(error);

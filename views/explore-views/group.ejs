@@ -20,10 +20,6 @@
 </head>
 
 <body class="w-full h-full">
-    <a href="/event/<%-event.id %>"
-        class="absolute top-5 left-2 text-white font-bold text-sm sm:text-base z-10 back-link">
-        <i class="fa-solid fa-angle-left fa-2xl"></i>
-    </a>
     <%- include ("../partials/create-group-form.ejs") %>
         <div class="flex flex-col m-auto w-full h-full box-border relative ">
             <!-- top section start-->
@@ -42,12 +38,12 @@
                         <!-- <img src="<%- group.creator.profileImageURI %>"
                             class="w-16 h-16  object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2"
                             alt=""> -->
-                            <a href="/user-profile/<%- group.creator.id %>">
-                                <img src="<%- group.creator.profileImageURI %>"
-                                    class="w-16 h-16 object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2"
-                                    alt="">
-                            </a>
-                            
+                        <a href="/user-profile/<%- group.creator.id %>">
+                            <img src="<%- group.creator.profileImageURI %>"
+                                class="w-16 h-16 object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2"
+                                alt="">
+                        </a>
+
                         <div class="flex flex-col ml-3 justify-start flex-1">
                             <h1 class="text-lg font-semibold text-left w-full">
                                 <%- group.creator.name %>

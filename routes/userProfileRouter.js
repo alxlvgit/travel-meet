@@ -34,6 +34,8 @@ router.get('/:id', ensureAuthenticated, async (req, res) => {
             createdAt: 'desc'
           }
         },
+        following: true,
+        followers: true,
       },
     });
     let posts = [];
@@ -72,6 +74,8 @@ router.get('/', ensureAuthenticated, async (req, res) => {
           createdAt: 'desc'
         }
       },
+      following: true,
+      followers: true,
     },
   });
   let posts = [];
@@ -87,6 +91,7 @@ router.get('/', ensureAuthenticated, async (req, res) => {
     const url = await getSignedUrl(s3, command, { expiresIn: 60 });
     post.imageUrl = url;
   };
+  // console.log(user);
   res.render('./user-profile-views/user-profile', { currentUser: true, user: user, posts: user.posts });
 });
 

@@ -1,5 +1,4 @@
 const currentUrl = window.location.href;
-const backButton = document.querySelector('.back-link');
 const eventId = currentUrl.split('/')[4];
 let groupRelatedPageOpen = false;
 let groupId = "";
@@ -12,6 +11,7 @@ const swiper = new Swiper(".swiper", {
         releaseOnEdges: true,
     },
 });
+
 
 // Check if URL contains only event, or event and group
 if (currentUrl.includes('event') && currentUrl.includes('group')) {
