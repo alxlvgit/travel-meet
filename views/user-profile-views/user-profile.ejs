@@ -24,11 +24,12 @@
                     id="image-bottom">
                     <div class="flex flex-col justify-start w-1/2">
                         <% if (user && currentUser) { %>
-                            <a href="edit"
+                            <!-- the button will change to link that will take to edit profile page -->
+                            <button
                                 class="text-base font-semibold text-left text-white line-clamp-2 mr-4 mb-1 sm:text-lg">
                                 <%- user.name %>
                                     <i class="fa-solid fa-pencil ml-1"></i>
-                            </a>
+                            </button>
                             <% } else{%>
                                 <p
                                     class="text-base font-semibold text-left text-white line-clamp-2 mr-4 mb-1 sm:text-lg">
