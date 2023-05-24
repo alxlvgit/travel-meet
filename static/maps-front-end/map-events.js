@@ -75,7 +75,7 @@ const makeEventsFeatures = async (eventsObject) => {
         applyOffsetToMarker(longitude, latitude, event.id, eventsMarkersLocationCache, eventsOffsets);
         const eventImage = await filterEventImages(event);
         const eventDate = event.dates.start.localDate ? event.dates.start.localDate : "TBD";
-        const eventTime = event.dates.start.noSpecificTime ? "N/A" : event.dates.start.localTime.split(":").slice(0, 2).join(":");
+        const eventTime = event.dates.start.noSpecificTime ? "N/A" : event.dates.start.localTime ? event.dates.start.localTime.split(":").slice(0, 2).join(":") : "N/A";
         const eventGeoJSON = {
             type: 'Feature',
             geometry: {

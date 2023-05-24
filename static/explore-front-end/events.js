@@ -125,7 +125,7 @@ const renderEvents = async () => {
     for (const event of filteredEvents) {
       const { totalNumberOfPeople } = await getPeopleFromAllGroups(event.id, abortController.signal);
       const { eventCard, eventLink, eventImage, eventPriceRange } = await createEventCard(event);
-      const eventTime = event.dates.start.noSpecificTime ? "N/A" : event.dates.start.localTime.split(":").slice(0, 2).join(":");
+      const eventTime = event.dates.start.noSpecificTime ? "N/A" : event.dates.start.localTime ? event.dates.start.localTime.split(":").slice(0, 2).join(":") : "N/A";
       eventCard.innerHTML = `
         <div class="event-image h-full justify-center items-center flex w-1/2 sm:justify-start">
           <img src="${eventImage[0].url}" class="rounded-xl h-4/5 object-cover sm:h-full w-11/12" alt="${event.name}">
