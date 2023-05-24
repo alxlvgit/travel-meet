@@ -102,7 +102,7 @@ const addLayers = (map) => {
 };
 
 // Handle unclustered markers
-const handleUnclusteredMarkers = (map, sourceName, icons) => {
+const handleUnclusteredMarkers = (map, sourceName) => {
     const newMarkers = {};
     const markersSource = map.getSource(sourceName);
     if (markersSource) {
@@ -115,8 +115,7 @@ const handleUnclusteredMarkers = (map, sourceName, icons) => {
                     if (sourceName === 'events') {
                         markerElement = createEventsMarker(feature);
                     } else {
-                        const icon = icons[feature.properties.id];
-                        markerElement = createUserMarker(icon, feature, feature.properties.id);
+                        markerElement = createUserMarker(feature);
                     }
                     marker = markers[feature.properties.id] = new mapboxgl.Marker(markerElement)
                         .setLngLat(feature.geometry.coordinates)

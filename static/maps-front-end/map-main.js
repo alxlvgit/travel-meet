@@ -66,7 +66,9 @@ const initMap = async () => {
         addLayers(map);
         searchButton.addEventListener('click', handleSearch);
         const userLocation = await getCurrentUserLocation();
-        if (!userLocation) return;
+        if (!userLocation) {
+            return;
+        }
         map.flyTo({
             center: [userLocation.longitude, userLocation.latitude],
             zoom: 10,
@@ -145,7 +147,7 @@ const createUserMarkerFeature = (userId, lat, lng, icon, username) => {
             icon: icon,
             popupHTML: `<div class="flex flex-col items-center justify-center">
             <div class="flex items-center justify-center">
-                <img src="${icon}" class="w-16 h-16 rounded-full border border-[#FFFFFF] outline-[#878d26] outline outline-2 shadow-lg" />
+                <img src="${icon}" class="w-16 h-16 rounded-full object-cover border border-[#FFFFFF] outline-[#878d26] outline outline-2 shadow-lg" />
             </div>
             <div class="flex items-center justify-center">
                 <a href="/user-profile/${userId}" target="_blank" class="text-[#878d26] font-semibold text-lg hover:text-black outline-none">${username}</a>
@@ -156,16 +158,16 @@ const createUserMarkerFeature = (userId, lat, lng, icon, username) => {
 };
 
 // Create a marker for a user
-const createUserMarker = (icon, userId) => {
+const createUserMarker = (feature) => {
     const el = document.createElement('div');
     el.className = 'marker';
-    el.id = userId;
+    el.id = feature.properties.id;
     el.style.backgroundSize = '100%';
     el.style.backgroundRepeat = 'no-repeat';
     el.style.backgroundPosition = 'center';
     el.style.backgroundSize = 'cover';
     el.classList.add('marker', 'w-8', 'h-8', 'rounded-full', 'shadow-lg', 'border-[#FFFFFF]', 'border', 'outline-[#878d26]', 'outline', 'outline-2');
-    el.style.backgroundImage = `url(${icon})`;
+    el.style.backgroundImage = `url(${feature.properties.icon})`;
     return el;
 };
 
@@ -177,11 +179,13 @@ const addNearbyUsersMarkersToMap = async (map, storedLocations, icons, usernames
     });
     // For each cluster on the screen, create an HTML marker for it (if didn't create yet),and add it to the map if it's not there already
     const markersSource = map.getSource('markers');
-    markersSource.setData({ type: 'FeatureCollection', features: featuresData });
-    map.on('render', () => {
-        if (switchToEvents) return;
-        handleUnclusteredMarkers(map, "markers", icons);
-    });
+    if (markersSource) {
+        markersSource.setData({ type: 'FeatureCollection', features: featuresData });
+        map.on('render', () => {
+            if (switchToEvents) return;
+            handleUnclusteredMarkers(map, "markers");
+        });
+    }
 };
 
 // Add marker to the map when a new user shares their location
@@ -194,12 +198,14 @@ const addUserMarker = (map, userId, lat, lng, iconUrl, username) => {
     const markersSource = map.getSource('markers');
     if (markersSource) {
         const currentData = markersSource._data;
-        const markerData = createUserMarkerFeature(userId, lat, lng, iconUrl, username);
-        currentData.features.push(markerData);
+        const markerFeature = createUserMarkerFeature(userId, lat, lng, iconUrl, username);
+        currentData.features.push(markerFeature);
         markersSource.setData(currentData);
-        const userMarkerElement = createUserMarker(iconUrl, userId);
+        const userMarkerElement = createUserMarker(markerFeature);
         const marker = new mapboxgl.Marker(userMarkerElement)
-            .setLngLat(markerData.geometry.coordinates);
+            .setLngLat(markerFeature.geometry.coordinates)
+            .setPopup(new mapboxgl.Popup({ offset: 25 }).addClassName('z-50')
+                .setHTML(markerFeature.properties.popupHTML));
         markersOnScreen[userId] = marker;
         markers[userId] = marker;
         marker.addTo(map);
