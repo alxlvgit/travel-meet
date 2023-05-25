@@ -1,6 +1,20 @@
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const bucketName = process.env.BUCKET_NAME
+const bucketRegion = process.env.BUCKET_REGION
+const accessKey = process.env.ACCESS_KEY
+const secretAccessKey = process.env.SECRET_ACCESS_KEY
+
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: accessKey,
+        secretAccessKey: secretAccessKey,
+    },
+    region: bucketRegion,
+});
 
 router.get('/:userId/icon', async (req, res) => {
     const userId = parseInt(req.params.userId);
@@ -12,13 +26,20 @@ router.get('/:userId/icon', async (req, res) => {
             profileImageURI: true,
         },
     });
+    const params = {
+        Bucket: bucketName,
+        Key: user.profileImageURI,
+    };
+    const command = new GetObjectCommand(params);
+    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+    user.profileImageURI = url;
     res.json(user);
 });
 
 //Follow user
-router.post('/follow/:id', async (req, res) => {
+router.post('/follow/:userId', async (req, res) => {
     try {
-        const userToFollowId = Number(req.params.id);
+        const userToFollowId = Number(req.params.userId);
         const currentUser = req.user;
         await prisma.user.update({
             where: { id: currentUser.id },
@@ -32,9 +53,9 @@ router.post('/follow/:id', async (req, res) => {
 });
 
 //Unfollow user
-router.post('/unfollow/:id', async (req, res) => {
+router.post('/unfollow/:userId', async (req, res) => {
     try {
-        const userToUnfollowId = Number(req.params.id);
+        const userToUnfollowId = Number(req.params.userId);
         const currentUser = req.user;
         await prisma.user.update({
             where: { id: currentUser.id },
@@ -48,9 +69,9 @@ router.post('/unfollow/:id', async (req, res) => {
 });
 
 // Check if following user
-router.get('/is-following/:id', async (req, res) => {
+router.get('/is-following/:userId', async (req, res) => {
     try {
-        const userId = Number(req.params.id);
+        const userId = Number(req.params.userId);
         const currentUser = req.user;
         const isFollowing = await prisma.user.findFirst({
             where: {

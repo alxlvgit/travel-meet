@@ -4,6 +4,8 @@ const feedsContainer = document.getElementById('feeds-container');
 const footerButtons = document.querySelectorAll('.footer-btn');
 const exploreButton = document.getElementById('explore-btn');
 
+
+
 // Fetch from backend
 const getPosts = async (category) => {
   try {
@@ -58,6 +60,9 @@ const createPostCard = async (post) => {
     "lg:w-10/12",
     "lg:mb-8",
   );
+  postLink.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
   return {
     card,
     postLink,
@@ -79,7 +84,7 @@ const renderPosts = async (category) => {
       <h3 class='text-md font-semibold line-clamp-1 w-11/12 sm:text-xl text-center'>${post.title}</h3>
       <div class="flex items-center justify-between h-1/4 w-full px-4 pb-2 mt-2">
         <div class="flex items-center justify-center mr-2 relative" > 
-        <a class= "absolute w-full h-full top-0 left-0 z-20" href="/user-profile/${post.author.id}">
+        <a class= "profile-icon-link absolute w-full h-full top-0 left-0 z-20" href="/user-profile/other/${post.author.id}">
         </a>
         <img src="${post.author.profileImageURI}" class="w-4 h-4 sm:h-6 sm:w-6 rounded-full mr-1" alt="${post.author.name}">
         <p class='text-xs sm:text-sm text-left line-clamp-2'>

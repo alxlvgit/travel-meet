@@ -4,6 +4,20 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { totalNumberOfPeopleForEvent } = require('../helper-functions/events-helpers');
 const { ensureAuthenticated } = require('../passport-middleware/check-auth');
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const bucketName = process.env.BUCKET_NAME
+const bucketRegion = process.env.BUCKET_REGION
+const accessKey = process.env.ACCESS_KEY
+const secretAccessKey = process.env.SECRET_ACCESS_KEY
+
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: accessKey,
+        secretAccessKey: secretAccessKey,
+    },
+    region: bucketRegion,
+});
 
 // Get groups for event
 router.get('/groups/:eventId', async (req, res) => {
@@ -30,6 +44,17 @@ router.get('/group/:groupId', async (req, res) => {
             members: true,
         },
     });
+    if (group && group.members) {
+        for (const member of group.members) {
+            const params = {
+                Bucket: bucketName,
+                Key: member.profileImageURI,
+            };
+            const command = new GetObjectCommand(params);
+            const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+            member.profileImageURI = url;
+        };
+    }
     res.json({ group: group, userId: req.user.id });
 }
 );

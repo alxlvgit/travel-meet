@@ -73,7 +73,7 @@ app.post('/updateLocation', (req, res) => {
 
 app.get('/getLocation', (req, res) => {
     const locationData = req.session.locationData;
-    console.log(locationData, "location data stored in session");
+    // console.log(locationData, "location data stored in session");
     locationData ? res.json(locationData) : res.json({ error: "No location data found in session" });
 });
 

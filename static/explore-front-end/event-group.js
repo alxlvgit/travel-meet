@@ -40,7 +40,7 @@ if (groupRelatedPageOpen) {
 function generateMemberHtml(member) {
     return `
       <div class="swiper-slide w-auto relative">
-      <a href="/user-profile/${member.id}" class="absolute w-full h-full top-0 left-0 z-20"></a>
+      <a href="/user-profile/other/${member.id}" class="absolute w-full h-full top-0 left-0 z-20"></a>
         <img class="w-16 h-16 object-cover rounded-full border-2 border-white outline-[#878d26] outline outline-2 m-1"
           src="${member.profileImageURI}" alt="Profile 1" />
       </div>

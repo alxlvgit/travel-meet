@@ -4,8 +4,30 @@ const passport = require("passport");
 const { forwardAuthenticated, ensureAuthenticated } = require("../passport-middleware/check-auth");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const multer = require('multer');
+const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const sharp = require("sharp");
+const crypto = require('crypto');
+
+const bucketName = process.env.BUCKET_NAME
+const bucketRegion = process.env.BUCKET_REGION
+const accessKey = process.env.ACCESS_KEY
+const secretAccessKey = process.env.SECRET_ACCESS_KEY
+
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: accessKey,
+        secretAccessKey: secretAccessKey,
+    },
+    region: bucketRegion,
+});
+
 
 const router = express.Router();
+
+// Set Multer storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 router.get("/login", forwardAuthenticated, (req, res) => {
     const errorMessages = (req.session).messages;
@@ -45,16 +67,31 @@ router.get("/signup", forwardAuthenticated, (req, res) => {
     }
 });
 
-router.post("/signup", forwardAuthenticated, async (req, res) => {
+router.post("/signup", forwardAuthenticated, upload.single("icon"), async (req, res) => {
     const userData = req.body;
-    console.log(userData);
+    if (!req.file) {
+        req.session.messages = ["No image uploaded. Please upload an image before creating the post."];
+        res.redirect("/auth/signup");
+        return;
+    }
+    const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
+    const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250, fit: "contain" }).toBuffer();
+    const params = {
+        Bucket: bucketName,
+        Key: randomImageName(),
+        Body: buffer,
+        ContentType: req.file.mimetype,
+    };
+    const command = new PutObjectCommand(params);
+    await s3.send(command);
+
     try {
         const user = await prisma.user.create({
             data: {
                 name: userData.name,
                 email: userData.email,
                 password: userData.password,
-                profileImageURI: userData.icon,
+                profileImageURI: params.Key,
                 profileImageName: userData.name,
                 profileImageCaption: userData.name,
             }

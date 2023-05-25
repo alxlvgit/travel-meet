@@ -42,6 +42,14 @@ router.get('/posts', async (req, res) => {
       const command = new GetObjectCommand(getObjectParams);
       const url = await getSignedUrl(s3, command, { expiresIn: 60 });
       post.imageUrl = url
+
+      const getProfileImageParams = {
+        Bucket: bucketName,
+        Key: post.author.profileImageURI,
+      }
+      const profileImageCommand = new GetObjectCommand(getProfileImageParams);
+      const profileImageUrl = await getSignedUrl(s3, profileImageCommand, { expiresIn: 3600 });
+      post.author.profileImageURI = profileImageUrl;
     }
     res.json({ posts: posts });
   }

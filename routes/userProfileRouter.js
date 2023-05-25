@@ -17,13 +17,12 @@ const s3 = new S3Client({
   region: bucketRegion,
 });
 
-// Individual user profile page
-router.get('/:id', ensureAuthenticated, async (req, res) => {
+// Individual user profile page. Needs refactoring.
+router.get('/other/:userId', ensureAuthenticated, async (req, res) => {
   try {
-    const userId = Number(req.params.id);
     const user = await prisma.user.findUnique({
       where: {
-        id: userId,
+        id: Number(req.params.userId),
       },
       include: {
         posts: {
@@ -50,15 +49,29 @@ router.get('/:id', ensureAuthenticated, async (req, res) => {
       const command = new GetObjectCommand(params);
       const url = await getSignedUrl(s3, command, { expiresIn: 60 });
       post.imageUrl = url;
+      const params2 = {
+        Bucket: bucketName,
+        Key: post.author.profileImageURI,
+      };
+      const command2 = new GetObjectCommand(params2);
+      const url2 = await getSignedUrl(s3, command2, { expiresIn: 60 });
+      post.author.profileImageURI = url2;
     };
     const currentUser = req.user.id === user.id;
+    const params = {
+      Bucket: bucketName,
+      Key: user.profileImageURI,
+    };
+    const command = new GetObjectCommand(params);
+    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+    user.profileImageURI = url;
     res.render('./user-profile-views/user-profile', { user: user, currentUser: currentUser, posts: posts });
   } catch (error) {
     console.log(error);
   }
 });
 
-// Current user profile page
+// Current user profile page. Needs refactoring.
 router.get('/', ensureAuthenticated, async (req, res) => {
   const currentUser = req.user;
   const user = await prisma.user.findUnique({
@@ -68,7 +81,7 @@ router.get('/', ensureAuthenticated, async (req, res) => {
     include: {
       posts: {
         include: {
-          author: true, // Fetches the author object from each post
+          author: true,
         },
         orderBy: {
           createdAt: 'desc'
@@ -90,8 +103,21 @@ router.get('/', ensureAuthenticated, async (req, res) => {
     const command = new GetObjectCommand(params);
     const url = await getSignedUrl(s3, command, { expiresIn: 60 });
     post.imageUrl = url;
+    const params2 = {
+      Bucket: bucketName,
+      Key: post.author.profileImageURI,
+    };
+    const command2 = new GetObjectCommand(params2);
+    const url2 = await getSignedUrl(s3, command2, { expiresIn: 3600 });
+    post.author.profileImageURI = url2;
   };
-  // console.log(user);
+  const params = {
+    Bucket: bucketName,
+    Key: user.profileImageURI,
+  };
+  const command = new GetObjectCommand(params);
+  const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+  user.profileImageURI = url;
   res.render('./user-profile-views/user-profile', { currentUser: true, user: user, posts: user.posts });
 });
 
