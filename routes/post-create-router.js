@@ -6,7 +6,7 @@ const sharp = require('sharp');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
-// const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const dotenv = require('dotenv');
 const { ensureAuthenticated } = require('../passport-middleware/check-auth');
 dotenv.config()
@@ -41,6 +41,13 @@ router.get('/', ensureAuthenticated, async (req, res) => {
         profileImage: req.user.profileImageURI,
     };
     const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+    const params = {
+        Bucket: bucketName,
+        Key: user.profileImage,
+    };
+    const command = new GetObjectCommand(params);
+    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+    user.profileImage = url;
     if (errorMessages && errorMessages.length > 0) {
         const mostRecentErrorMessage = errorMessages[errorMessages.length - 1];
         if (mostRecentErrorMessage === "No image uploaded. Please upload an image before creating the post.") {

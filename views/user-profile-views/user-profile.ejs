@@ -8,7 +8,7 @@
     <script src="https://kit.fontawesome.com/4238f643fe.js" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="/output.css" rel="stylesheet" />
-    <script defer src="../profile-front-end/profile.js"></script>
+    <script defer src="/profile-front-end/profile.js"></script>
 </head>
 
 <body class="bg-gray-100 w-full h-screen overflow-auto flex flex-col">
@@ -105,7 +105,8 @@
                         <% posts.forEach(post=> { %>
                             <div
                                 class="relative post-card flex flex-col justify-between items-center border border-gray-100 rounded-xl shadow-md mb-4 h-64 w-10/12 box-border overflow-hidden hover:shadow-lg cursor-pointer m-auto bg-gray-50 max-w-sm sm:max-w-full sm:mb-5 sm:h-72 sm:w-11/12 lg:w-10/12 lg:mb-8">
-                                <a href="/posts/<%- post.id %>" class="w-full h-full absolute top-0 left-0 z-10"> </a>
+                                <a href="/posts/<%- post.id %>" onclick="event.stopPropagation()"
+                                    class="w-full h-full absolute top-0 left-0 z-10"> </a>
                                 <div class="w-full h-3/4 flex justify-center items-center">
                                     <img src="<%- post.imageUrl  %>"
                                         class="object-cover rounded-xl h-full w-full max-w-full"
@@ -117,11 +118,12 @@
                                     </h3>
                                     <div class="flex items-center justify-between h-1/4 w-full px-4 pb-2 mt-2">
                                         <div class="flex items-center justify-center mr-2 relative">
-                                            <a class="absolute w-full h-full top-0 left-0 z-20"
-                                                href="/user-profile/<%-post.author.id %>"></a>
-                                            <img src="<%-post.author.profileImageURI%>"
-                                                class="w-4 h-4 sm:h-6 sm:w-6 rounded-full mr-1"
-                                                alt="<%-post.author.name%>">
+                                            <a class="z-20 profile-icon-link" href="
+                                            /user-profile/other/<%-post.author.id %>">
+                                                <img src="<%-post.author.profileImageURI%>"
+                                                    class="w-4 h-4 sm:h-6 sm:w-6 rounded-full mr-1 z-10"
+                                                    alt="<%-post.author.name%>">
+                                            </a>
                                             <p class='text-xs sm:text-sm text-left line-clamp-2'>
                                                 <%-post.author.name%>
                                             </p>
@@ -139,7 +141,6 @@
                                 </div>
                             </div>
                             <% }); %>
-
                     </div>
         </div>
     </div>

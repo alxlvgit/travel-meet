@@ -28,7 +28,7 @@
                         <%= errorMessage %>
                     </p>
                     <% } %>
-                        <form>
+                        <form enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="name">Username</label>
                                 <input required type="text" id="name" name="name" class="form-control"
@@ -46,8 +46,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="icon-url">Profile image URL</label>
-                                <input required type="text" id="icon-url" name="icon" class="form-control"
-                                    placeholder="Enter Profile image URL" />
+                                <input required type="file" id="icon-url" name="icon" class="form-control"
+                                    accept="image/*" placeholder="Enter Profile image URL" />
                             </div>
                             <button type="submit" class="btn btn-primary btn-block" formaction="/auth/signup"
                                 formmethod="post">Signup</button>

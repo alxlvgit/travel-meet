@@ -42,7 +42,8 @@
             <% eventGroups.forEach(group=> { %>
               <div
                 class="group-card col-span-1 flex-col flex h-fit rounded-xl p-5 border-gray-100 shadow-md shadow-gray-300 mb-3 relative">
-                <a href="/event/<%- event.id %>/group/<%- group.id %>" class="w-full h-full absolute top-0 left-0 z-10">
+                <a href="/event/<%- event.id %>/group/<%- group.id %>" onclick="event.stopPropagation()"
+                  class="w-full h-full absolute top-0 left-0 z-10">
                 </a>
                 <h1 class="text-lg font-bold mt-2 w-3/4 line-clamp-3">
                   <%- group.name %>
@@ -54,10 +55,11 @@
                   <div class="swiper-wrapper w-full">
                     <% group.members.forEach(member=> { %>
                       <div class="swiper-slide w-auto mr-1">
-                        <a href="/user-profile/<%- member.id %>">
-                          <img class="w-8 h-8 object-cover rounded-full border border-gray-100 shadow-md"
-                            src="<%- member.profileImageURI %>" alt="Profile 1" />
+                        <a href="/user-profile/other/<%- member.id %>" class="w-full h-full absolute top-0 left-0 z-20"
+                          onclick="event.stopPropagation()">
                         </a>
+                        <img class="w-8 h-8 object-cover rounded-full border border-gray-100 shadow-md z-0"
+                          onclick="event.stopPropagation()" src="<%- member.profileImageURI %>" alt="Profile 1" />
                       </div>
                       <% }) %>
                   </div>
@@ -68,7 +70,6 @@
               </div>
               <% }) %>
           </div>
-
         </div>
 
         <!-- bottom section end-->

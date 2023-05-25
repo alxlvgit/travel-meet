@@ -28,12 +28,30 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 );
 
 // Event page
-router.get('/event/:id', ensureAuthenticated, async (req, res) => {
+router.get('/event/:eventId', ensureAuthenticated, async (req, res) => {
   try {
-    const eventData = await fetchSingleEvent(req.params.id);
+    const eventData = await fetchSingleEvent(req.params.eventId);
     const eventImage = await filterEventImages(eventData.images);
-    const groups = await getGroups(req.params.id);
+    let groups = await getGroups(req.params.eventId);
     const totalNumberOfPeople = await totalNumberOfPeopleForEvent(groups);
+    for (const group of groups) {
+      const params = {
+        Bucket: bucketName,
+        Key: group.creator.profileImageURI,
+      };
+      const command = new GetObjectCommand(params);
+      const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      group.creator.profileImageURI = url;
+      for (const member of group.members) {
+        const params = {
+          Bucket: bucketName,
+          Key: member.profileImageURI,
+        };
+        const command = new GetObjectCommand(params);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+        member.profileImageURI = url;
+      };
+    };
     const eventImageURL = eventImage[0].url;
     res.render('./explore-views/event', {
       event: eventData,
@@ -63,6 +81,16 @@ router.get('/event/:eventId/group/:groupId', ensureAuthenticated, async (req, re
         members: true
       }
     });
+    group.creator.profileImageURI = await getSignedUrl(s3, new GetObjectCommand({
+      Bucket: bucketName,
+      Key: group.creator.profileImageURI,
+    }), { expiresIn: 3600 });
+    for (const member of group.members) {
+      member.profileImageURI = await getSignedUrl(s3, new GetObjectCommand({
+        Bucket: bucketName,
+        Key: member.profileImageURI,
+      }), { expiresIn: 3600 });
+    };
     res.render('./explore-views/group', {
       group: group,
       event: eventData, eventImageURL: eventImage[0].url,
@@ -109,8 +137,8 @@ router.get('/delete-group/:groupId/:eventId', ensureAuthenticated, async (req, r
 );
 
 // Feeds post page
-router.get('/posts/:id', ensureAuthenticated, async (req, res) => {
-  const postId = Number(req.params.id);
+router.get('/posts/:postId', ensureAuthenticated, async (req, res) => {
+  const postId = Number(req.params.postId);
   try {
     const postData = await prisma.post.findUnique({
       where: {
@@ -120,6 +148,13 @@ router.get('/posts/:id', ensureAuthenticated, async (req, res) => {
         author: true
       }
     });
+    const getObjectParams = {
+      Bucket: bucketName,
+      Key: postData.author.profileImageURI,
+    };
+    const command = new GetObjectCommand(getObjectParams);
+    const url = await getSignedUrl(s3, command, { expiresIn: 60 });
+    postData.author.profileImageURI = url;
     const relatedPosts = await getRelatedPosts(postData.category, postId);
     relatedPosts.push(postData);
     for (const rPost of relatedPosts) {
