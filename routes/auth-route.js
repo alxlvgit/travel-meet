@@ -58,7 +58,8 @@ router.get("/logout", ensureAuthenticated, (req, res) => {
 });
 
 router.get("/signup", forwardAuthenticated, (req, res) => {
-    const errorMessages = (req.session).messages;
+    const errorMessages = req.session.messages;
+    console.log(errorMessages);
     if (errorMessages && !req.user) {
         const mostRecentErrorMessage = errorMessages[errorMessages.length - 1];
         res.render("signup", { errorMessage: mostRecentErrorMessage });
@@ -74,18 +75,28 @@ router.post("/signup", forwardAuthenticated, upload.single("icon"), async (req, 
         res.redirect("/auth/signup");
         return;
     }
-    const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
-    const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250, fit: "contain" }).toBuffer();
-    const params = {
-        Bucket: bucketName,
-        Key: randomImageName(),
-        Body: buffer,
-        ContentType: req.file.mimetype,
-    };
-    const command = new PutObjectCommand(params);
-    await s3.send(command);
-
     try {
+        const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
+        const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250, fit: "contain" }).toBuffer();
+        const params = {
+            Bucket: bucketName,
+            Key: randomImageName(),
+            Body: buffer,
+            ContentType: req.file.mimetype,
+        };
+        const command = new PutObjectCommand(params);
+        await s3.send(command);
+        // check if user already exists
+        const userExists = await prisma.user.findUnique({
+            where: {
+                email: userData.email
+            }
+        });
+        if (userExists) {
+            req.session.messages = ["User already exists. Please login."];
+            res.redirect("/auth/login");
+            return;
+        }
         const user = await prisma.user.create({
             data: {
                 name: userData.name,
