@@ -19,7 +19,7 @@ const getEvents = async (signal) => {
   let { TICKETMASTER_API_KEY } = API_KEYS;
   let locationQuery = "";
   // If user location is available, use it to get events within 50km radius or else get events from Canada
-  userLocation ? locationQuery = `latlong=${userLocation.latitude},${userLocation.longitude}&unit=km&radius=50&sort=date,asc&size=100` : locationQuery = "countryCode=CA&sort=random&size=100";
+  userLocation ? locationQuery = `latlong=${userLocation.latitude},${userLocation.longitude}&unit=km&radius=50&sort=date,asc&size=200` : locationQuery = "countryCode=CA&sort=random&size=100";
   // If user has searched for a specific category for event, use that query param to get events
   const querySearchParam = apiKeySearchQueryParam ? `classificationName=${apiKeySearchQueryParam}` : "classificationName=art, music, sport, seminar";
   const API_URL = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${TICKETMASTER_API_KEY}&${locationQuery}&${querySearchParam}}`;
@@ -136,7 +136,7 @@ const renderEvents = async () => {
             <i class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i>${event._embedded.venues[0].city.name}
           </p>
           <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
-            <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"> </i>${new Date(event.dates.start.localDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"> </i>${new Date(event.dates.start.dateTime).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </p>
           <p class='text-xs mb-1 text-gray-500 sm:text-sm'>
             <i class="far fa-clock w-4 h-4 text-center mr-1 text-black"></i>${eventTime}

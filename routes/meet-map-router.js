@@ -10,23 +10,24 @@ module.exports = (io) => {
     const usersInRoom = new Set();
 
     // For testing purposes only. Store shared test locations and icons in Redis
-    const storedLocations = [{ userId: "3", lat: 49.2689, lng: -123.0035, iconUrl: "/icons/1.jpeg", username: "test1" },
-    { userId: "4", lat: 49.3043, lng: -123.1443, iconUrl: "/icons/2.jpeg", username: "test2" },
-    { userId: "5", lat: 49.2768, lng: -123.1120, iconUrl: "/icons/3.jpeg", username: "test3" },
-    { userId: "6", lat: 49.2827, lng: -123.1207, iconUrl: "/icons/4.jpeg", username: "test4" },
-    { userId: "7", lat: 49.2024, lng: -123.1000, iconUrl: "/icons/5.jpeg", username: "test5testttetestestsets" }];
+    // const storedLocations = [{ userId: "3", lat: 49.2689, lng: -123.0035, iconUrl: "/icons/1.jpeg", username: "test1" },
+    // { userId: "4", lat: 49.3043, lng: -123.1443, iconUrl: "/icons/2.jpeg", username: "test2" },
+    // { userId: "5", lat: 49.2768, lng: -123.1120, iconUrl: "/icons/3.jpeg", username: "test3" },
+    // { userId: "6", lat: 49.2827, lng: -123.1207, iconUrl: "/icons/4.jpeg", username: "test4" },
+    // { userId: "7", lat: 49.2024, lng: -123.1000, iconUrl: "/icons/5.jpeg", username: "test5testttetestestsets" }];
 
     // Store test locations in Redis
-    storedLocations.forEach((location) => {
-        redis.geoadd('locations', location.lng, location.lat, location.userId);
-        redis.hset('userIcons', location.userId, location.iconUrl);
-        redis.hset('usernames', location.userId, location.username);
+    // storedLocations.forEach((location) => {
+        // redis.geoadd('locations', location.lng, location.lat, location.userId);
+        // redis.hset('userIcons', location.userId, location.iconUrl);
+        // redis.hset('usernames', location.userId, location.username);
 
         // to remove test shared locations and icons from redis:
-        // redis.zrem('locations', '8', '9');
-        // redis.hdel('userIcons', '8', '9');
+        // redis.zrem('locations', location.userId);
+        // redis.hdel('userIcons', location.userId);
+        // redis.hdel('usernames', location.userId);
         // console.log('test location with icon added to redis', location);
-    });
+    // });
 
     // Handle event for when a user requests all shared locations in the radius of 20km
     const getStoredSharedLocations = (socket) => {
