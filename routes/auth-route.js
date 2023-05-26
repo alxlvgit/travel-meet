@@ -59,9 +59,9 @@ router.get("/logout", ensureAuthenticated, (req, res) => {
 
 router.get("/signup", forwardAuthenticated, (req, res) => {
     const errorMessages = req.session.messages;
-    console.log(errorMessages);
     if (errorMessages && !req.user) {
         const mostRecentErrorMessage = errorMessages[errorMessages.length - 1];
+        req.session.messages = [];
         res.render("signup", { errorMessage: mostRecentErrorMessage });
     } else {
         res.render("signup", { errorMessage: null });
