@@ -78,6 +78,9 @@
             id="bottom-section">
             <% if (user && !currentUser) { %>
                 <div class="flex justify-end w-full mb-3 mt-5">
+                    <a class="rounded-2xl bg-gray-200 px-3 py-1 mr-2 text-base" href="/">
+                        <i class="fa-solid fa-house text-base text-[#878d26]"></i>
+                    </a>
                     <button id="followBtn" class="rounded-2xl bg-gray-200 px-3 py-1 mr-2 text-base"
                         data-user-id="<%-user.id%>">
                         <i id="followIcon" class="fas fa-user-plus text-base text-[#878d26] mr-2"></i>
@@ -88,60 +91,69 @@
                         Message
                     </button>
                 </div>
-                <% } %>
-                    <div class="flex justify-center mt-4">
-                        <h1 class="text-2xl font-bold">
-                            <% if (user.posts.length < 1) { %>
-                                No Posts Yet
-                                <% } else if (currentUser) { %>
-                                    My Posts
-                                    <% } else { %>
-                                        <%- user.name %>'s Posts
-                                            <% } %>
-                        </h1>
+                <% } else if(user && currentUser) { %>
+                    <div class="flex justify-end w-full mt-5">
+                        <a class="rounded-2xl bg-gray-200 px-3 py-1 mr-2 text-base" href="/auth/logout">
+                            <i class="fas fa-sign-out-alt text-base text-[#878d26] mr-2"></i>Logout
+                        </a>
                     </div>
+                    <% } %>
+                        <!-- posts section -->
+                        <div class="flex justify-center mt-4">
+                            <h1 class="text-2xl font-bold">
+                                <% if (user.posts.length < 1) { %>
+                                    No Posts Yet
+                                    <% } else if (currentUser) { %>
+                                        My Posts
+                                        <% } else { %>
+                                            <%- user.name %>'s Posts
+                                                <% } %>
+                            </h1>
+                        </div>
 
-                    <div class="flex flex-col container m-auto sm:w-full mt-4 pb-10 sm:grid sm:grid-cols-2" id="posts">
-                        <% posts.forEach(post=> { %>
-                            <div
-                                class="relative post-card flex flex-col justify-between items-center border border-gray-100 rounded-xl shadow-md mb-4 h-64 w-10/12 box-border overflow-hidden hover:shadow-lg cursor-pointer m-auto bg-gray-50 max-w-sm sm:max-w-full sm:mb-5 sm:h-72 sm:w-11/12 lg:w-10/12 lg:mb-8">
-                                <a href="/posts/<%- post.id %>" onclick="event.stopPropagation()"
-                                    class="w-full h-full absolute top-0 left-0 z-10"> </a>
-                                <div class="w-full h-3/4 flex justify-center items-center">
-                                    <img src="<%- post.imageUrl  %>"
-                                        class="object-cover rounded-xl h-full w-full max-w-full"
-                                        alt="<%- post.caption %>">
-                                </div>
-                                <div class='flex flex-col justify-evenly p-1 items-center w-full overflow-hidden'>
-                                    <h3 class='text-md font-semibold line-clamp-1 w-11/12 sm:text-xl text-center'>
-                                        <%- post.title %>
-                                    </h3>
-                                    <div class="flex items-center justify-between h-1/4 w-full px-4 pb-2 mt-2">
-                                        <div class="flex items-center justify-center mr-2 relative">
-                                            <a class="z-20 profile-icon-link" href="
+                        <div class="flex flex-col container m-auto sm:w-full mt-4 pb-10 sm:grid sm:grid-cols-2"
+                            id="posts">
+                            <% posts.forEach(post=> { %>
+                                <div
+                                    class="relative post-card flex flex-col justify-between items-center border border-gray-100 rounded-xl shadow-md mb-4 h-64 w-10/12 box-border overflow-hidden hover:shadow-lg cursor-pointer m-auto bg-gray-50 max-w-sm sm:max-w-full sm:mb-5 sm:h-72 sm:w-11/12 lg:w-10/12 lg:mb-8">
+                                    <a href="/posts/<%- post.id %>" onclick="event.stopPropagation()"
+                                        class="w-full h-full absolute top-0 left-0 z-10"> </a>
+                                    <div class="w-full h-3/4 flex justify-center items-center">
+                                        <img src="<%- post.imageUrl  %>"
+                                            class="object-cover rounded-xl h-full w-full max-w-full"
+                                            alt="<%- post.caption %>">
+                                    </div>
+                                    <div class='flex flex-col justify-evenly p-1 items-center w-full overflow-hidden'>
+                                        <h3 class='text-md font-semibold line-clamp-1 w-11/12 sm:text-xl text-center'>
+                                            <%- post.title %>
+                                        </h3>
+                                        <div class="flex items-center justify-between h-1/4 w-full px-4 pb-2 mt-2">
+                                            <div class="flex items-center justify-center mr-2 relative">
+                                                <a class="z-20 profile-icon-link" href="
                                             /user-profile/other/<%-post.author.id %>">
-                                                <img src="<%-post.author.profileImageURI%>"
-                                                    class="w-4 h-4 sm:h-6 sm:w-6 rounded-full mr-1 z-10"
-                                                    alt="<%-post.author.name%>">
-                                            </a>
-                                            <p class='text-xs sm:text-sm text-left line-clamp-2'>
-                                                <%-post.author.name%>
+                                                    <img src="<%-post.author.profileImageURI%>"
+                                                        class="w-4 h-4 sm:h-6 sm:w-6 rounded-full mr-1 z-10"
+                                                        alt="<%-post.author.name%>">
+                                                </a>
+                                                <p class='text-xs sm:text-sm text-left line-clamp-2'>
+                                                    <%-post.author.name%>
+                                                </p>
+                                            </div>
+                                            <p class='text-xs sm:text-sm text-center mr-2 line-clamp-1'>
+                                                <i
+                                                    class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i>
+                                                <%-post.location%>
+                                            </p>
+                                            <p class='text-xs sm:text-sm text-center line-clamp-2'>
+                                                <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"></i>
+                                                <%- new Date(post.createdAt).toLocaleDateString('en-US', { month: 'long'
+                                                    , day: 'numeric' , year: 'numeric' }) %>
                                             </p>
                                         </div>
-                                        <p class='text-xs sm:text-sm text-center mr-2 line-clamp-1'>
-                                            <i class="fas fa-map-marker-alt text-center w-4 h-4 mr-1 text-black"></i>
-                                            <%-post.location%>
-                                        </p>
-                                        <p class='text-xs sm:text-sm text-center line-clamp-2'>
-                                            <i class="far fa-calendar-alt text-center w-4 h-4 mr-1 text-black"></i>
-                                            <%- new Date(post.createdAt).toLocaleDateString('en-US', { month: 'long' ,
-                                                day: 'numeric' , year: 'numeric' }) %>
-                                        </p>
                                     </div>
                                 </div>
-                            </div>
-                            <% }); %>
-                    </div>
+                                <% }); %>
+                        </div>
         </div>
     </div>
     <!-- bottom section end-->
