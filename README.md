@@ -2,6 +2,7 @@
 ## Social media web application for meeting locals, and searching events in the targeted area on the map.
 Tech Stack: 
 - Node
+- Express
 - Vanilla JS
 - Socket.IO
 - Mapbox GL JS
@@ -12,5 +13,8 @@ Tech Stack:
 - MySQL
 - Tailwind CSS
 - AWS S3 Object Storage
-- Multer
 - Passport.js
+- Swiper API
+- EJS
+- Multer NPM Module
+- Sharp NPM Module
