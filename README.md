@@ -18,3 +18,7 @@ Tech Stack:
 - EJS
 - Multer NPM Module
 - Sharp NPM Module
+
+The application design is currently optimized for mobile view only. The desktop view and additional features are in progress.\
+The hosted app link:
+https://web-production-fa4f.up.railway.app/
