@@ -24,6 +24,14 @@ const getPosts = async (category) => {
  }
 };
 
+const getUser = async () => {
+  const response = await fetch('/api-users/user');
+  if (!response.ok) {
+    throw new Error('Failed to fetch user');
+  }
+  const user = await response.json();
+  return user;
+};
 
 // Create function to create post cards
 const createPostCard = async (post) => {
@@ -65,16 +73,31 @@ heartIcon.className = 'fas fa-heart absolute top-2 right-2 text-white z-20 curso
 heartIcon.style.textShadow = '0px 0px 3px rgba(0,0,0,0.5)';
 
 
-heartIcon.addEventListener('click', function(event) {
+heartIcon.addEventListener('click', async function(event) {
   heartIcon.style.color = heartIcon.style.color === 'red' ? 'white' : 'red';
   event.stopPropagation(); // Prevent the event from bubbling up to postLink
-  // Store the liked state in local storage
-  const postId = post.id;
-  const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || {};
-  likedPosts[postId] = heartIcon.style.color === 'red';
-  localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-});
+  
+  try {
+    const user = await getUser();
+    const postId = post.id;
+    const response = await fetch('/api-posts/like', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId: user.id, postId: postId }),
+    });
 
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+});
 
 return {
  card,
@@ -83,7 +106,6 @@ return {
 };
 };
 
-
 const renderPosts = async (category) => {
  cancelRequests();
  container.innerHTML = '';
@@ -91,8 +113,8 @@ const renderPosts = async (category) => {
    const posts = await getPosts(category);
    for (const post of posts) {
      const { postLink, card, heartIcon } = await createPostCard(post);
-     const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || {};
-     heartIcon.style.color = likedPosts[post.id] ? 'red' : 'white';
+    //  const likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || {};
+    //  heartIcon.style.color = likedPosts[post.id] ? 'red' : 'white';
 
      const imgContainer = document.createElement('div');
      imgContainer.className = 'relative w-full h-3/4 flex justify-center items-center';
@@ -186,7 +208,6 @@ window.addEventListener('DOMContentLoaded', async () => {
    console.log(error);
  }
 });
-
 
 
 

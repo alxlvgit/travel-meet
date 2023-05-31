@@ -202,61 +202,143 @@ router.get('/is-following/:id', async (req, res) => {
 
 // Like post
 router.post('/like-post/:id', ensureAuthenticated, async (req, res) => {
+  const { userId, postId } = req.body;
+
+  if (!userId || !postId) {
+    return res.status(400).send({ error: 'User ID and Post ID are required' });
+  }
+
   try {
-    const postId = Number(req.params.id);
-    const currentUser = req.user;
-    await prisma.post.update({
-      where: { id: postId },
-      data: { likes: { connect: { id: currentUser.id } } }
+    // Check if the post exists
+    const post = await prisma.post.findUnique({
+      where: { id: parseInt(postId) },
     });
-    res.status(200).json({ message: "Post liked successfully" });
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const like = await prisma.like.create({
+      data: {
+        userId: userId,
+        postId: postId,
+      },
+    });
+
+    res.status(200).send(like);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "An error occurred while trying to like the post" });
+    res.status(500).send({ error: 'Could not add like to the database' });
   }
 });
 
 // Unlike post
-router.post('/unlike-post/:id', ensureAuthenticated, async (req, res) => {
+router.delete('/unlike-post/:postId', ensureAuthenticated, async (req, res) => {
+  const { postId } = req.params;
+  const userId = req.user.id;
+
   try {
-    const postId = Number(req.params.id);
-    const currentUser = req.user;
-    await prisma.post.update({
-      where: { id: postId },
-      data: { likes: { disconnect: { id: currentUser.id } } }
+    // Check if the post exists
+    const post = await prisma.post.findUnique({
+      where: { id: parseInt(postId) },
     });
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    // Check if the like exists
+    const like = await prisma.like.findFirst({
+      where: {
+        userId_postId: {
+          userId: userId,
+          postId: parseInt(postId),
+        },
+      },
+    });
+
+    // If the like exists, delete it
+    if (like) {
+      await prisma.like.delete({
+        where: {
+          userId_postId: {
+            userId: userId,
+            postId: parseInt(postId),
+          },
+        },
+      });
+    }
+
     res.status(200).json({ message: "Post unliked successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "An error occurred while trying to unlike the post" });
+    res.status(500).send({ error: 'Could not remove like from the database' });
   }
 });
 
 // Check if user has liked post
-router.get('/has-liked-post/:id', ensureAuthenticated, async (req, res) => {
+router.get('/has-liked-post/:postId', ensureAuthenticated, async (req, res) => {
+  const { postId } = req.params;
+  const userId = req.user.id;
+
   try {
-    const postId = Number(req.params.id);
-    const currentUser = req.user;
-    const hasLiked = await prisma.post.findFirst({
-      where: {
-        id: postId,
-        likes: {
-          some: {
-            id: currentUser.id
-          }
-        }
-      }
+    // Check if the post exists
+    const post = await prisma.post.findUnique({
+      where: { id: parseInt(postId) },
     });
-    if (hasLiked) {
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const like = await prisma.like.findFirst({
+      where: {
+        userId: userId,
+        postId: parseInt(postId),
+      },
+    });
+
+    if (like) {
       res.status(200).json({ hasLiked: true });
     } else {
       res.status(200).json({ hasLiked: false });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "An error occurred while checking like status" });
+    res.status(500).send({ error: 'Could not fetch liked posts' });
   }
 });
 
+router.get('/api/likes/:postId', ensureAuthenticated, async (req, res) => {
+  const { postId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    // Check if the post exists
+    const post = await prisma.post.findUnique({
+      where: { id: parseInt(postId) },
+    });
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const like = await prisma.like.findFirst({
+      where: {
+        userId: userId,
+        postId: parseInt(postId),
+      },
+    });
+
+    if (like) {
+      res.status(200).json({ hasLiked: true });
+    } else {
+      res.status(200).json({ hasLiked: false });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error: 'Could not fetch liked posts' });
+  }
+});
 
 module.exports = router;
