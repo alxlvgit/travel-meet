@@ -8,6 +8,7 @@ const multer = require('multer');
 const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 const sharp = require("sharp");
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 
 const bucketName = process.env.BUCKET_NAME
 const bucketRegion = process.env.BUCKET_REGION
@@ -97,11 +98,14 @@ router.post("/signup", forwardAuthenticated, upload.single("icon"), async (req, 
             res.redirect("/auth/login");
             return;
         }
+        // hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(userData.password, salt);
         const user = await prisma.user.create({
             data: {
                 name: userData.name,
                 email: userData.email,
-                password: userData.password,
+                password: hashedPassword,
                 profileImageURI: params.Key,
                 profileImageName: userData.name,
                 profileImageCaption: userData.name,
