@@ -12,7 +12,7 @@ const getPosts = async (category) => {
     const response = await fetch(`/api-posts/posts?limit=20&category=${category}`, { signal: abortController.signal });
     const data = await response.json();
     if (data) {
-      console.log(data);
+      // console.log(data);
       return data.posts;
     } else {
       console.log("Something went wrong");

@@ -57,7 +57,7 @@ const filterEventsByMaxNumber = async (maxNumber, foundEvents) => {
     }
     return uniqueEvents.length >= maxNumber;
   });
-  console.log(uniqueEvents);
+  // console.log(uniqueEvents);
   return uniqueEvents;
 };
 
