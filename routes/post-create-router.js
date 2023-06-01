@@ -74,7 +74,10 @@ router.post('/', ensureAuthenticated, upload.single('image'), async (req, res) =
         res.redirect('/post-create');
         return;
     }
-    const buffer = await sharp(req.file.buffer).resize({ fit: "contain" }).toBuffer()
+    const buffer = await sharp(req.file.buffer)
+    .rotate()
+    .resize({ fit: "contain" })
+    .toBuffer()
     const params = {
         Bucket: bucketName,
         Key: imageName,

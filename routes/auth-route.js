@@ -78,7 +78,10 @@ router.post("/signup", forwardAuthenticated, upload.single("icon"), async (req, 
     }
     try {
         const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
-        const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250, fit: "contain" }).toBuffer();
+        const buffer = await sharp(req.file.buffer)
+            .rotate()
+            .resize({ width: 800, height: 800, fit: "inside" })
+            .toBuffer();
         const params = {
             Bucket: bucketName,
             Key: randomImageName(),
