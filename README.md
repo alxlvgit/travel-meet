@@ -17,8 +17,8 @@ Tech Stack:
 - Passport.js
 - Swiper API
 - EJS
-- Multer NPM Module
-- Sharp NPM Module
+- Multer
+- Sharp
 
 The application design is currently optimized for mobile view only. The desktop view and additional features are in progress.\
 The hosted app link:
