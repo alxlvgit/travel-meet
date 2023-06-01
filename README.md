@@ -6,6 +6,7 @@ Tech Stack:
 - Vanilla JS
 - Socket.IO
 - Mapbox GL JS
+- Turf.js
 - Ticketmaster API
 - Google API's
 - Redis
